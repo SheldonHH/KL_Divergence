@@ -1,54 +1,49 @@
 import numpy as np
-import scipy.optimize as opt
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+# You'll obviously need to reshape the output for plotting, e.g:
 
-def main():
-    x0, y0 = 0.3, 0.7
-    amp, a, b, c = 1, 2, 3, 4
-    true_params = [amp, x0, y0, a, b, c]
-    xy, zobs = generate_example_data(10, true_params)
-    x, y = xy
 
-    i = zobs.argmax()
-    guess = [1, x[i], y[i], 1, 1, 1]
-    pred_params, uncert_cov = opt.curve_fit(gauss2d, xy, zobs, p0=guess)
 
-    zpred = gauss2d(xy, *pred_params)
-    print ('True parameters: ', true_params)
-    print ('Predicted params:', pred_params)
-    print ('Residual, RMS(obs - pred):', np.sqrt(np.mean((zobs - zpred)**2)))
+def twoD_Gaussian(Point, amplitude, xo, yo, sigma_x, sigma_y, theta, offset):
+    xo = float(xo)
+    yo = float(yo)
+    a = (np.cos(theta)**2)/(2*sigma_x**2) + (np.sin(theta)**2)/(2*sigma_y**2)
+    b = -(np.sin(2*theta))/(4*sigma_x**2) + (np.sin(2*theta))/(4*sigma_y**2)
+    c = (np.sin(theta)**2)/(2*sigma_x**2) + (np.cos(theta)**2)/(2*sigma_y**2)
+    g = offset + amplitude*np.exp( - (a*((x-xo)**2) + 2*b*(x-xo)*(y-yo)
+                            + c*((y-yo)**2)))
+    return g.ravel()
+#     Return a contiguous flattened array.
+# Create x and y indices
+# point = Point(np.linspace(0, 200, 201), np.linspace(0, 200, 201))
+x = np.linspace(0, 200, 201)
+y = np.linspace(0, 200, 201)
+x, y = np.meshgrid(x, y)
+arr = np.stack((x,y), axis = 1)
+#create data
+data = twoD_Gaussian(arr, 3, 100, 100, 20, 40, 0, 10)
 
-    plot(xy, zobs, pred_params)
-    plt.show()
+# plot twoD_Gaussian data generated above
+plt.figure()
+plt.imshow(data.reshape(201, 201))
+plt.colorbar()
+# Do the fitting as before:
 
-def gauss2d(xy, amp, x0, y0, a, b, c):
-    x, y = xy
-    inner = a * (x - x0)**2
-    inner += 2 * b * (x - x0)**2 * (y - y0)**2
-    inner += c * (y - y0)**2
-    return amp * np.exp(-inner)
+# add some noise to the data and try to fit the data generated beforehand
+initial_guess = (3,100,100,20,40,0,10)
 
-def generate_example_data(num, params):
-    np.random.seed(1977) # For consistency
-    xy = np.random.random((2, num))
+data_noisy = data + 0.2*np.random.normal(size=data.shape)
 
-    zobs = gauss2d(xy, *params)
-    return xy, zobs
+popt, pcov = curve_fit(twoD_Gaussian, arr, data_noisy, p0=initial_guess)
+# And plot the results:
+print (popt)
 
-def plot(xy, zobs, pred_params):
-    x, y = xy
-    yi, xi = np.mgrid[:1:30j, -.2:1.2:30j]
-    xyi = np.vstack([xi.ravel(), yi.ravel()])
-
-    zpred = gauss2d(xyi, *pred_params)
-    zpred.shape = xi.shape
-
-    fig, ax = plt.subplots()
-    ax.scatter(x, y, c=zobs, s=200, vmin=zpred.min(), vmax=zpred.max())
-    im = ax.imshow(zpred, extent=[xi.min(), xi.max(), yi.max(), yi.min()],
-                   aspect='auto')
-    fig.colorbar(im)
-    ax.invert_yaxis()
-    return fig
-
-# main()
+data_fitted = twoD_Gaussian(arr, *popt)
+#
+# fig, ax = plt.subplots(1, 1)
+# # ax.hold(False)
+# ax.imshow(data_noisy.reshape(201, 201), cmap=plt.cm.jet, origin='bottom',
+#     extent=(x.min(), x.max(), y.min(), y.max()))
+# ax.contour(x, y, data_fitted.reshape(201, 201), 8, colors='w')
+# plt.show()
