@@ -23,58 +23,47 @@ def twoD_Gaussian(point, amplitude, xo, yo, sigma_x, sigma_y, theta, offset):
 
 
 file_data1 = []
+nnz = []
+aau = []
+iil = []
 
 
-def read_data_from_csv():
+def process_data():
     file_data1 = np.loadtxt(joint_frequency_path1,
                             delimiter=',', skiprows=1)
-
-
-def main():
-    file_data1 = np.loadtxt(joint_frequency_path1,
-                            delimiter=',', skiprows=1)
-    sg = []
-    nnz = []
-    aau = []
-    iil = []
+    # sg = []
 
     for col1, col2, col3 in file_data1:
-        sg.append([col1, col2])
+        # sg.append([col1, col2])
         nnz.append(col1)
         aau.append(col2)
         iil.append(col3)
+
+
+def main():
+    process_data()
     nz = np.asarray(nnz, dtype=np.float32)
     au = np.asarray(aau, dtype=np.float32)
     il = np.asarray(iil, dtype=np.float32)
-    # npa = np.asarray(sg, dtype=np.float32)
-    # npb = np.asarray(il, dtype=np.float32)
 
-    x = np.linspace(0, 200, 201)
-    y = np.linspace(0, 200, 201)
-    x, y = np.meshgrid(x, y)
+    # x = np.linspace(0, 200, 201)
+    # y = np.linspace(0, 200, 201)
+    # x, y = np.meshgrid(x, y)
     arr = np.stack((nz, au), axis=1)
-    print(arr)
-    # output = open('test.pkl', 'wb')
-    # pickle.dump(arr, output)
-    # output.close()
-    data = twoD_Gaussian(arr, 3, 10, 10, 2, 2, 0, 10)
-    print(data.size)
-    print(data)
-
-# add some noise to the data and try to fit the data generated beforehand
-    initial_guess = (3, 100, 100, 20, 40, 0, 10)
-    data_noisy = data + 0.2*np.random.normal(size=data.shape)
-
-
-# weighted arithmetic mean (corrected - check the section below)
+    print(type(arr))
+    # weighted arithmetic mean (corrected - check the section below)
     mean_x = sum(nz * il) / sum(il)
     sigma_x = np.sqrt(sum(il * (nz - mean_x)**2) / sum(il))
     mean_y = sum(au * il) / sum(il)
     sigma_y = np.sqrt(sum(il * (au - mean_y)**2) / sum(il))
+    print(mean_x)
+    print(mean_y)
     second_guess = (max(il), mean_x, mean_y, sigma_x, sigma_y, 0, 10)
 
-    # popt, pcov = curve_fit(twoD_Gaussian, x, y, p0=[
-    #                        max(y), mean, sigma], maxfev=500000)
+    data = twoD_Gaussian(arr, max(il), mean_x, mean_y, sigma_x, sigma_y, 0, 10)
+    print(data.size)
+    print(data)
+
     popt, pcov = curve_fit(twoD_Gaussian, data, il,
                            p0=second_guess, maxfev=500000)
     data_fitted = twoD_Gaussian(arr, *popt)

@@ -45,16 +45,17 @@ X, Y = np.meshgrid(np.linspace(x.min(), x.max(), 1000),
                    np.linspace(y.min(), y.max(), 1000))
 Z = griddata((x, y), z, (X, Y), method='linear', fill_value=0)
 
+model = lmfit.models.Gaussian2dModel()
+params = model.guess(z, x, y)
+print(params)
+result = model.fit(z, x=x, y=y, params=params, weights=1)
+lmfit.report_fit(result)
+print(lmfit.report_fit(result))
+
+
 fig, ax = plt.subplots()
 art = ax.pcolor(X, Y, Z, shading='auto')
 plt.colorbar(art, ax=ax, label='z')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
-# plt.show()
-
-model = lmfit.models.Gaussian2dModel()
-params = model.guess(z, x, y)
-print(params)
-result = model.fit(z, x=x, y=y, params=params, weights=1/error)
-lmfit.report_fit(result)
-print(result)
+plt.show()
