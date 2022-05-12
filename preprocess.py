@@ -1,8 +1,8 @@
 import csv
 raw_data_path1 = 'data_sample/user_1_data.csv'
 raw_data_path2 = 'data_sample/user_2_data.csv'
-trimmed_data_path1 = 'data_sample/trimmed_user_1_data.csv'
-trimmed_data_path2 = 'data_sample/trimmed_user_2_data.csv'
+trimmed_data_path1 = 'data_sample/trimmed/trimmed_user_1_data.csv'
+trimmed_data_path2 = 'data_sample/trimmed/trimmed_user_2_data.csv'
 
 
 def trim_row(row):
