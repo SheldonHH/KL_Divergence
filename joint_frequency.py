@@ -26,7 +26,7 @@ def read_from_csv(trimmed_data_path, joint_frequency_path):
 def write_to_csv(df, joint_frequency_path):
     file_to_write = open(joint_frequency_path, 'w')
     writer = csv.writer(file_to_write)
-    print(df.value_counts(['x', 'y']))
+    # print(df.value_counts(['x', 'y']))
     file_to_write.write(df.value_counts(['x', 'y']).to_csv())
 
     # file_to_write = open(data_y_frequency_path, 'w')

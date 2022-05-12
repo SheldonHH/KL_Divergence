@@ -14,3 +14,16 @@ sudo apt install nvidia-cuda-toolkit
 
 
 [preprocess.py]() read from raw data and generate trimmed_data
+
+
+### 2D_KL
+Compute the Kullback-Leibler divergence between two multivariate samples.
+Parameters
+x : 2D array (n,d)
+  Samples from distribution P, which typically represents the true distribution.
+y : 2D array (m,d)
+  Samples from distribution Q, which typically represents the approximate distribution.
+Returns
+-------
+out : float
+  The estimated Kullback-Leibler divergence D(P||Q).

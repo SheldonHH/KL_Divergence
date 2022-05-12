@@ -2,24 +2,13 @@
 
 import numpy as np
 from scipy.spatial import cKDTree as KDTree
+import pandas as pd
+
+joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
+joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
 
 
 def KLdivergence(x, y):
-    """Compute the Kullback-Leibler divergence between two multivariate samples.
-    Parameters
-    ----------
-    x : 2D array (n,d)
-      Samples from distribution P, which typically represents the true
-      distribution.
-    y : 2D array (m,d)
-      Samples from distribution Q, which typically represents the approximate
-      distribution.
-    Returns
-    -------
-    out : float
-      The estimated Kullback-Leibler divergence D(P||Q).
-    """
-
     # Check the dimensions are consistent
     x = np.atleast_2d(x)
     y = np.atleast_2d(y)
@@ -37,20 +26,40 @@ def KLdivergence(x, y):
     # sample itself.
     r = xtree.query(x, k=2, eps=.01, p=2)[0][:, 1]
     s = ytree.query(x, k=1, eps=.01, p=2)[0]
+    print(r)
+    print(s)
 
+    # TODO fix
     # There is a mistake in the paper. In Eq. 14, the right side misses a negative sign
     # on the first term of the right hand side.
     return -np.log(r/s).sum() * d / n + np.log(m / (n - 1.))
 
 
+data1 = []
+data2 = []
+
+
+def column(matrix, i, j):
+    return [[row[i], row[j]] for row in matrix]
+
+
 def read_data_from_csv():
-    data = np.loadtxt('divergence.csv', delimiter=',')
-    p = data[:, 0]
-    q = data[:, 1]
+
+    file_data1 = np.loadtxt(joint_frequency_path1,
+                            delimiter=',', skiprows=1)
+    file_data2 = np.loadtxt(joint_frequency_path2,
+                            delimiter=',', skiprows=1)
+    data1 = column(file_data1, 0, 1)
+    data2 = column(file_data1, 0, 1)
+    KLdivergence(data1, data2)
+
+
+# p = data1
+# q = data2
 
 
 def main():
-    KLdivergence()
+    read_data_from_csv()
 
 
 if __name__ == "__main__":
