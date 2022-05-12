@@ -34,15 +34,18 @@ def main():
     file_data1 = np.loadtxt(joint_frequency_path1,
                             delimiter=',', skiprows=1)
     sg = []
-    nz = []
-    au = []
-    il = []
+    nnz = []
+    aau = []
+    iil = []
 
     for col1, col2, col3 in file_data1:
         sg.append([col1, col2])
-        nz.append(col1)
-        au.append(col2)
-        il.append(col3)
+        nnz.append(col1)
+        aau.append(col2)
+        iil.append(col3)
+    nz = np.asarray(nnz, dtype=np.float32)
+    au = np.asarray(aau, dtype=np.float32)
+    il = np.asarray(iil, dtype=np.float32)
     # npa = np.asarray(sg, dtype=np.float32)
     # npb = np.asarray(il, dtype=np.float32)
 
@@ -64,12 +67,16 @@ def main():
 
 
 # weighted arithmetic mean (corrected - check the section below)
-    mean = sum(x * y) / sum(y)
-    sigma = np.sqrt(sum(y * (x - mean)**2) / sum(y))
+    mean_x = sum(nz * il) / sum(il)
+    sigma_x = np.sqrt(sum(il * (nz - mean_x)**2) / sum(il))
+    mean_y = sum(au * il) / sum(il)
+    sigma_y = np.sqrt(sum(il * (au - mean_y)**2) / sum(il))
+    second_guess = (max(il), mean_x, mean_y, sigma_x, sigma_y, 0, 10)
 
-    popt, pcov = curve_fit(twoD_Gaussian, x, y, p0=[
-                           max(y), mean, sigma], maxfev=500000)
-    popt, pcov = curve_fit(twoD_Gaussian, data, il, p0=initial_guess)
+    # popt, pcov = curve_fit(twoD_Gaussian, x, y, p0=[
+    #                        max(y), mean, sigma], maxfev=500000)
+    popt, pcov = curve_fit(twoD_Gaussian, data, il,
+                           p0=second_guess, maxfev=500000)
     data_fitted = twoD_Gaussian(arr, *popt)
     print(popt)
 
