@@ -1,6 +1,8 @@
 import csv
-raw_data_path = 'data_sample/user_1_data.csv'
-trimmed_data_path = 'data_sample/trimmed_user_1_data.csv'
+raw_data_path1 = 'data_sample/user_1_data.csv'
+raw_data_path2 = 'data_sample/user_2_data.csv'
+trimmed_data_path1 = 'data_sample/trimmed_user_1_data.csv'
+trimmed_data_path2 = 'data_sample/trimmed_user_2_data.csv'
 
 
 def trim_row(row):
@@ -8,7 +10,7 @@ def trim_row(row):
     # round(float(row[1]), 1)
 
 
-def read_from_csv():
+def read_from_csv(raw_data_path, trimmed_data_path):
     file_to_write = open(trimmed_data_path, 'w')
     writer = csv.writer(file_to_write)
     header_to_write = ['x', 'y']
@@ -31,7 +33,8 @@ def read_from_csv():
 
 
 def main():
-    read_from_csv()
+    read_from_csv(raw_data_path1, trimmed_data_path1)
+    read_from_csv(raw_data_path2, trimmed_data_path2)
 
 
 if __name__ == "__main__":

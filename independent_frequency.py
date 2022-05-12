@@ -3,10 +3,10 @@ import sidetable
 import csv
 import json
 trimmed_data_path = 'data_sample/trimmed_user_1_data.csv'
-data_x_frequency_path = 'data_sample/x_frequency_user_1_data.csv'
-data_y_frequency_path = 'data_sample/y_frequency_user_1_data.csv'
-json_data_x_frequency_path = 'data_sample/x_frequency_user_1_data.json'
-json_data_y_frequency_path = 'data_sample/y_frequency_user_1_data.json'
+data_x_frequency_path = 'data_sample/independent/x_frequency_user_1_data.csv'
+data_y_frequency_path = 'data_sample/independent/y_frequency_user_1_data.csv'
+json_data_x_frequency_path = 'data_sample/independent/x_frequency_user_1_data.json'
+json_data_y_frequency_path = 'data_sample/independent/y_frequency_user_1_data.json'
 
 
 def read_from_csv():
