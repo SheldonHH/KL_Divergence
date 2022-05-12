@@ -2,7 +2,7 @@
 ### Generate requirements.txt
 ```
 pip3 install pipreqs
-python3 -m  pipreqs.pipreqs .
+python3 -m  pipreqs.pipreqs . --force
 ```
 
 

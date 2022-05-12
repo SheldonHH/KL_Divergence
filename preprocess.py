@@ -12,13 +12,14 @@ def read_from_csv():
     file_to_write = open(trimmed_data_path, 'w')
     writer = csv.writer(file_to_write)
     header_to_write = ['x', 'y']
-    writer.writerow(header_to_write)  # write header
+    writer.writerow(header_to_write)
+    # write header
 
     file = open(raw_data_path)
     csvreader = csv.reader(file)
     header = []
     header = next(csvreader)
-    print(header)
+    # print(header)
     rows = []
     for row in csvreader:
         rows.append(row)
