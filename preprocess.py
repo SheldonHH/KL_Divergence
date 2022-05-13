@@ -21,10 +21,15 @@ def read_from_csv(raw_data_path, trimmed_data_path):
     csvreader = csv.reader(file)
     header = []
     header = next(csvreader)
-    # print(header)
-    rows = []
+    twod_rows = []
+    x1_x2_col = []
     for row in csvreader:
-        rows.append(row)
+        oned_rows = []
+        oned_rows.append(row[0])
+        oned_rows.append(row[1])
+        twod_rows.append(oned_rows)
+
+    for row in twod_rows:
         trimmed_row = trim_row(row)
         writer.writerow(trimmed_row)
 

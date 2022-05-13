@@ -23,9 +23,9 @@ joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
 
 
 file_data1 = []
-nnz = []
-aau = []
-iil = []
+x1_list = []
+x2_list = []
+z_list = []
 
 
 def process_data():
@@ -34,12 +34,12 @@ def process_data():
     # sg = []
     for col1, col2, col3 in file_data1:
         # sg.append([col1, col2])
-        nnz.append(col1)
-        aau.append(col2)
-        iil.append(col3)
+        x1_list.append(col1)
+        x2_list.append(col2)
+        z_list.append(col3)
 
 
-def printFig(x, y, z):
+def showFig(x, y, z):
     X, Y = np.meshgrid(np.linspace(x.min(), x.max(), 1000),
                        np.linspace(y.min(), y.max(), 1000))
 
@@ -54,19 +54,21 @@ def printFig(x, y, z):
 
 def main():
     process_data()
-    nz = np.asarray(nnz, dtype=np.float32)
-    au = np.asarray(aau, dtype=np.float32)
-    il = np.asarray(iil, dtype=np.float32)
-    x, y = np.meshgrid(np.linspace(nz.min(), nz.max(), 100),
-                       np.linspace(au.min(), au.max(), 100))
+    x1_ndarray = np.asarray(x1_list, dtype=np.float32)
+    x2_ndarray = np.asarray(x2_list, dtype=np.float32)
+    x3_ndarray = np.asarray(z_list, dtype=np.float32)
+    x, y = np.meshgrid(np.linspace(x1_ndarray.min(), x1_ndarray.max(), 100),
+                       np.linspace(x2_ndarray.min(), x2_ndarray.max(), 100))
 
-    arr = np.stack((nz, au), axis=1)
+    arr = np.stack((x1_ndarray, x2_ndarray), axis=1)
     print(type(arr))
     # weighted arithmetic mean (corrected - check the section below)
-    mean_x = sum(nz * il) / sum(il)
-    sigma_x = np.sqrt(sum(il * (nz - mean_x)**2) / sum(il))
-    mean_y = sum(au * il) / sum(il)
-    sigma_y = np.sqrt(sum(il * (au - mean_y)**2) / sum(il))
+    mean_x = sum(x1_ndarray * x3_ndarray) / sum(x3_ndarray)
+    sigma_x = np.sqrt(
+        sum(x3_ndarray * (x1_ndarray - mean_x)**2) / sum(x3_ndarray))
+    mean_y = sum(x2_ndarray * x3_ndarray) / sum(x3_ndarray)
+    sigma_y = np.sqrt(
+        sum(x3_ndarray * (x2_ndarray - mean_y)**2) / sum(x3_ndarray))
     print(mean_x)
     print(mean_y)
 
@@ -74,7 +76,7 @@ def main():
     g = gaussian2D(x, y, mean_x, mean_y, sigma_x, sigma_y, 1.1)
 
     initial = Parameters()
-    initial.add("height", value=max(il))
+    initial.add("height", value=max(x3_ndarray))
     initial.add("centroid_x", value=mean_x)
     initial.add("centroid_y", value=mean_y)
     initial.add("sigma_x", value=sigma_x)
@@ -83,7 +85,7 @@ def main():
 
     fit = minimize(residuals, initial, args=(x, y, g))
     print(report_fit(fit))
-    printFig(nz, au, il)
+    showFig(x1_ndarray, x2_ndarray, x3_ndarray)
 
 
 if __name__ == "__main__":
