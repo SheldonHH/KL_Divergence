@@ -20,6 +20,8 @@ def residuals(p, x, y, z):
 
 joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
 joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
+twod_gauss_params_txt_path1 = 'data_sample/gauss_params/2d_gauss_1.txt'
+twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
 
 file_data1 = []
@@ -28,15 +30,15 @@ x2_list = []
 z_list = []
 
 
-def process_data():
-    file_data1 = np.loadtxt(joint_frequency_path1,
+def process_data(frequency_r_path, gauss_w_path):
+    file_data1 = np.loadtxt(frequency_r_path,
                             delimiter=',', skiprows=1)
-    # sg = []
     for col1, col2, col3 in file_data1:
         # sg.append([col1, col2])
         x1_list.append(col1)
         x2_list.append(col2)
         z_list.append(col3)
+    fit_gaussian(gauss_w_path)
 
 
 def showFig(x, y, z):
@@ -52,8 +54,7 @@ def showFig(x, y, z):
     plt.show()
 
 
-def main():
-    process_data()
+def fit_gaussian(gauss_w_path):
     x1_ndarray = np.asarray(x1_list, dtype=np.float32)
     x2_ndarray = np.asarray(x2_list, dtype=np.float32)
     x3_ndarray = np.asarray(z_list, dtype=np.float32)
@@ -61,7 +62,6 @@ def main():
                        np.linspace(x2_ndarray.min(), x2_ndarray.max(), 100))
 
     arr = np.stack((x1_ndarray, x2_ndarray), axis=1)
-    print(type(arr))
     # weighted arithmetic mean (corrected - check the section below)
     mean_x = sum(x1_ndarray * x3_ndarray) / sum(x3_ndarray)
     sigma_x = np.sqrt(
@@ -69,8 +69,6 @@ def main():
     mean_y = sum(x2_ndarray * x3_ndarray) / sum(x3_ndarray)
     sigma_y = np.sqrt(
         sum(x3_ndarray * (x2_ndarray - mean_y)**2) / sum(x3_ndarray))
-    print(mean_x)
-    print(mean_y)
 
     # test data
     g = gaussian2D(x, y, mean_x, mean_y, sigma_x, sigma_y, 1.1)
@@ -84,8 +82,17 @@ def main():
     initial.add("background", value=0.)
 
     fit = minimize(residuals, initial, args=(x, y, g))
-    print(report_fit(fit))
-    showFig(x1_ndarray, x2_ndarray, x3_ndarray)
+    print(type(fit))
+    print(type(report_fit(fit)))
+    print(fit)
+    f = open(gauss_w_path, "w")
+    f.write(str(fit.__dict__))
+    # # showFig(x1_ndarray, x2_ndarray, x3_ndarray)
+
+
+def main():
+    process_data(joint_frequency_path1, twod_gauss_params_txt_path1)
+    process_data(joint_frequency_path2, twod_gauss_params_txt_path2)
 
 
 if __name__ == "__main__":
