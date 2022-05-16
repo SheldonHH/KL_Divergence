@@ -23,10 +23,13 @@ joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
 w_twod_gauss_params_txt_path1 = 'data_sample/gauss_params/2d_gauss_1.txt'
 w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
-selected_avg_parti_trimmed_dict_path = 'data_sample/dict/selected_avg_parti_dict.csv'
-sample_selected_avg_parti_trimmed_dict_path = 'data_sample/dict/sample_selected_avg_parti_dict.csv'
-w_selected_avg_gauss_params_txt_path = 'data_sample/gauss_params/selected_avg_gauss_params.txt'
-w_sample_selected_avg_gauss_params_txt_path = 'data_sample/gauss_params/sample_selected_avg_gauss_params.txt'
+# selected_avg_parti_trimmed_dict_path = 'data_sample/dict/prepare_for_gauss/selected_avg_parti_dict.csv'
+# sample_selected_avg_parti_trimmed_dict_path = 'data_sample/dict/prepare_for_gauss/sample_selected_avg_parti_dict.csv'
+# w_selected_avg_gauss_params_txt_path = 'data_sample/gauss_params/selected_avg_gauss_params.txt'
+# w_sample_selected_avg_gauss_params_txt_path = 'data_sample/gauss_params/sample_selected_avg_gauss_params.txt'
+
+extend_selected_avg_parti_trimmed_dict_path = 'data_sample/dict/prepare_for_gauss/extended_sample_selected_avg_parti_dict.csv'
+w_extended_selected_avg_gauss_params_txt_path = 'data_sample/gauss_params/extendedselected_avg_gauss_params.txt'
 
 file_data1 = []
 x1_list = []
@@ -97,8 +100,8 @@ def fit_gaussian(gauss_w_path):
 def main():
     process_data(joint_frequency_path1, w_twod_gauss_params_txt_path1)
     process_data(joint_frequency_path2, w_twod_gauss_params_txt_path2)
-    process_data(selected_avg_parti_trimmed_dict_path,
-                 w_selected_avg_gauss_params_txt_path)
+    process_data(extend_selected_avg_parti_trimmed_dict_path,
+                 w_extended_selected_avg_gauss_params_txt_path)
 
 
 if __name__ == "__main__":
