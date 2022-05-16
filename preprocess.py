@@ -13,6 +13,11 @@ def trim_row(row):
     # round(float(row[1]), 1)
 
 
+def write_first_dict():
+    with open(first_dict_json_path, 'w') as convert_file:
+        convert_file.write(json.dumps(first_layer_dict))
+
+
 def read_from_csv(raw_data_path, trimmed_data_path):
     file_to_write = open(trimmed_data_path, 'w')
     writer = csv.writer(file_to_write)
@@ -48,30 +53,6 @@ def read_from_csv(raw_data_path, trimmed_data_path):
     filtered = {k: v for k, v in first_layer_dict.items() if v is not None}
     first_layer_dict.clear()
     first_layer_dict.update(filtered)
-    print(first_layer_dict)
-    with open(first_dict_json_path, 'w') as convert_file:
-        convert_file.write(json.dumps(first_layer_dict))
-
-    # new_row = first_layer_dict[trimmed_row].append(row)
-    # first_layer_dict[trimmed_row] = new_row
-    # writer.writerow(trimmed_row)
-
-
-# print("{:.2f}".format(round(a, 2)))
-
-
-# Function to convert
-def listToString(s):
-
-    # initialize an empty string
-    str1 = " "
-
-    # traverse in the string
-    for ele in s:
-        str1 += ele
-
-    # return string
-    return str1
 
 
 def main():

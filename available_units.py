@@ -1,42 +1,24 @@
 import numpy as np
 import itertools
 import csv
-import pandas as pd
+import json
 
 raw_data_path = 'data_sample/user_1_data.csv'
 freq_data_path = 'data_sample/joint/joint_frequency_1.csv'
 
-w_counter_dict_path = 'data_sample/gauss_params/counter_dict.csv'
-w_sample_unit_path = 'data_sample/gauss_params/sample_unit_dict.csv'
+w_counter_parti_trimmed_dict_json_path = 'data_sample/dict/counter_dict.json'
+w_parti_trimmed_dict_json_path = 'data_sample/dict/sample_unit_dict.json'
 
 partition_size = 6
 counter_dict = {}
 units_dict = {}
 
 
-def write_to_file():
-    # with open(w_sample_unit_path, "wb") as f:
-    #     writer = csv.writer(f)
-    #     for i in range(len(sample_units)):
-    #         writer.writerows(sample_units[i])
-    # print(type(sample_units))
-    print(units_dict)
-    # df = pd.DataFrame(sample_units)  # construct data frame and transpose
-
-    # df.to_csv(w_sample_unit_path, header=False, index=False)
-    # file_to_write = open(data_y_frequency_path, 'w')
-    # file_to_write.write(df['y'].value_counts().to_csv(header=False))
-
-    # print(type(counter_dict))
-    # print(counter_dict)
-    # df = pd.DataFrame(w_sample_unit_path)
-    # df.to_csv(w_sample_unit_path)
-
-    #     for i in range(len(sample_units)):
-    #         # for j in range(len(sample_units[i])):
-    #         row = sample_units[i]
-    #         writer.writerow(row)
-    #         # writer.writerows(sample_units[i])
+def write_second_third_dict():
+    with open(w_parti_trimmed_dict_json_path, 'w') as convert_file:
+        convert_file.write(json.dumps(units_dict))
+    with open(w_counter_parti_trimmed_dict_json_path, 'w') as convert_file:
+        convert_file.write(json.dumps(counter_dict))
 
 
 def main():
@@ -59,11 +41,12 @@ def main():
     for y in range(partition_size):
         for x in range(partition_size):
             lower_bound_x1 = min(p)+(x)*p_step
-            lower_bound_x2 = min(q)+(x)*q_step
+            lower_bound_x2 = min(q)+(y)*q_step
             upper_bound_x1 = min(p)+(x+1)*p_step
-            upper_bound_x2 = min(q)+(x+1)*q_step
+            upper_bound_x2 = min(q)+(y+1)*q_step
             strkey = str(lower_bound_x1) + "," + str(lower_bound_x2) + \
-                "," + str(upper_bound_x1) + "," + str(upper_bound_x2)
+                " <= trimmed_points < " + str(upper_bound_x1) + \
+                "," + str(upper_bound_x2)
             counter = 0
             sample_units = []
             print(min(p)+(x+1)*p_step, min(q)+(x+1)*q_step)
@@ -84,7 +67,7 @@ def main():
     np.save('unit_selection.npy', counter_dict)
     np.save('sample_units.npy', sample_units)
 
-    write_to_file()
+    write_second_third_dict()
 
 
 if __name__ == "__main__":
