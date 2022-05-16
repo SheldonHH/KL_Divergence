@@ -6,12 +6,14 @@ import json
 raw_data_path = 'data_sample/user_1_data.csv'
 freq_data_path = 'data_sample/joint/joint_frequency_1.csv'
 
-w_counter_parti_trimmed_dict_json_path = 'data_sample/dict/counter_dict.json'
-w_parti_trimmed_dict_json_path = 'data_sample/dict/sample_unit_dict.json'
+w_counter_parti_trimmed_dict_json_path = 'data_sample/dict/counter_parti_dict.json'
+w_parti_trimmed_dict_json_path = 'data_sample/dict/trimmed_list_parti_dict.json'
+w_sum_parti_trimmed_dict_json_path = 'data_sample/dict/sum_parti_dict.json'
 
 partition_size = 6
 counter_dict = {}
 units_dict = {}
+parit_sum_dict = {}
 
 
 def write_second_third_dict():
@@ -19,6 +21,8 @@ def write_second_third_dict():
         convert_file.write(json.dumps(units_dict))
     with open(w_counter_parti_trimmed_dict_json_path, 'w') as convert_file:
         convert_file.write(json.dumps(counter_dict))
+    with open(w_sum_parti_trimmed_dict_json_path, 'w') as convert_file:
+        convert_file.write(json.dumps(parit_sum_dict))
 
 
 def main():
@@ -48,6 +52,8 @@ def main():
                 " <= trimmed_points < " + str(upper_bound_x1) + \
                 "," + str(upper_bound_x2)
             counter = 0
+            parti_sum_x1 = 0
+            parti_sum_x2 = 0
             sample_units = []
             print(min(p)+(x+1)*p_step, min(q)+(x+1)*q_step)
             freq_index_counter = 0
@@ -57,11 +63,14 @@ def main():
                     counter += 1
                     freq_list.append(x_freq[freq_index_counter])
                     freq_list.append(y_freq[freq_index_counter])
+                    parti_sum_x1 += x_freq[z]
+                    parti_sum_x2 += y_freq[z]
                 freq_index_counter += 1
                 if len(freq_list) != 0:
                     sample_units.append(freq_list)
             counter_dict[strkey] = counter
             units_dict[strkey] = sample_units
+            parit_sum_dict[strkey] = [parti_sum_x1, parti_sum_x2]
 
     print(counter_dict)
     np.save('unit_selection.npy', counter_dict)
