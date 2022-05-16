@@ -1,9 +1,10 @@
 import csv
+import json
 raw_data_path1 = 'data_sample/user_1_data.csv'
 raw_data_path2 = 'data_sample/user_2_data.csv'
 trimmed_data_path1 = 'data_sample/trimmed/trimmed_user_1_data.csv'
 trimmed_data_path2 = 'data_sample/trimmed/trimmed_user_2_data.csv'
-
+first_dict_json_path = 'data_sample/dict/first_dict_data.json'
 first_layer_dict = {}
 
 
@@ -34,26 +35,26 @@ def read_from_csv(raw_data_path, trimmed_data_path):
     for row in twod_rows:
         trimmed_row = trim_row(row)
         str_key = str(trimmed_row[0])+"-"+str(trimmed_row[1])
-        # print(str_key)
         if str_key in first_layer_dict:
             old_list = []
-            old_list = first_layer_dict[str_key]
-            print(first_layer_dict[str_key])
-            old_list.append(trimmed_row)
+            old_list = list(first_layer_dict[str_key] or [])
+            old_list.append(row)
             first_layer_dict[str_key] = old_list
-            # print("old_row")
-            # print(old_row)
-            # first_layer_dict[str_key] = new_row
         else:
-            first_layer_dict[str_key] = []
-            new_row = first_layer_dict[str_key].append(row)
+            new_row = []
+            new_row = new_row.append(row)
             first_layer_dict[str_key] = new_row
 
-        print(first_layer_dict[str_key])
+    filtered = {k: v for k, v in first_layer_dict.items() if v is not None}
+    first_layer_dict.clear()
+    first_layer_dict.update(filtered)
+    print(first_layer_dict)
+    with open(first_dict_json_path, 'w') as convert_file:
+        convert_file.write(json.dumps(first_layer_dict))
 
-        # new_row = first_layer_dict[trimmed_row].append(row)
-        # first_layer_dict[trimmed_row] = new_row
-        writer.writerow(trimmed_row)
+    # new_row = first_layer_dict[trimmed_row].append(row)
+    # first_layer_dict[trimmed_row] = new_row
+    # writer.writerow(trimmed_row)
 
 
 # print("{:.2f}".format(round(a, 2)))
