@@ -2,6 +2,7 @@ import numpy as np
 import itertools
 import csv
 import json
+from collections import Counter
 
 raw_data_path = 'data_sample/user_1_data.csv'
 freq_data_path = 'data_sample/joint/joint_frequency_1.csv'
@@ -9,11 +10,29 @@ freq_data_path = 'data_sample/joint/joint_frequency_1.csv'
 w_counter_parti_trimmed_dict_json_path = 'data_sample/dict/counter_parti_dict.json'
 w_parti_trimmed_dict_json_path = 'data_sample/dict/trimmed_list_parti_dict.json'
 w_sum_parti_trimmed_dict_json_path = 'data_sample/dict/sum_parti_dict.json'
+w_selected_avg_parti_trimmed_dict_json_path = 'data_sample/dict/selected_avg_parti_dict.json'
 
+sample_min_threshold_percent = 10
 partition_size = 6
 counter_dict = {}
 units_dict = {}
 parit_sum_dict = {}
+selected__parit_avg_dict = {}
+
+
+def create_avg_dict():
+    for key in counter_dict.keys():
+        if(int(counter_dict[key]) >= sample_min_threshold_percent):
+            avg_value_x1 = float(
+                parit_sum_dict[key][0]) / float(counter_dict[key])
+            avg_value_x2 = float(
+                parit_sum_dict[key][1]) / float(counter_dict[key])
+            avg_key_x1 = (float(key.split(",")[0])+float(key.split(",")[2]))/2
+            avg_key_x2 = (float(key.split(",")[1])+float(key.split(",")[3]))/2
+            str_avg_key = str(avg_key_x1)+","+str(avg_key_x2)
+            selected__parit_avg_dict[str_avg_key] = [
+                avg_value_x1, avg_value_x2]
+    print(len(selected__parit_avg_dict))
 
 
 def write_second_third_dict():
@@ -23,6 +42,8 @@ def write_second_third_dict():
         convert_file.write(json.dumps(counter_dict))
     with open(w_sum_parti_trimmed_dict_json_path, 'w') as convert_file:
         convert_file.write(json.dumps(parit_sum_dict))
+    with open(w_selected_avg_parti_trimmed_dict_json_path, 'w') as convert_file:
+        convert_file.write(json.dumps(selected__parit_avg_dict))
 
 
 def main():
@@ -37,7 +58,6 @@ def main():
 
     x_freq = joint_frequency[:, 0]
     y_freq = joint_frequency[:, 1]
-    print(y_freq.size)
 
     lower_bound_x1 = min(p)
     lower_bound_x2 = min(q)
@@ -49,13 +69,13 @@ def main():
             upper_bound_x1 = min(p)+(x+1)*p_step
             upper_bound_x2 = min(q)+(y+1)*q_step
             strkey = str(lower_bound_x1) + "," + str(lower_bound_x2) + \
-                " <= trimmed_points < " + str(upper_bound_x1) + \
+                "," + str(upper_bound_x1) + \
                 "," + str(upper_bound_x2)
+            #  <= trimmed_points <
             counter = 0
             parti_sum_x1 = 0
             parti_sum_x2 = 0
             sample_units = []
-            print(min(p)+(x+1)*p_step, min(q)+(x+1)*q_step)
             freq_index_counter = 0
             for z in range(y_freq.size):
                 freq_list = []
@@ -72,10 +92,7 @@ def main():
             units_dict[strkey] = sample_units
             parit_sum_dict[strkey] = [parti_sum_x1, parti_sum_x2]
 
-    print(counter_dict)
-    np.save('unit_selection.npy', counter_dict)
-    np.save('sample_units.npy', sample_units)
-
+    create_avg_dict()
     write_second_third_dict()
 
 
