@@ -1,7 +1,9 @@
+from re import T
 import numpy as np
 import matplotlib.pyplot as plt
 from lmfit import Parameters, minimize, report_fit
 from scipy.interpolate import griddata
+import math
 
 
 def gaussian2D(x, y, cen_x, cen_y, sig_x, sig_y, offset):
@@ -89,9 +91,9 @@ def fit_gaussian(gauss_w_path):
     initial.add("background", value=0.)
 
     fit = minimize(residuals, initial, args=(x, y, g))
-    print(type(fit))
-    print(type(report_fit(fit)))
-    print(fit)
+    # print(type(fit))
+    # print(type(report_fit(fit)))
+    # print(fit)
     f = open(gauss_w_path, "w")
     f.write(str(fit.__dict__))
     # # showFig(x1_ndarray, x2_ndarray, x3_ndarray)
@@ -99,9 +101,45 @@ def fit_gaussian(gauss_w_path):
 
 def main():
     process_data(joint_frequency_path1, w_twod_gauss_params_txt_path1)
-    process_data(joint_frequency_path2, w_twod_gauss_params_txt_path2)
+    # process_data(joint_frequency_path2, w_twod_gauss_params_txt_path2)
     process_data(extend_selected_avg_parti_trimmed_dict_path,
                  w_extended_selected_avg_gauss_params_txt_path)
+
+    f = open(w_extended_selected_avg_gauss_params_txt_path, "r")
+    extended_result = f.read()
+    Px = float(extended_result[extended_result.find(
+        '\'centroid_x\':'):extended_result.find('\'centroid_y\':')].split(": ")[1].split(",")[0])
+    Py = float(extended_result[extended_result.find(
+        '\'centroid_y\':'):extended_result.find('\'sigma_x\':')].split(": ")[1].split(",")[0])
+    # eDistance = math.dist([Px, Py], [Qx, Qy])
+    # print(eDistance)
+
+    f = open(w_twod_gauss_params_txt_path1, "r")
+    population_result = f.read()
+    Qx = float(population_result[population_result.find(
+        '\'centroid_x\':'):population_result.find('\'centroid_y\':')].split(": ")[1] .split(",")[0])
+    Qy = float(population_result[population_result.find(
+        '\'centroid_y\':'):population_result.find('\'sigma_x\':')].split(": ")[1].split(",")[0])
+    eDistance = math.dist([Px, Py], [Qx, Qy])
+
+    extended_sigma_x = float(extended_result[extended_result.find(
+        '\'sigma_x\':'):extended_result.find('\'sigma_y\':')].split(": ")[1].split(",")[0])
+    extended_sigma_y = float(extended_result[extended_result.find(
+        '\'sigma_y\':'):extended_result.find('\'background\':')].split(": ")[1].split(",")[0])
+    extended_combined_sigma = math.sqrt(
+        extended_sigma_x ** 2 + extended_sigma_y ** 2)
+
+    population_sigma_x = float(population_result[population_result.find(
+        '\'sigma_x\':'):population_result.find('\'sigma_y\':')].split(": ")[1].split(",")[0])
+    population_sigma_y = float(population_result[population_result.find(
+        '\'sigma_y\':'):population_result.find('\'background\':')].split(": ")[1].split(",")[0])
+    population_combined_sigma = math.sqrt(
+        population_sigma_x ** 2 + population_sigma_y ** 2)
+
+    total_sigma = population_combined_sigma + extended_combined_sigma
+    if total_sigma >= eDistance:
+        print("Gauss Test Passed !")
+        print("eDistance: ", eDistance, "total_sigma: ", total_sigma)
 
 
 if __name__ == "__main__":

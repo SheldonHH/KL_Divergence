@@ -93,15 +93,15 @@ def create_extended_sample_sum_avg_dict():
                 break
             else:
                 correct_counter += 1
-        print("misalign_counter", misalign_counter)
-        print("correct_counter", correct_counter)
+        # print("misalign_counter", misalign_counter)
+        # print("correct_counter", correct_counter)
         sample_list = sample(
             extended_units_dict[key], sample_min_threshold_percent*len(extended_units_dict[key]))
         # print(sample_list)
         avg_value_x1 = Average(list(np.float_([i[0] for i in sample_list])))
         avg_value_x2 = Average(list(np.float_([i[1] for i in sample_list])))
         # avg_value_x2 = Average(list(np.float_(sample_list[1])))
-        print([i[1] for i in sample_list])
+        # print([i[1] for i in sample_list])
         avg_key_x1 = (float(key.split(",")[0])+float(key.split(",")[2]))/2
         avg_key_x2 = (float(key.split(",")[1])+float(key.split(",")[3]))/2
         str_avg_key = str(avg_key_x1)+","+str(avg_key_x2)

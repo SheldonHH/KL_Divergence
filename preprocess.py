@@ -60,7 +60,7 @@ def read_from_csv(raw_data_path, trimmed_data_path):
             first_layer_dict[str_key] = new_row
             if(trimmed_row[0] == 2 and trimmed_row[1] == 3):
                 print("else")
-                print(first_layer_dict[str_key])
+                # print(first_layer_dict[str_key])
         # if(trimmed_row[0] == 2 and trimmed_row[1] == 3):
         #     print(first_layer_dict[str_key])
         #     break

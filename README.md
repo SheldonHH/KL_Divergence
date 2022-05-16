@@ -27,3 +27,8 @@ Returns
 -------
 out : float
   The estimated Kullback-Leibler divergence D(P||Q).
+
+#### TL RL
+```
+python3 preprocess.py && python3 joint_frequency.py && python3 available_units.py  && python3 2d.py 
+```
