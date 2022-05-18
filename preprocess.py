@@ -75,7 +75,7 @@ def read_from_csv(raw_data_path, trimmed_data_path):
 
 def main():
     args = sys.argv[1:]
-    raw_data_path1 = ''.join(args)
+    # raw_data_path1 = ''.join(args)
     read_from_csv(raw_data_path1, w_trimmed_data_path1)
     read_from_csv(raw_data_path2, w_trimmed_data_path2)
 
