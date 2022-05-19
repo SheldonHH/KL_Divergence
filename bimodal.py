@@ -101,6 +101,38 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
     return fit(z_list, ys_for_sim)
 
 
+def multi_bimodal(x, mu, sigma, A):
+    gausses = 0
+    # print("gauss_index", gauss_index)
+    for sg in range(gauss_index):
+        gausses += gauss(x, mu, sigma, A)
+    return gausses
+
+
+def fit_multi_modal(mean_x, sigma_x, peak, y, x, counter):
+    global gauss_index
+    gauss_index = counter
+    expected = (mean_x, sigma_x, peak)
+    # params, cov = curve_fit(bimodal, x, y, expected, maxfev=500000)
+    params, cov = curve_fit(multi_bimodal, x, y, expected, maxfev=500000)
+    # sigma = sqrt(diag(cov))
+    # plot(x, multi_bimodal(x, *params), color='red', lw=3, label='model')
+    # legend()
+    # print(params, '\n', sigma)
+    print(params)
+    ys_for_sim = []
+    for g in range(len(x1_list)):
+        x_for_sim = float(decimal.Decimal(random.randrange(
+            int(min(x1_list)*100), int(max(x1_list)*100)))/100)
+        y_for_sim = multi_bimodal(
+            x_for_sim, *params)
+        ys_for_sim.append(y_for_sim)
+    return fit(z_list, ys_for_sim)
+
+
+gauss_index = 0
+
+
 def main():
     process_1D_freq_data(
         x1_frequency_path1, w_twod_gauss_params_txt_path1)
@@ -124,44 +156,48 @@ def main():
     x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
     bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
     mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
-    xSp = []
-    ySp = []
-    xSp.append(1)
-    xSp.append(2)
-    ySp.append(mo_MSE)
-    ySp.append(bi_MSE)
-    xSp_array = np.asarray(xSp, dtype=np.float32)
-    ySp_array = np.asarray(ySp, dtype=np.float32)
-    print(ySp_array)
-    dy = np.diff(ySp_array, 1)
-    dx = np.diff(xSp_array, 1)
-    yfirst = dy/dx
-    xfirst = 0.5*(xSp_array[:-1]+xSp_array[1:])
-    dyfirst = np.diff(yfirst, 1)
-    dxfirst = np.diff(xfirst, 1)
-    ysecond = dyfirst/dxfirst
-    xsecond = 0.5*(xfirst[:-1]+xfirst[1:])
-    print(ysecond)
-    print(xsecond)
 
     xSp = []
     ySp = []
-    xSp.append(1)
-    ySp.append(mo_MSE)
-    xSp.append(2)
-    ySp.append(bi_MSE)
-    xSp.append(3)
-    ySp.append(25.215399045072)
-    xSp.append(4)
-    ySp.append(10.215399045072)
-    y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
-    # plt.semilogy(xSp, ySp, 'ro', label='data')
-    x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
-    # plt.semilogy(x_range, y_spl(x_range))
-    y_spl_2d = y_spl.derivative(n=2)
-    print(y_spl_2d(x_range))
-    print(type(y_spl_2d))
-    # plt.plot(x_range, y_spl_2d(x_range))
+    gauss_counter = 0
+    while(gauss_counter < 4):
+        gauss_counter += 1
+        xSp.append(gauss_counter)
+        print(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
+        ySp.append(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
+
+    print("here", gauss_counter)
+    ysecond = 100000
+    while(True):
+        gauss_counter += 1
+        xSp.append(gauss_counter)
+        print(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
+        ySp.append(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
+        y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
+        x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
+        y_spl_2d = y_spl.derivative(n=2)
+        if(abs(y_spl_2d(x_range)[-1]) < 0.0015):
+            print("y_spl_2d(x_range)", y_spl_2d(x_range),
+                  "gauss_counter", gauss_counter)
+            print(y_spl_2d(x_range))
+            print(ySp)
+            break
+
+    # ySp.append(mo_MSE)
+    # ySp.append(bi_MSE)
+    # xSp_array = np.asarray(xSp, dtype=np.float32)
+    # ySp_array = np.asarray(ySp, dtype=np.float32)
+    # print(ySp_array)
+    # dy = np.diff(ySp_array, 1)
+    # dx = np.diff(xSp_array, 1)
+    # yfirst = dy/dx
+    # xfirst = 0.5*(xSp_array[:-1]+xSp_array[1:])
+    # dyfirst = np.diff(yfirst, 1)
+    # dxfirst = np.diff(xfirst, 1)
+    # ysecond = dyfirst/dxfirst
+    # xsecond = 0.5*(xfirst[:-1]+xfirst[1:])
+    # print(ysecond)
+    # print(xsecond)
 
 
 if __name__ == "__main__":
