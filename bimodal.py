@@ -4,6 +4,7 @@ from scipy.optimize import curve_fit
 import numpy as np
 import random
 import decimal
+from scipy.interpolate import UnivariateSpline
 
 raw_data_path = 'data_sample/user_1_data.csv'
 
@@ -57,6 +58,7 @@ def fit(z_list, ys_for_sim):
         summation = summation + squared_difference
     MSE = summation/n  # dividing summation by total values to obtain average
     print("The Mean Square Error is: ", MSE)
+    return MSE
 
 
 def bimodal(x, mu1, sigma1, A1, mu2, sigma2, A2):
@@ -78,7 +80,7 @@ def fit_one_modal(mean_x, sigma_x, peak, y, x):
         y_for_sim = gauss(
             x_for_sim, *params)
         ys_for_sim.append(y_for_sim)
-    fit(z_list, ys_for_sim)
+    return fit(z_list, ys_for_sim)
 
 
 def fit_bimodal(mean_x, sigma_x, peak, y, x):
@@ -96,7 +98,7 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
         y_for_sim = bimodal(
             x_for_sim, *params)
         ys_for_sim.append(y_for_sim)
-    fit(z_list, ys_for_sim)
+    return fit(z_list, ys_for_sim)
 
 
 def main():
@@ -117,11 +119,49 @@ def main():
     # print(sigma_x)
     # print(peak)
     # data = concatenate((normal(1, .2, 5000), normal(2, .2, 2500)))
-    y, x, _ = hist(x1_list, len(x1_list), alpha=.3, label='data')
+    y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
 
     x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
-    fit_bimodal(mean_x, sigma_x, peak, y, x)
-    fit_one_modal(mean_x, sigma_x, peak, y, x)
+    bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
+    mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
+    xSp = []
+    ySp = []
+    xSp.append(1)
+    xSp.append(2)
+    ySp.append(mo_MSE)
+    ySp.append(bi_MSE)
+    xSp_array = np.asarray(xSp, dtype=np.float32)
+    ySp_array = np.asarray(ySp, dtype=np.float32)
+    print(ySp_array)
+    dy = np.diff(ySp_array, 1)
+    dx = np.diff(xSp_array, 1)
+    yfirst = dy/dx
+    xfirst = 0.5*(xSp_array[:-1]+xSp_array[1:])
+    dyfirst = np.diff(yfirst, 1)
+    dxfirst = np.diff(xfirst, 1)
+    ysecond = dyfirst/dxfirst
+    xsecond = 0.5*(xfirst[:-1]+xfirst[1:])
+    print(ysecond)
+    print(xsecond)
+
+    xSp = []
+    ySp = []
+    xSp.append(1)
+    ySp.append(mo_MSE)
+    xSp.append(2)
+    ySp.append(bi_MSE)
+    xSp.append(3)
+    ySp.append(25.215399045072)
+    xSp.append(4)
+    ySp.append(10.215399045072)
+    y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
+    # plt.semilogy(xSp, ySp, 'ro', label='data')
+    x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
+    # plt.semilogy(x_range, y_spl(x_range))
+    y_spl_2d = y_spl.derivative(n=2)
+    print(y_spl_2d(x_range))
+    print(type(y_spl_2d))
+    # plt.plot(x_range, y_spl_2d(x_range))
 
 
 if __name__ == "__main__":
