@@ -161,8 +161,8 @@ def main():
 
     joint_frequency = np.loadtxt(freq_data_path, delimiter=',', skiprows=1)
 
-    x_freq = joint_frequency[:, 0]
-    y_freq = joint_frequency[:, 1]
+    x1_freq = joint_frequency[:, 0]
+    x2_freq = joint_frequency[:, 1]
 
     lower_bound_x1 = min(p)
     lower_bound_x2 = min(q)
@@ -183,16 +183,16 @@ def main():
             sample_units = []
             extended_sample_units = []
             freq_index = 0
-            for freq_index in range(y_freq.size):
+            for freq_index in range(x2_freq.size):
                 freq_list = []
-                if x_freq[freq_index] >= lower_bound_x1 and x_freq[freq_index] < upper_bound_x1 and y_freq[freq_index] >= lower_bound_x2 and y_freq[freq_index] < upper_bound_x2:
+                if x1_freq[freq_index] >= lower_bound_x1 and x1_freq[freq_index] < upper_bound_x1 and x2_freq[freq_index] >= lower_bound_x2 and x2_freq[freq_index] < upper_bound_x2:
                     counter += 1
-                    freq_list.append(x_freq[freq_index])
-                    freq_list.append(y_freq[freq_index])
-                    first_layer_strkey = str(int(x_freq[freq_index])) + \
-                        "-"+str(int(y_freq[freq_index]))
-                    parti_sum_x1 += x_freq[freq_index]
-                    parti_sum_x2 += y_freq[freq_index]
+                    freq_list.append(x1_freq[freq_index])
+                    freq_list.append(x2_freq[freq_index])
+                    first_layer_strkey = str(int(x1_freq[freq_index])) + \
+                        "-"+str(int(x2_freq[freq_index]))
+                    parti_sum_x1 += x1_freq[freq_index]
+                    parti_sum_x2 += x2_freq[freq_index]
 
                     for key in first_layer_dict.keys():
                         if first_layer_strkey == key:

@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import numpy as np
 
-x_frequency_path1 = 'data_sample/independent/x_frequency_user_1_data.csv'
+x1_frequency_path1 = 'data_sample/independent/x1_frequency_user_1_data.csv'
 joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
 
-file_data1 = np.loadtxt(x_frequency_path1,
+file_data1 = np.loadtxt(x1_frequency_path1,
                         delimiter=',')
 
 sg = []
