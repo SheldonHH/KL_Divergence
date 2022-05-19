@@ -1,6 +1,7 @@
 # https://stackoverflow.com/a/35992526/5772735
 from pylab import *
 from scipy.optimize import curve_fit
+from scipy.stats import entropy
 import numpy as np
 import random
 import decimal
@@ -18,16 +19,16 @@ x1_list = []
 z_list = []
 
 
-def process_data(frequency_r_path, gauss_w_path):
-    file_data1 = np.loadtxt(frequency_r_path,
-                            delimiter=',', skiprows=1)
-    for col1, col2, col3 in file_data1:
-        # sg.append([col1, col2])
-        x1_list.append(col1)
-        x2_list.append(col2)
-        z_list.append(col3)
-    return x1_list
-    # fit_gaussian(gauss_w_path)
+# def process_data(frequency_r_path, gauss_w_path):
+#     file_data1 = np.loadtxt(frequency_r_path,
+#                             delimiter=',', skiprows=1)
+#     for col1, col2, col3 in file_data1:
+#         # sg.append([col1, col2])
+#         x1_list.append(col1)
+#         # x2_list.append(col2)
+#         z_list.append(col3)
+#     return x1_list
+# fit_gaussian(gauss_w_path)
 
 
 def process_1D_freq_data(frequency_r_path, gauss_w_path):
@@ -38,6 +39,18 @@ def process_1D_freq_data(frequency_r_path, gauss_w_path):
         x1_list.append(col1)
         z_list.append(col2)
     # fit_gaussian(gauss_w_path)
+
+    raw_x1_list = []
+    raw_x2_list = []
+    raw_data_file_data = np.loadtxt(frequency_r_path,
+                                    delimiter=',', skiprows=1)
+    for col1, col2 in file_data1:
+        raw_x1_list.append(col1)
+        x1_darray = np.asarray(raw_x1_list, dtype=np.float32)
+        raw_x2_list.append(col2)
+        x2_darray = np.asarray(raw_x2_list, dtype=np.float32)
+    entropy1(x1_darray)
+    entropy1(x2_darray)
     return x1_list
 
 
@@ -134,6 +147,7 @@ gauss_index = 0
 
 
 def main():
+
     process_1D_freq_data(
         x1_frequency_path1, w_twod_gauss_params_txt_path1)
     print("max(data)", max(x1_list))
@@ -198,6 +212,10 @@ def main():
     # xsecond = 0.5*(xfirst[:-1]+xfirst[1:])
     # print(ysecond)
     # print(xsecond)
+
+
+def entropy1(labels, base=None):
+    print("counts", entropy(labels))
 
 
 if __name__ == "__main__":
