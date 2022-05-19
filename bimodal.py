@@ -114,25 +114,45 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
     return fit(z_list, ys_for_sim)
 
 
-def multi_bimodal(x, mu, sigma, A):
+# def multi_bimodal(x, mu, sigma, A):
+#     gausses = 0
+#     # print("gauss_index", gauss_index)
+#     for sg in range(gauss_index):
+#         gausses += gauss(x, mu, sigma, A)
+#     return gausses
+
+
+def multi_bimodal(x, *params):
     gausses = 0
     # print("gauss_index", gauss_index)
-    for sg in range(gauss_index):
-        gausses += gauss(x, mu, sigma, A)
+    paramssss = params
+    # print("paramssss", paramssss)
+    index = 0
+    for i in range(gauss_index):
+        # print(i)
+        # print("params[0+i*3:3+i*3]")
+        # print(*params[0+index*3:3+index*3])
+        gausses += gauss(x, *params[0+index*3:3+index*3])
+        index += 1
+    # if gauss_index == 5:
+
     return gausses
 
 
 def fit_multi_modal(mean_x, sigma_x, peak, y, x, counter):
     global gauss_index
     gauss_index = counter
-    expected = (mean_x, sigma_x, peak)
+    expected = ()
+    print("Sfsd counter", counter)
+    for i in range(counter):
+        expected = expected + (mean_x, sigma_x, peak)
     # params, cov = curve_fit(bimodal, x, y, expected, maxfev=500000)
     params, cov = curve_fit(multi_bimodal, x, y, expected, maxfev=500000)
     # sigma = sqrt(diag(cov))
     # plot(x, multi_bimodal(x, *params), color='red', lw=3, label='model')
     # legend()
     # print(params, '\n', sigma)
-    print(params)
+    print("params: heee", params)
     ys_for_sim = []
     for g in range(len(x1_list)):
         x_for_sim = float(decimal.Decimal(random.randrange(
@@ -177,25 +197,30 @@ def main():
     while(gauss_counter < 4):
         gauss_counter += 1
         xSp.append(gauss_counter)
-        print(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
-        ySp.append(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
+        first_four_MSE = fit_multi_modal(
+            mean_x, sigma_x, peak, y, x, gauss_counter)
+        print(first_four_MSE)
+        ySp.append(first_four_MSE)
 
     print("here", gauss_counter)
     ysecond = 100000
     while(True):
         gauss_counter += 1
+        after_four_MSE = fit_multi_modal(
+            mean_x, sigma_x, peak, y, x, gauss_counter)
+        print(after_four_MSE)
+        print("after_four_MSE")
+        ySp.append(after_four_MSE)
         xSp.append(gauss_counter)
-        print(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
-        ySp.append(fit_multi_modal(mean_x, sigma_x, peak, y, x, gauss_counter))
         y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
         x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
         y_spl_2d = y_spl.derivative(n=2)
-        if(abs(y_spl_2d(x_range)[-1]) < 0.0015):
+        if(abs(y_spl_2d(x_range)[-1]) < 0.01):
             print("y_spl_2d(x_range)", y_spl_2d(x_range),
                   "gauss_counter", gauss_counter)
             print(y_spl_2d(x_range))
             print(ySp)
-            break
+            return
 
     # ySp.append(mo_MSE)
     # ySp.append(bi_MSE)
