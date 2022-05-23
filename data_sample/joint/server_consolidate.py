@@ -48,10 +48,19 @@ def main():
         with open(entropies_sum_file_user) as json_file:
             data_dict = json.load(json_file)
             print(data_dict[user]["0"])
-        consolidated_percent_dict[user] = [(
-            data_dict[user]["0"])/consolidated_sum_entropies]
-    write_dict_to_json(consolidated_percent_dict,
-                       w_consolidated_percent_json)
+        consolidated_percent_dict[user] = (
+            data_dict[user]["0"])/consolidated_sum_entropies
+    write_profit_weight_to_json(consolidated_percent_dict,
+                                w_consolidated_percent_json)
+
+
+def write_profit_weight_to_json(list, json_to_write):
+    df_params = pd.Series(list).to_frame("profit_weight")
+    print(df_params)
+    result = df_params.to_json(orient="index")
+    parsed = json.loads(result)
+    with open(json_to_write, 'w') as convert_file:
+        convert_file.write(json.dumps(parsed))
 
 
 if __name__ == "__main__":

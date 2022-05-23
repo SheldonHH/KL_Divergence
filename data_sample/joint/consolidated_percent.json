@@ -1,1 +1,1 @@
-{"user1": {"0": 0.5}, "user2": {"0": 0.5}}
+{"user1": {"profit_weight": 0.5}, "user2": {"profit_weight": 0.5}}

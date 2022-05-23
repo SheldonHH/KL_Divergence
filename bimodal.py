@@ -224,16 +224,16 @@ def main():
         xSp = []
         ySp = []
         gauss_counter = 0
-        while(gauss_counter < 4):
+        #  while(gauss_counter < 4):
+        # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
+        while(gauss_counter < 9):
             gauss_counter += 1
             xSp.append(gauss_counter)
             first_four_MSE = fit_multi_modal(
                 mean_x, sigma_x, peak, y, x, gauss_counter)
             print(first_four_MSE)
             ySp.append(first_four_MSE)
-
         print("here", gauss_counter)
-        ysecond = 100000
         while(True):
             gauss_counter += 1
             after_four_MSE = fit_multi_modal(
@@ -251,19 +251,20 @@ def main():
                 super_global_params.append(global_params)
                 # super_global_entropies.append(global_entropy_list)
                 super_global_entropies.append(this_col_entropy)
+                print("ySp", ySp)
+                ySp.index(min(ySp))
                 break
     user_params_dict = {}
     user_params_dict["user1"] = super_global_params
     write_dict_to_json(user_params_dict, w_the_user_params_json)
 
-    user_entropies_dict = {}
-    sum_entropies_dict = {}
-    user_entropies_dict["user1"] = super_global_entropies
-
-    print("super_global_entropies", sum(super_global_entropies))
-    sum_entropies_dict["user1"] = [sum(super_global_entropies)]
-    write_dict_to_json(user_entropies_dict, w_the_user_entropies_json)
-    write_dict_to_json(sum_entropies_dict, w_the_user_entropies_sum_json)
+    # Calculate user entropies and sum of entropies of each col using raw data
+    # user_entropies_dict = {}
+    # sum_entropies_dict = {}
+    # user_entropies_dict["user1"] = super_global_entropies
+    # sum_entropies_dict["user1"] = [sum(super_global_entropies)]
+    # write_dict_to_json(user_entropies_dict, w_the_user_entropies_json)
+    # write_dict_to_json(sum_entropies_dict, w_the_user_entropies_sum_json)
 
 
 def entropy1(labels, base=None):
