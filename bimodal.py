@@ -159,7 +159,24 @@ def fit_multi_modal(mean_x, sigma_x, peak, y, x, counter):
 gauss_index = 0
 
 username = "user1"
+def Average(lst):
+    return mean(lst)
+    
+def variance(data):
+     # Number of observations
+     n = len(data)
+     # Mean of the data
+     mean = sum(data) / n
+     # Square deviations
+     deviations = [(x - mean) ** 2 for x in data]
+     # Variance
+     variance = sum(deviations) / n
+     return variance
 
+def stdev(data):
+     var = variance(data)
+     std_dev = math.sqrt(var)
+     return std_dev
 
 def main():
     counttttttt = 0
@@ -178,19 +195,24 @@ def main():
         print("len(data)", len(x1_list))
         peak = max(z_list)
         mean_x = sum(x1_list) / len(x1_list)
-        print(mean_x)
+        print("mean0", mean_x)
         x_darray = np.asarray(x1_list, dtype=np.float32)
         z_darray = np.asarray(z_list, dtype=np.float32)
         mean_x = sum(x_darray * z_darray) / sum(z_darray)
-        print(mean_x)
+        print("mean1", mean_x)
+        meanx = Average(x1_list)
         sigma_x = np.sqrt(
             sum(z_darray * (x_darray - mean_x)**2) / sum(z_darray))
+        print("sigma1", sigma_x)
+        sigma_x = stdev(x1_list)
+        print("sigma2", sigma_x)
         # print(sigma_x)
         # print(peak)
         # data = concatenate((normal(1, .2, 5000), normal(2, .2, 2500)))
         y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
 
         x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
+        x = x1_list
         y = z_list
         # bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
         # mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
@@ -200,7 +222,7 @@ def main():
         gauss_counter = 0
         #  while(gauss_counter < 4):
         # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
-        while(gauss_counter < 9):
+        while(gauss_counter < 2):
             gauss_counter += 1
             xSp.append(gauss_counter)
             first_four_MSE = fit_multi_modal(
@@ -230,17 +252,22 @@ def main():
                 fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
                 super_global_params = global_params
                 counttttttt+=1
-                print("counttttttt",counttttttt)
+                print("≈",counttttttt)
                 break
         single_d_params_dict = {}
         single_d_params_dict[big_key] = super_global_params
         write_dict_to_json(single_d_params_dict, w_the_user_params_str+big_key+".json")
         user_params_list.append(single_d_params_dict)
     write_dict_to_json({"user1": user_params_list}, w_the_user_params_json)
+    fit_one_modal(mean_x, sigma_x, peak, y, x)
+    y_for_sim = gauss(34.8, mean_x, sigma_x, peak)
+    print("y_for_sim",y_for_sim)
 
 def entropy1(labels, base=None):
     print("counts", entropy(labels))
     return entropy(labels)
+
+
 
 def write_dict_to_json(dict, json_to_write):
     df_params = pd.DataFrame.from_dict(dict)
