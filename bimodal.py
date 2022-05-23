@@ -205,7 +205,7 @@ def main():
             gauss_counter = 0
             #  while(gauss_counter < 4):
             # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
-            while(gauss_counter < 4):
+            while(gauss_counter < 9):
                 gauss_counter += 1
                 xSp.append(gauss_counter)
                 first_four_MSE = fit_multi_modal(
