@@ -14,14 +14,14 @@ from scipy.interpolate import UnivariateSpline
 import itertools
 import csv
 
-raw_data_path = 'data_sample/user_1_data.csv'
+# raw_data_path = 'data_sample/user_1_data.csv'
 
 x1_frequency_path1 = 'data_sample/independent/x1_frequency_user_1_data.csv'
-joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
-joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
+# joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
+# joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
 w_the_user_params_json = 'data_sample/joint/user1_params.json'
-w_the_user_entropies_json = 'data_sample/joint/user1_entropies.json'
-w_the_user_entropies_sum_json = 'data_sample/joint/user1_entropies_sum.json'
+# w_the_user_entropies_json = 'data_sample/joint/user1_entropies.json'
+# w_the_user_entropies_sum_json = 'data_sample/joint/user1_entropies_sum.json'
 w_twod_gauss_params_txt_path1 = 'data_sample/gauss_params/2d_gauss_1.txt'
 w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
@@ -41,15 +41,16 @@ def process_1D_freq_data(username, frequency_r_path, gauss_w_path, col_index):
     for col1 in file_data1:
         x1_list.append(col1[col_index])
         z_list.append(col1[len(col1)-1])
-
-    raw_x1_list = []
-    raw_data_file_data = np.loadtxt(frequency_r_path,
-                                    delimiter=',', skiprows=1)
-    for col1 in raw_data_file_data:
-        raw_x1_list.append(col1[col_index])
-        x1_darray = np.asarray(raw_x1_list, dtype=np.float32)
-    global_entropy_list.append(entropy1(x1_darray))
-    this_col_entropy = entropy1(x1_darray)
+    print("x1_list", x1_list)
+    print("z_list", z_list)
+    # raw_x1_list = []
+    # raw_data_file_data = np.loadtxt(raw_data_path,
+    #                                 delimiter=',', skiprows=1)
+    # for col1 in raw_data_file_data:
+    #     raw_x1_list.append(col1[col_index])
+    #     x1_darray = np.asarray(raw_x1_list, dtype=np.float32)
+    # global_entropy_list.append(entropy1(x1_darray))
+    # this_col_entropy = entropy1(x1_darray)
     return x1_list
 
 
@@ -189,7 +190,7 @@ username = "user1"
 def main():
     super_global_params = []
     super_global_entropies = []
-    with open(raw_data_path, 'r') as csv:
+    with open(x1_frequency_path1, 'r') as csv:
         first_line = csv.readline()
         your_data = csv.readlines()
 
@@ -198,7 +199,7 @@ def main():
         index_params = []
         print("index is", index)
         process_1D_freq_data(username,
-                             raw_data_path, w_twod_gauss_params_txt_path1, index)
+                             x1_frequency_path1, w_twod_gauss_params_txt_path1, index)
         print("ncol", ncol)
         print("max(data)", max(x1_list))
         print("min(data)", min(x1_list))
@@ -248,11 +249,13 @@ def main():
             if(abs(y_spl_2d(x_range)[-1]) < 0.1):
                 print("gauss_index", gauss_index)
                 print("global_params", global_params)
-                super_global_params.append(global_params)
+                # super_global_params.append(global_params)
                 # super_global_entropies.append(global_entropy_list)
                 super_global_entropies.append(this_col_entropy)
                 print("ySp", ySp)
-                ySp.index(min(ySp))
+                print("ySp.index(min(ySp))", ySp.index(min(ySp)))
+                fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
+                super_global_params.append(global_params)
                 break
     user_params_dict = {}
     user_params_dict["user1"] = super_global_params
