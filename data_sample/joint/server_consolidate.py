@@ -1,4 +1,16 @@
 import json
+import pandas as pd
+
+w_consolidated_gauss_params_json = 'consolidated_gauss_params.json'
+w_consolidated_entropies_json = 'consolidated_entropies.json'
+
+
+def write_dict_to_json(dict, json_to_write):
+    df_params = pd.DataFrame.from_dict(dict)
+    result = df_params.to_json(orient="columns")
+    parsed = json.loads(result)
+    with open(json_to_write, 'w') as convert_file:
+        convert_file.write(json.dumps(parsed))
 
 
 def main():
@@ -18,6 +30,9 @@ def main():
 
     print(consolidated_params)
     print(consolidated_entropies)
+
+    write_dict_to_json(consolidated_params, w_consolidated_gauss_params_json)
+    write_dict_to_json(consolidated_entropies, w_consolidated_entropies_json)
 
 
 if __name__ == "__main__":
