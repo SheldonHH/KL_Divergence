@@ -166,6 +166,7 @@ username = "user1"
 
 def main():
     counttttttt = 0
+    user_params_list = []
     super_global_params = []
     super_global_entropies = []
     with open(json_user1_frequency_path, 'r') as f:
@@ -236,23 +237,15 @@ def main():
                     counttttttt+=1
                     print("counttttttt",counttttttt)
                     break
-        user_params_dict = {}
-        user_params_dict[big_key] = super_global_params
-        write_dict_to_json(user_params_dict, w_the_user_params_str+big_key+".json")
-
-    # Calculate user entropies and sum of entropies of each col using raw data
-    # user_entropies_dict = {}
-    # sum_entropies_dict = {}
-    # user_entropies_dict["user1"] = super_global_entropies
-    # sum_entropies_dict["user1"] = [sum(super_global_entropies)]
-    # write_dict_to_json(user_entropies_dict, w_the_user_entropies_json)
-    # write_dict_to_json(sum_entropies_dict, w_the_user_entropies_sum_json)
-
+        single_d_params_dict = {}
+        single_d_params_dict[big_key] = super_global_params
+        write_dict_to_json(single_d_params_dict, w_the_user_params_str+big_key+".json")
+        user_params_list.append(single_d_params_dict)
+    write_dict_to_json({"user1": user_params_list}, w_the_user_params_json)
 
 def entropy1(labels, base=None):
     print("counts", entropy(labels))
     return entropy(labels)
-
 
 def write_dict_to_json(dict, json_to_write):
     df_params = pd.DataFrame.from_dict(dict)
@@ -260,7 +253,6 @@ def write_dict_to_json(dict, json_to_write):
     parsed = json.loads(result)
     with open(json_to_write, 'w') as convert_file:
         convert_file.write(json.dumps(parsed))
-
 
 if __name__ == "__main__":
     main()
