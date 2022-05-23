@@ -31,7 +31,7 @@ w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
 
 
-def process_1D_freq_data(username, freq_dict, gauss_w_path, col_index):
+def process_1D_freq_data(freq_dict):
     global global_entropy_list
     # global_entropy_list = []
     global this_col_entropy
@@ -46,9 +46,6 @@ def process_1D_freq_data(username, freq_dict, gauss_w_path, col_index):
     z_list = list(freq_dict.values())
     return [float(i) for i in list(freq_dict.keys())]
 
-
-def gauss(x, mu, sigma, A):
-    return A*exp(-(x-mu)**2/2/sigma**2)
 
 
 def fit(z_list, ys_for_sim):
@@ -175,68 +172,66 @@ def main():
     print("len(person_dict)",len(person_dict))
     for big_key, big_value in person_dict.items():
         print("person_dict", len(person_dict[big_key]))
-        for index in range(len(person_dict)):
-            index_params = []
-            print("index is", index)
-            process_1D_freq_data(username, person_dict[big_key], w_twod_gauss_params_txt_path1, index)
-            print("max(data)", max(x1_list))
-            print("min(data)", min(x1_list))
-            print("len(data)", len(x1_list))
-            peak = max(z_list)
-            mean_x = sum(x1_list) / len(x1_list)
-            print(mean_x)
-            x_darray = np.asarray(x1_list, dtype=np.float32)
-            z_darray = np.asarray(z_list, dtype=np.float32)
-            mean_x = sum(x_darray * z_darray) / sum(z_darray)
-            print(mean_x)
-            sigma_x = np.sqrt(
-                sum(z_darray * (x_darray - mean_x)**2) / sum(z_darray))
-            # print(sigma_x)
-            # print(peak)
-            # data = concatenate((normal(1, .2, 5000), normal(2, .2, 2500)))
-            y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
+        process_1D_freq_data(person_dict[big_key])
+        print("max(data)", max(x1_list))
+        print("min(data)", min(x1_list))
+        print("len(data)", len(x1_list))
+        peak = max(z_list)
+        mean_x = sum(x1_list) / len(x1_list)
+        print(mean_x)
+        x_darray = np.asarray(x1_list, dtype=np.float32)
+        z_darray = np.asarray(z_list, dtype=np.float32)
+        mean_x = sum(x_darray * z_darray) / sum(z_darray)
+        print(mean_x)
+        sigma_x = np.sqrt(
+            sum(z_darray * (x_darray - mean_x)**2) / sum(z_darray))
+        # print(sigma_x)
+        # print(peak)
+        # data = concatenate((normal(1, .2, 5000), normal(2, .2, 2500)))
+        y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
 
-            x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
-            # bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
-            # mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
+        x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
+        y = z_list
+        # bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
+        # mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
 
-            xSp = []
-            ySp = []
-            gauss_counter = 0
-            #  while(gauss_counter < 4):
-            # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
-            while(gauss_counter < 9):
-                gauss_counter += 1
-                xSp.append(gauss_counter)
-                first_four_MSE = fit_multi_modal(
-                    mean_x, sigma_x, peak, y, x, gauss_counter)
-                print(first_four_MSE)
-                ySp.append(first_four_MSE)
-            print("here", gauss_counter)
-            while(True):
-                gauss_counter += 1
-                after_four_MSE = fit_multi_modal(
-                    mean_x, sigma_x, peak, y, x, gauss_counter)
-                print(after_four_MSE)
-                print("after_four_MSE")
-                ySp.append(after_four_MSE)
-                xSp.append(gauss_counter)
-                y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
-                x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
-                y_spl_2d = y_spl.derivative(n=2)
-                if(abs(y_spl_2d(x_range)[-1]) < 0.1):
-                    print("gauss_index", gauss_index)
-                    print("global_params", global_params)
-                    # super_global_params.append(global_params)
-                    # super_global_entropies.append(global_entropy_list)
-                    # super_global_entropies.append(this_col_entropy)
-                    print("ySp", ySp)
-                    print("ySp.index(min(ySp))", ySp.index(min(ySp)))
-                    fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
-                    super_global_params = global_params
-                    counttttttt+=1
-                    print("counttttttt",counttttttt)
-                    break
+        xSp = []
+        ySp = []
+        gauss_counter = 0
+        #  while(gauss_counter < 4):
+        # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
+        while(gauss_counter < 9):
+            gauss_counter += 1
+            xSp.append(gauss_counter)
+            first_four_MSE = fit_multi_modal(
+                mean_x, sigma_x, peak, y, x, gauss_counter)
+            print(first_four_MSE)
+            ySp.append(first_four_MSE)
+        print("here", gauss_counter)
+        while(True):
+            gauss_counter += 1
+            after_four_MSE = fit_multi_modal(
+                mean_x, sigma_x, peak, y, x, gauss_counter)
+            print(after_four_MSE)
+            print("after_four_MSE")
+            ySp.append(after_four_MSE)
+            xSp.append(gauss_counter)
+            y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
+            x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
+            y_spl_2d = y_spl.derivative(n=2)
+            if(abs(y_spl_2d(x_range)[-1]) < 0.1):
+                print("gauss_index", gauss_index)
+                print("global_params", global_params)
+                # super_global_params.append(global_params)
+                # super_global_entropies.append(global_entropy_list)
+                # super_global_entropies.append(this_col_entropy)
+                print("ySp", ySp)
+                print("ySp.index(min(ySp))", ySp.index(min(ySp)))
+                fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
+                super_global_params = global_params
+                counttttttt+=1
+                print("counttttttt",counttttttt)
+                break
         single_d_params_dict = {}
         single_d_params_dict[big_key] = super_global_params
         write_dict_to_json(single_d_params_dict, w_the_user_params_str+big_key+".json")
