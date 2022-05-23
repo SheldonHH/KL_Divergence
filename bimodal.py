@@ -204,7 +204,7 @@ def main():
             gauss_counter = 0
             #  while(gauss_counter < 4):
             # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
-            while(gauss_counter < 10):
+            while(gauss_counter < 4):
                 gauss_counter += 1
                 xSp.append(gauss_counter)
                 first_four_MSE = fit_multi_modal(
@@ -232,12 +232,12 @@ def main():
                     print("ySp", ySp)
                     print("ySp.index(min(ySp))", ySp.index(min(ySp)))
                     fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
-                    super_global_params.append(global_params)
+                    super_global_params = global_params
                     counttttttt+=1
                     print("counttttttt",counttttttt)
                     break
         user_params_dict = {}
-        user_params_dict["user1"] = super_global_params
+        user_params_dict[big_key] = super_global_params
         write_dict_to_json(user_params_dict, w_the_user_params_str+big_key+".json")
 
     # Calculate user entropies and sum of entropies of each col using raw data
