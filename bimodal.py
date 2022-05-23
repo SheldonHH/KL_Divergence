@@ -19,8 +19,9 @@ raw_data_path = 'data_sample/user_1_data.csv'
 x1_frequency_path1 = 'data_sample/independent/x1_frequency_user_1_data.csv'
 joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
 joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
-w_the_user_params_json = 'data_sample/joint/user_params.json'
-w_the_user_entropies_json = 'data_sample/joint/user_entropies.json'
+w_the_user_params_json = 'data_sample/joint/user1_params.json'
+w_the_user_entropies_json = 'data_sample/joint/user1_entropies.json'
+w_the_user_entropies_sum_json = 'data_sample/joint/user1_entropies_sum.json'
 w_twod_gauss_params_txt_path1 = 'data_sample/gauss_params/2d_gauss_1.txt'
 w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
@@ -32,6 +33,7 @@ z_list = []
 def process_1D_freq_data(username, frequency_r_path, gauss_w_path, col_index):
     global global_entropy_list
     global_entropy_list = []
+    global this_col_entropy
     file_data1 = np.loadtxt(frequency_r_path,
                             delimiter=',', skiprows=1)
     x1_list.clear()
@@ -47,6 +49,7 @@ def process_1D_freq_data(username, frequency_r_path, gauss_w_path, col_index):
         raw_x1_list.append(col1[col_index])
         x1_darray = np.asarray(raw_x1_list, dtype=np.float32)
     global_entropy_list.append(entropy1(x1_darray))
+    this_col_entropy = entropy1(x1_darray)
     return x1_list
 
 
@@ -246,28 +249,34 @@ def main():
                 print("gauss_index", gauss_index)
                 print("global_params", global_params)
                 super_global_params.append(global_params)
-                super_global_entropies.append(global_entropy_list)
+                # super_global_entropies.append(global_entropy_list)
+                super_global_entropies.append(this_col_entropy)
                 break
     user_params_dict = {}
     user_params_dict["user1"] = super_global_params
-    df_gauss = pd.DataFrame.from_dict(user_params_dict)
-    result = df_gauss.to_json(orient="columns")
-    parsed = json.loads(result)
-    with open(w_the_user_params_json, 'w') as convert_file:
-        convert_file.write(json.dumps(parsed))
+    write_dict_to_json(user_params_dict, w_the_user_params_json)
 
     user_entropies_dict = {}
+    sum_entropies_dict = {}
     user_entropies_dict["user1"] = super_global_entropies
-    df_entropy = pd.DataFrame.from_dict(user_entropies_dict)
-    result = df_entropy.to_json(orient="columns")
-    parsed = json.loads(result)
-    with open(w_the_user_entropies_json, 'w') as convert_file:
-        convert_file.write(json.dumps(parsed))
+
+    print("super_global_entropies", sum(super_global_entropies))
+    sum_entropies_dict["user1"] = [sum(super_global_entropies)]
+    write_dict_to_json(user_entropies_dict, w_the_user_entropies_json)
+    write_dict_to_json(sum_entropies_dict, w_the_user_entropies_sum_json)
 
 
 def entropy1(labels, base=None):
     print("counts", entropy(labels))
     return entropy(labels)
+
+
+def write_dict_to_json(dict, json_to_write):
+    df_params = pd.DataFrame.from_dict(dict)
+    result = df_params.to_json(orient="columns")
+    parsed = json.loads(result)
+    with open(json_to_write, 'w') as convert_file:
+        convert_file.write(json.dumps(parsed))
 
 
 if __name__ == "__main__":
