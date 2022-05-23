@@ -248,19 +248,21 @@ def main():
                 super_global_params.append(global_params)
                 super_global_entropies.append(global_entropy_list)
                 break
-    df_gauss = pd.DataFrame(super_global_params)
-    result = df_gauss.to_json(orient="split")
+    user_params_dict = {}
+    user_params_dict["user1"] = super_global_params
+    df_gauss = pd.DataFrame.from_dict(user_params_dict)
+    result = df_gauss.to_json(orient="columns")
     parsed = json.loads(result)
-    print("parsed")
-    print(parsed['data'])
     with open(w_the_user_params_json, 'w') as convert_file:
-        convert_file.write(json.dumps(parsed['data']))
+        convert_file.write(json.dumps(parsed))
 
-    df_entropy = pd.DataFrame(super_global_entropies)
-    result = df_entropy.to_json(orient="split")
+    user_entropies_dict = {}
+    user_entropies_dict["user1"] = super_global_entropies
+    df_entropy = pd.DataFrame.from_dict(user_entropies_dict)
+    result = df_entropy.to_json(orient="columns")
     parsed = json.loads(result)
     with open(w_the_user_entropies_json, 'w') as convert_file:
-        convert_file.write(json.dumps(parsed['data']))
+        convert_file.write(json.dumps(parsed))
 
 
 def entropy1(labels, base=None):
