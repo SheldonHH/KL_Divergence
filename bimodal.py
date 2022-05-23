@@ -16,42 +16,35 @@ import csv
 
 # raw_data_path = 'data_sample/user_1_data.csv'
 
-x1_frequency_path1 = 'data_sample/independent/x1_frequency_user_1_data.csv'
+json_user1_frequency_path = 'data_sample/independent/each_col_frequency_user1_data.json'
 # joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
 # joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
 w_the_user_params_json = 'data_sample/joint/user1_params.json'
+w_the_user_params_str = 'data_sample/joint/user1_params_'
 # w_the_user_entropies_json = 'data_sample/joint/user1_entropies.json'
 # w_the_user_entropies_sum_json = 'data_sample/joint/user1_entropies_sum.json'
 w_twod_gauss_params_txt_path1 = 'data_sample/gauss_params/2d_gauss_1.txt'
 w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
 
-x1_list = []
-z_list = []
 
 
-def process_1D_freq_data(username, frequency_r_path, gauss_w_path, col_index):
+
+
+def process_1D_freq_data(username, freq_dict, gauss_w_path, col_index):
     global global_entropy_list
-    global_entropy_list = []
+    # global_entropy_list = []
     global this_col_entropy
-    file_data1 = np.loadtxt(frequency_r_path,
-                            delimiter=',', skiprows=1)
-    x1_list.clear()
-    z_list.clear()
-    for col1 in file_data1:
-        x1_list.append(col1[col_index])
-        z_list.append(col1[len(col1)-1])
-    print("x1_list", x1_list)
-    print("z_list", z_list)
-    # raw_x1_list = []
-    # raw_data_file_data = np.loadtxt(raw_data_path,
-    #                                 delimiter=',', skiprows=1)
-    # for col1 in raw_data_file_data:
-    #     raw_x1_list.append(col1[col_index])
-    #     x1_darray = np.asarray(raw_x1_list, dtype=np.float32)
-    # global_entropy_list.append(entropy1(x1_darray))
-    # this_col_entropy = entropy1(x1_darray)
-    return x1_list
+    global x1_list
+    global z_list
+    x1_list = []
+    z_list = []
+    z_list = freq_dict.values()
+    # print("x1_list", [float(i) for i in list(freq_dict.keys())])
+    # print("z_list", list(freq_dict.values()))
+    x1_list = [float(i) for i in list(freq_dict.keys())]
+    z_list = list(freq_dict.values())
+    return [float(i) for i in list(freq_dict.keys())]
 
 
 def gauss(x, mu, sigma, A):
@@ -76,22 +69,6 @@ def fit(z_list, ys_for_sim):
 
 def gauss(x, mu, sigma, A):
     return A*exp(-(x-mu)**2/2/sigma**2)
-
-
-def fit(z_list, ys_for_sim):
-    y = z_list
-    y_bar = ys_for_sim
-    summation = 0  # variable to store the summation of differences
-    n = len(y)  # finding total number of items in list
-    for i in range(0, n):  # looping through each element of the list
-        # finding the difference between observed and predicted value
-        difference = y[i] - y_bar[i]
-        squared_difference = difference**2  # taking square of the differene
-        # taking a sum of all the differences
-        summation = summation + squared_difference
-    MSE = summation/n  # dividing summation by total values to obtain average
-    print("The Mean Square Error is: ", MSE)
-    return MSE
 
 
 def bimodal(x, mu1, sigma1, A1, mu2, sigma2, A2):
@@ -188,78 +165,80 @@ username = "user1"
 
 
 def main():
+    counttttttt = 0
     super_global_params = []
     super_global_entropies = []
-    with open(x1_frequency_path1, 'r') as csv:
-        first_line = csv.readline()
-        your_data = csv.readlines()
+    with open(json_user1_frequency_path, 'r') as f:
+        person_dict = json.load(f)
+    # ncol = len(person_dict)
+    print("len(person_dict)",len(person_dict))
+    for big_key, big_value in person_dict.items():
+        print("person_dict", len(person_dict[big_key]))
+        for index in range(len(person_dict)):
+            index_params = []
+            print("index is", index)
+            process_1D_freq_data(username, person_dict[big_key], w_twod_gauss_params_txt_path1, index)
+            print("max(data)", max(x1_list))
+            print("min(data)", min(x1_list))
+            print("len(data)", len(x1_list))
+            peak = max(z_list)
+            mean_x = sum(x1_list) / len(x1_list)
+            print(mean_x)
+            x_darray = np.asarray(x1_list, dtype=np.float32)
+            z_darray = np.asarray(z_list, dtype=np.float32)
+            mean_x = sum(x_darray * z_darray) / sum(z_darray)
+            print(mean_x)
+            sigma_x = np.sqrt(
+                sum(z_darray * (x_darray - mean_x)**2) / sum(z_darray))
+            # print(sigma_x)
+            # print(peak)
+            # data = concatenate((normal(1, .2, 5000), normal(2, .2, 2500)))
+            y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
 
-    ncol = first_line.count(',')
-    for index in range(ncol):
-        index_params = []
-        print("index is", index)
-        process_1D_freq_data(username,
-                             x1_frequency_path1, w_twod_gauss_params_txt_path1, index)
-        print("ncol", ncol)
-        print("max(data)", max(x1_list))
-        print("min(data)", min(x1_list))
-        print("len(data)", len(x1_list))
-        peak = max(z_list)
-        mean_x = sum(x1_list) / len(x1_list)
-        print(mean_x)
-        x_darray = np.asarray(x1_list, dtype=np.float32)
-        z_darray = np.asarray(z_list, dtype=np.float32)
-        mean_x = sum(x_darray * z_darray) / sum(z_darray)
-        print(mean_x)
-        sigma_x = np.sqrt(
-            sum(z_darray * (x_darray - mean_x)**2) / sum(z_darray))
-        # print(sigma_x)
-        # print(peak)
-        # data = concatenate((normal(1, .2, 5000), normal(2, .2, 2500)))
-        y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
+            x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
+            # bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
+            # mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
 
-        x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
-        # bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
-        # mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
-
-        xSp = []
-        ySp = []
-        gauss_counter = 0
-        #  while(gauss_counter < 4):
-        # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
-        while(gauss_counter < 9):
-            gauss_counter += 1
-            xSp.append(gauss_counter)
-            first_four_MSE = fit_multi_modal(
-                mean_x, sigma_x, peak, y, x, gauss_counter)
-            print(first_four_MSE)
-            ySp.append(first_four_MSE)
-        print("here", gauss_counter)
-        while(True):
-            gauss_counter += 1
-            after_four_MSE = fit_multi_modal(
-                mean_x, sigma_x, peak, y, x, gauss_counter)
-            print(after_four_MSE)
-            print("after_four_MSE")
-            ySp.append(after_four_MSE)
-            xSp.append(gauss_counter)
-            y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
-            x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
-            y_spl_2d = y_spl.derivative(n=2)
-            if(abs(y_spl_2d(x_range)[-1]) < 0.1):
-                print("gauss_index", gauss_index)
-                print("global_params", global_params)
-                # super_global_params.append(global_params)
-                # super_global_entropies.append(global_entropy_list)
-                super_global_entropies.append(this_col_entropy)
-                print("ySp", ySp)
-                print("ySp.index(min(ySp))", ySp.index(min(ySp)))
-                fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
-                super_global_params.append(global_params)
-                break
-    user_params_dict = {}
-    user_params_dict["user1"] = super_global_params
-    write_dict_to_json(user_params_dict, w_the_user_params_json)
+            xSp = []
+            ySp = []
+            gauss_counter = 0
+            #  while(gauss_counter < 4):
+            # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
+            while(gauss_counter < 10):
+                gauss_counter += 1
+                xSp.append(gauss_counter)
+                first_four_MSE = fit_multi_modal(
+                    mean_x, sigma_x, peak, y, x, gauss_counter)
+                print(first_four_MSE)
+                ySp.append(first_four_MSE)
+            print("here", gauss_counter)
+            while(True):
+                gauss_counter += 1
+                after_four_MSE = fit_multi_modal(
+                    mean_x, sigma_x, peak, y, x, gauss_counter)
+                print(after_four_MSE)
+                print("after_four_MSE")
+                ySp.append(after_four_MSE)
+                xSp.append(gauss_counter)
+                y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
+                x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
+                y_spl_2d = y_spl.derivative(n=2)
+                if(abs(y_spl_2d(x_range)[-1]) < 0.1):
+                    print("gauss_index", gauss_index)
+                    print("global_params", global_params)
+                    # super_global_params.append(global_params)
+                    # super_global_entropies.append(global_entropy_list)
+                    # super_global_entropies.append(this_col_entropy)
+                    print("ySp", ySp)
+                    print("ySp.index(min(ySp))", ySp.index(min(ySp)))
+                    fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
+                    super_global_params.append(global_params)
+                    counttttttt+=1
+                    print("counttttttt",counttttttt)
+                    break
+        user_params_dict = {}
+        user_params_dict["user1"] = super_global_params
+        write_dict_to_json(user_params_dict, w_the_user_params_str+big_key+".json")
 
     # Calculate user entropies and sum of entropies of each col using raw data
     # user_entropies_dict = {}
