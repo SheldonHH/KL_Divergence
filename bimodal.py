@@ -103,6 +103,7 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
     for g in range(len(x1_list)):
         x_for_sim = float(decimal.Decimal(random.randrange(
             int(min(x1_list)*100), int(max(x1_list)*100)))/100)
+        x_for_sim = x1_list[g]
         y_for_sim = bimodal(
             x_for_sim, *params)
         ys_for_sim.append(y_for_sim)
@@ -118,19 +119,11 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
 
 
 def multi_bimodal(x, *params):
-    print("*params", params)
-    print("type(*params)", type(params))
     gausses = 0
-    # print("gauss_index", gauss_index)
-    paramssss = params
-    # print("paramssss", paramssss)
     index = 0
     for i in range(gauss_index):
-        print("israellllll",*params[0+index*3:3+index*3])
         gausses += gauss(x, *params[0+index*3:3+index*3])
         index += 1
-    # if gauss_index == 5:
-
     return gausses
 
 
@@ -220,7 +213,7 @@ def main():
         xSp = []
         ySp = []
         gauss_counter = 0
-        while(gauss_counter < 10):
+        while(gauss_counter < 9):
             gauss_counter += 1
             xSp.append(gauss_counter)
             first_four_MSE = fit_multi_modal(
@@ -258,8 +251,11 @@ def main():
                 break
         single_d_params_dict = {}
         single_d_params_dict[big_key] = super_global_params
+        single_d_params_dict["max"] = max(x1_list)
+        single_d_params_dict["min"] = min(x1_list)
         write_dict_to_json(single_d_params_dict, w_the_user_params_str+big_key+".json")
         user_params_list.append(single_d_params_dict)
+        
     write_dict_to_json({"user1": user_params_list}, w_the_user_params_json)
     fit_one_modal(mean_x, sigma_x, peak, y, x)
     y_for_sim = gauss(34.8, mean_x, sigma_x, peak)

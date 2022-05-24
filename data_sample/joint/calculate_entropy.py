@@ -39,6 +39,8 @@ def main():
 
   f = open('user1_params.json')
   data = json.load(f)
+  print("len(data)",len(data))
+  for i range(len(data)):
   print("data x1",*(data["user1"]["0"]["x1"]))
   min = 15
   max = 50
