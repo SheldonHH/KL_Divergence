@@ -13,6 +13,7 @@ import decimal
 from scipy.interpolate import UnivariateSpline
 import itertools
 import csv
+import matplotlib.pyplot as plt
 
 # raw_data_path = 'data_sample/user_1_data.csv'
 
@@ -32,6 +33,7 @@ w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
 
 def process_1D_freq_data(freq_dict):
+    sorted_freq_dict = {k: v for k, v in sorted(list(freq_dict.items()))}
     global global_entropy_list
     # global_entropy_list = []
     global this_col_entropy
@@ -39,12 +41,12 @@ def process_1D_freq_data(freq_dict):
     global z_list
     x1_list = []
     z_list = []
-    z_list = freq_dict.values()
-    # print("x1_list", [float(i) for i in list(freq_dict.keys())])
-    # print("z_list", list(freq_dict.values()))
-    x1_list = [float(i) for i in list(freq_dict.keys())]
-    z_list = list(freq_dict.values())
-    return [float(i) for i in list(freq_dict.keys())]
+    z_list = sorted_freq_dict.values()
+    # print("x1_list", [float(i) for i in list(sorted_freq_dict.keys())])
+    # print("z_list", list(sorted_freq_dict.values()))
+    x1_list = [float(i) for i in list(sorted_freq_dict.keys())]
+    z_list = list(sorted_freq_dict.values())
+    return [float(i) for i in list(sorted_freq_dict.keys())]
 
 
 
@@ -179,8 +181,6 @@ def main():
     super_global_entropies = []
     with open(json_user1_frequency_path, 'r') as f:
         person_dict = json.load(f)
-    # ncol = len(person_dict)
-    print("len(person_dict)",len(person_dict))
     for big_key, big_value in person_dict.items():
         print("person_dict", len(person_dict[big_key]))
         process_1D_freq_data(person_dict[big_key])
@@ -213,7 +213,7 @@ def main():
         xSp = []
         ySp = []
         gauss_counter = 0
-        while(gauss_counter < 9):
+        while(gauss_counter < 2):
             gauss_counter += 1
             xSp.append(gauss_counter)
             first_four_MSE = fit_multi_modal(
@@ -236,7 +236,7 @@ def main():
             print("ySp",ySp)
             print("y_spl_1d(x_range)",y_spl_1d(x_range))
             print("y_spl_2d(x_range)",y_spl_2d(x_range))
-            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1]>0 ):
+            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1]>0):
                 print("gauss_index", gauss_index)
                 print("global_params", global_params)
                 # super_global_params.append(global_params)
@@ -246,6 +246,16 @@ def main():
                 print("ySp.index(min(ySp))", ySp.index(min(ySp)))
                 fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
                 super_global_params = global_params
+                plt.clf()
+                plt.plot(x,y,'b+:',label='data')
+                plt.plot(x,multi_bimodal(x,*global_params),'ro:',label='fit')
+                plt.legend()
+                plt.title("Dimension distribution for "+big_key)
+                plt.xlabel('Frequency')
+                plt.ylabel('data')
+                fig = plt.gcf()
+                plt.show()
+                fig.savefig(big_key+'fig1.pdf')
                 counttttttt+=1
                 print("≈",counttttttt)
                 break
