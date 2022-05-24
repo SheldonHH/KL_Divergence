@@ -48,7 +48,7 @@ def process_1D_freq_data(freq_dict):
 
 
 
-def fit(z_list, ys_for_sim):
+def calculate_MSE(z_list, ys_for_sim):
     y = z_list
     y_bar = ys_for_sim
     summation = 0  # variable to store the summation of differences
@@ -84,10 +84,11 @@ def fit_one_modal(mean_x, sigma_x, peak, y, x):
     for g in range(len(x1_list)):
         x_for_sim = float(decimal.Decimal(random.randrange(
             int(min(x1_list)*100), int(max(x1_list)*100)))/100)
+        x_for_sim = x1_list[g]
         y_for_sim = gauss(
             x_for_sim, *params)
         ys_for_sim.append(y_for_sim)
-    return fit(z_list, ys_for_sim)
+    return calculate_MSE(z_list, ys_for_sim)
 
 
 def fit_bimodal(mean_x, sigma_x, peak, y, x):
@@ -105,7 +106,7 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
         y_for_sim = bimodal(
             x_for_sim, *params)
         ys_for_sim.append(y_for_sim)
-    return fit(z_list, ys_for_sim)
+    return calculate_MSE(z_list, ys_for_sim)
 
 
 # def multi_bimodal(x, mu, sigma, A):
@@ -153,7 +154,7 @@ def fit_multi_modal(mean_x, sigma_x, peak, y, x, counter):
         y_for_sim = multi_bimodal(
             x_for_sim, *params)
         ys_for_sim.append(y_for_sim)
-    return fit(z_list, ys_for_sim)
+    return calculate_MSE(z_list, ys_for_sim)
 
 
 gauss_index = 0
@@ -194,6 +195,7 @@ def main():
         print("min(data)", min(x1_list))
         print("len(data)", len(x1_list))
         peak = max(z_list)
+        print("peak", peak)
         mean_x = sum(x1_list) / len(x1_list)
         print("mean0", mean_x)
         x_darray = np.asarray(x1_list, dtype=np.float32)
@@ -201,6 +203,7 @@ def main():
         mean_x = sum(x_darray * z_darray) / sum(z_darray)
         print("mean1", mean_x)
         meanx = Average(x1_list)
+        print("mean2", mean_x)
         sigma_x = np.sqrt(
             sum(z_darray * (x_darray - mean_x)**2) / sum(z_darray))
         print("sigma1", sigma_x)
@@ -209,39 +212,38 @@ def main():
         # print(sigma_x)
         # print(peak)
         # data = concatenate((normal(1, .2, 5000), normal(2, .2, 2500)))
-        y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
+        # y, x, _ = hist(x1_list, len(x1_list)*2, alpha=.3, label='data')
 
-        x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
+        # x = (x[1:]+x[:-1])/2  # for len(x)==len(y)
         x = x1_list
         y = z_list
-        # bi_MSE = fit_bimodal(mean_x, sigma_x, peak, y, x)
-        # mo_MSE = fit_one_modal(mean_x, sigma_x, peak, y, x)
-
         xSp = []
         ySp = []
         gauss_counter = 0
-        #  while(gauss_counter < 4):
-        # since the MSE could even increase for some data sets, we do from 1 to 10 Gauss curve_fit and choose the smallest MSE as result
-        while(gauss_counter < 2):
+        while(gauss_counter < 10):
             gauss_counter += 1
             xSp.append(gauss_counter)
             first_four_MSE = fit_multi_modal(
                 mean_x, sigma_x, peak, y, x, gauss_counter)
             print(first_four_MSE)
             ySp.append(first_four_MSE)
-        print("here", gauss_counter)
+        print("here", gauss_counter) 
         while(True):
             gauss_counter += 1
             after_four_MSE = fit_multi_modal(
                 mean_x, sigma_x, peak, y, x, gauss_counter)
             print(after_four_MSE)
-            print("after_four_MSE")
+            print("-----------------------------")
             ySp.append(after_four_MSE)
             xSp.append(gauss_counter)
             y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
             x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
+            y_spl_1d = y_spl.derivative(n=1)
             y_spl_2d = y_spl.derivative(n=2)
-            if(abs(y_spl_2d(x_range)[-1]) < 0.1):
+            print("ySp",ySp)
+            print("y_spl_1d(x_range)",y_spl_1d(x_range))
+            print("y_spl_2d(x_range)",y_spl_2d(x_range))
+            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1]>0 ):
                 print("gauss_index", gauss_index)
                 print("global_params", global_params)
                 # super_global_params.append(global_params)
