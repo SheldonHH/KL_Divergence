@@ -118,15 +118,15 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
 
 
 def multi_bimodal(x, *params):
+    print("*params", params)
+    print("type(*params)", type(params))
     gausses = 0
     # print("gauss_index", gauss_index)
     paramssss = params
     # print("paramssss", paramssss)
     index = 0
     for i in range(gauss_index):
-        # print(i)
-        # print("params[0+i*3:3+i*3]")
-        # print(*params[0+index*3:3+index*3])
+        print("israellllll",*params[0+index*3:3+index*3])
         gausses += gauss(x, *params[0+index*3:3+index*3])
         index += 1
     # if gauss_index == 5:
@@ -143,7 +143,7 @@ def fit_multi_modal(mean_x, sigma_x, peak, y, x, counter):
         expected = expected + (mean_x, sigma_x, peak)
     params, cov = curve_fit(multi_bimodal, x, y, expected, maxfev=500000)
     global_params = params
-    print("params: heee", params)
+    # print("params: heee", params)
     print("params: lennnnnnnn", len(params))
 
     # MSE
