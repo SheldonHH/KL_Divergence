@@ -10,10 +10,12 @@ import (
 type dict map[string]map[string]interface{}
 
 func main() {
-	gauss_dict := obtainMap("../data_sample/joint/consolidated_gauss_params.json")
+	gauss_dict := obtainMap("../data_sample/joint/consolidated/consolidated_gauss_params.json")
 	fmt.Println(gauss_dict)
-	percent_dict := obtainMap("../data_sample/joint/consolidated_percent.json")
-	fmt.Println(percent_dict)
+
+	exec.Command("../data_sample/joint/consolidated/calculate_entropy").Run()
+	entropies := obtainMap("../data_sample/joint/consolidated/consolidated_entropysum_percent.json")
+	fmt.Println(gauss_dict)
 }
 
 func obtainMap(jsonStrPath string) (sg dict) {
