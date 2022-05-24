@@ -29,7 +29,20 @@ w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
 
 
-
+def create_fig(x,y,title, *params):
+    plt.clf()
+    plt.plot(x,y,'b+:',label='data')
+    plt.plot(x,gauss(x,*params),'ro:',label='fit')
+    plt.legend()
+    plt.title("Dimension distribution for "+title)
+    plt.xlabel('Frequency')
+    plt.ylabel('data')
+    fig = plt.gcf()
+    plt.show()
+    str_params = [(str(tup)) for tup in params]
+    print("str_params",str_params)
+    plt.text(5, 8, ''.join(str_params), fontsize = 10)
+    fig.savefig(title+'.pdf')
 
 
 def process_1D_freq_data(freq_dict):
@@ -75,6 +88,7 @@ def bimodal(x, mu1, sigma1, A1, mu2, sigma2, A2):
 
 
 def fit_one_modal(mean_x, sigma_x, peak, y, x):
+    global special_one_gauss
     expected = (mean_x, sigma_x, peak)
     params, cov = curve_fit(gauss, x, y, expected, maxfev=500000)
     sigma = sqrt(diag(cov))
@@ -82,6 +96,7 @@ def fit_one_modal(mean_x, sigma_x, peak, y, x):
     legend()
     # print(params, '\n', sigma)
     print(params)
+    special_one_gauss = params
     ys_for_sim = []
     for g in range(len(x1_list)):
         x_for_sim = float(decimal.Decimal(random.randrange(
@@ -265,9 +280,13 @@ def main():
         single_d_params_dict["min"] = min(x1_list)
         # write_dict_to_json(single_d_params_dict, w_the_user_params_str+big_key+".json")
         user_params_list.append(single_d_params_dict)
+        fit_one_modal(mean_x, sigma_x, peak, y, x)
+        create_fig(x,y,big_key+"special one dimensional gauss",*special_one_gauss)
+
         
     write_dict_to_json({"user1": user_params_list}, w_the_user_params_json)
-    fit_one_modal(mean_x, sigma_x, peak, y, x)
+    
+    
     y_for_sim = gauss(34.8, mean_x, sigma_x, peak)
     print("y_for_sim",y_for_sim)
 
