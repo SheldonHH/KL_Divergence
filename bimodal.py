@@ -253,7 +253,7 @@ def main():
         single_d_params_dict[big_key] = super_global_params
         single_d_params_dict["max"] = max(x1_list)
         single_d_params_dict["min"] = min(x1_list)
-        write_dict_to_json(single_d_params_dict, w_the_user_params_str+big_key+".json")
+        # write_dict_to_json(single_d_params_dict, w_the_user_params_str+big_key+".json")
         user_params_list.append(single_d_params_dict)
         
     write_dict_to_json({"user1": user_params_list}, w_the_user_params_json)
