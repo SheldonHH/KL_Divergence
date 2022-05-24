@@ -1,1 +1,6 @@
-{"user profit percentage": {"user1": 0.5, "user2": 0.5}}
+{
+  "user profit percentage": {
+    "user1": 0.5,
+    "user2": 0.5
+  }
+}
