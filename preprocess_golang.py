@@ -18,7 +18,7 @@ def trim_row(row):
 
 def dense_trim_row(row):
     # return [round(float(row[0]), 2), round(float(row[1]), 2)]
-    return [round(float(row[0]), 1), round(float(row[1]), 1)]
+    return [round(float(row[0]), 2), round(float(row[1]), 2)]
     # round(float(row[1]), 1)
 
 
