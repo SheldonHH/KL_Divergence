@@ -17,10 +17,10 @@ import matplotlib.pyplot as plt
 
 # raw_data_path = 'data_sample/user_1_data.csv'
 
-json_user1_frequency_path = 'data_sample/independent/each_col_frequency_user1_data.json'
+# json_user1_frequency_path = 'data_sample/independent/each_col_frequency_user1_data.json'
 # joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
 # joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
-w_the_user_params_json = 'data_sample/joint/user1_params.json'
+# w_the_user_params_json = 'data_sample/joint/user1_params.json'
 # w_the_user_entropies_json = 'data_sample/joint/user1_entropies.json'
 # w_the_user_entropies_sum_json = 'data_sample/joint/user1_entropies_sum.json'
 # w_twod_gauss_params_txt_path1 = 'data_sample/gauss_params/2d_gauss_1.txt'
@@ -189,11 +189,22 @@ def stdev(data):
      return std_dev
 
 def main():
+    args = sys.argv[1:]
+    raw_data_path1 = args[0]
+    middle_index = args[0].rindex('/')
+    last_index = len(args[0])-1
+    first_half = args[0][0:middle_index+1]
+    before_extension_half = args[0][middle_index+1: args[0].rindex('.')]
+    each_col_freq_path = first_half + "independent/each_col_freq_"+before_extension_half+".json"
+    w_the_user_params_json = first_half+'joint/'+before_extension_half+'_params.json'
+    print(each_col_freq_path,"each_col_freq_path")
+    print(w_the_user_params_json,"w_the_user_params_json")
+
     counttttttt = 0
     user_params_list = []
     super_global_params = []
     super_global_entropies = []
-    with open(json_user1_frequency_path, 'r') as f:
+    with open(each_col_freq_path, 'r') as f:
         person_dict = json.load(f)
     for big_key, big_value in person_dict.items():
         print("person_dict", len(person_dict[big_key]))
@@ -227,7 +238,7 @@ def main():
         xSp = []
         ySp = []
         gauss_counter = 0
-        while(gauss_counter < 2):
+        while(gauss_counter < 4):
             gauss_counter += 1
             xSp.append(gauss_counter)
             first_four_MSE = fit_multi_modal(
@@ -285,8 +296,8 @@ def main():
     write_dict_to_json({"user1": user_params_list}, w_the_user_params_json)
     
     
-    y_for_sim = gauss(34.8, mean_x, sigma_x, peak)
-    print("y_for_sim",y_for_sim)
+    # y_for_sim = gauss(34.8, mean_x, sigma_x, peak)
+    # print("y_for_sim",y_for_sim)
 
 def entropy1(labels, base=None):
     print("counts", entropy(labels))

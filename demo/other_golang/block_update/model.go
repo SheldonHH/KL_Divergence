@@ -1,9 +1,11 @@
-package main
+package block_update
 
 import (
 	"fmt"
-	"github.com/datadog/go-python3"
+	// "github.com/datadog/go-python3"
 	"os"
+
+	"github.com/datadog/go-python3"
 )
 
 func init() {
@@ -22,7 +24,7 @@ func modelTraining(privateData map[int][]string) update {
 	newUpdate.epochNum = 1
 	newUpdate.summary = "U0-data-summary"
 
-	params := [2]float32{0.1,0.1}
+	params := [2]float32{0.1, 0.1}
 	//设置本地python import路径
 	py37 := "/Users/fiona/anaconda3/envs/python37/lib/python3.7/site-packages"
 	insertBeforeSysPath(py37)
@@ -44,9 +46,9 @@ func modelTraining(privateData map[int][]string) update {
 	// 5. 获取函数方法
 	sayHello := hello.GetAttrString("sayHello")
 	// 设置调用的参数（一个元组）
-	args := python3.PyTuple_New(1)	// 创建存储空间
-	python3.PyTuple_SetItem(args, 0, python3.PyUnicode_FromString("xwj"))	// 设置值
-	res := sayHello.Call(args, python3.Py_None)	// 调用
+	args := python3.PyTuple_New(1)                                        // 创建存储空间
+	python3.PyTuple_SetItem(args, 0, python3.PyUnicode_FromString("xwj")) // 设置值
+	res := sayHello.Call(args, python3.Py_None)                           // 调用
 	fmt.Printf("[FUNC] res = %s\n", python3.PyUnicode_AsUTF8(res))
 	// 6. 调用第三方库sklearn
 	sklearn := hello.GetAttrString("sklearn")
@@ -71,7 +73,7 @@ func modelTraining(privateData map[int][]string) update {
 // InsertBeforeSysPath
 // @Description: 添加site-packages路径即包的查找路径
 // @param p
-func insertBeforeSysPath(p string){
+func insertBeforeSysPath(p string) {
 	sysModule := python3.PyImport_ImportModule("sys")
 	path := sysModule.GetAttrString("path")
 	python3.PyList_Append(path, python3.PyUnicode_FromString(p))
@@ -83,10 +85,10 @@ func insertBeforeSysPath(p string){
 // @param name
 // @return *python3.PyObject
 func importModule(dir, name string) *python3.PyObject {
-	sysModule := python3.PyImport_ImportModule("sys") 	// import sys
-	path := sysModule.GetAttrString("path")            // path = sys.path
+	sysModule := python3.PyImport_ImportModule("sys")                 // import sys
+	path := sysModule.GetAttrString("path")                           // path = sys.path
 	python3.PyList_Insert(path, 0, python3.PyUnicode_FromString(dir)) // path.insert(0, dir)
-	return python3.PyImport_ImportModule(name)            // return __import__(name)
+	return python3.PyImport_ImportModule(name)                        // return __import__(name)
 }
 
 // pythonRepr

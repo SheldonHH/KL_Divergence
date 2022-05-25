@@ -2,6 +2,8 @@ import pandas as pd
 import sidetable
 import csv
 import json
+import sys
+
 trimmed_data_path = 'data_sample/trimmed_user_1_data.csv'
 dense_trimmed_data_path = 'data_sample/trimmed/dense_trimmed_user_1_data.csv'
 # data_x1_frequency_path = 'data_sample/independent/x1_frequency_user_1_data.csv'
