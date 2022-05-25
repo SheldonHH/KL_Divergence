@@ -15,8 +15,10 @@ func main() {
 	// privateData := readPrivateData(dataPath)
 	// fmt.Println(privateData)
 	raw_data_path := "/root/KL_Divergence/data_sample/user_1_data.csv"
-	sg := singapore.GenerateGauss(raw_data_path)
-	fmt.Println("sg",sg)
+	individual_Gauss := singapore.GenerateGauss(raw_data_path)
+	entropy_percent_user := singapore.GenerateEntropy("user1 user2")
+	fmt.Println("individual_Gauss",individual_Gauss)
+	fmt.Println("entropy_percent_user",entropy_percent_user)
 	// newUpdate := modelTraining(privateData)
 	// fmt.Println(newUpdate.senderID)
 }

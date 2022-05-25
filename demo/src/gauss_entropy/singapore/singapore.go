@@ -63,6 +63,21 @@ type dict map[string]map[string]interface{}
 
 // }
 
+func GenerateEntropy(gauss_user_list string) string{
+	user_list := "user1 user2"
+	generate_entropy_path := "/root/KL_Divergence/data/joint/consolidated/calculate_entropy_golang.py"
+	cmd1 := exec.Command("python3",generate_entropy_path, user_list)
+	executeCmd(cmd1)
+	entropysum_percent_map := obtainMapfromJson("/root/KL_Divergence/data_sample/joint/consolidated/consolidated_entropysum_percent.json")
+	for _, m := range entropysum_percent_map {
+    // m is a map[string]interface.
+    // loop over keys and values in the map.
+    for k, v := range m {
+        fmt.Println(k, "value is", v)
+    }
+	}
+	return "GenerateEntropy success"
+}
 
 // https://stackoverflow.com/a/15815730/5772735
 func GenerateGauss(raw_data_path string) (string){
@@ -70,13 +85,6 @@ func GenerateGauss(raw_data_path string) (string){
 	trim_data_path := "/root/KL_Divergence/preprocess_golang.py"
 	independent_freq_path := "/root/KL_Divergence/independent_frequency_golang.py"
 	generate_gauss_path := "/root/KL_Divergence/generate_gauss_golang.py"
-	// mydir, err1 := os.Getwd()
-	// if err1 != nil {
-	// 		fmt.Println(err1)
-	// }
-	// fmt.Println(mydir)
-
-
 	cmd1 := exec.Command("python3",trim_data_path, raw_data_path)
 	fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
 	cmd2 := exec.Command("python3",independent_freq_path, raw_data_path)
@@ -86,7 +94,14 @@ func GenerateGauss(raw_data_path string) (string){
 	executeCmd(cmd3)
 
 	// read result gauss params json from file
-	gauss_map_one_user := obtainMapfromJson(raw_data_path)
+	forward_slash := strings.LastIndex(raw_data_path,"/")
+	dot_index := strings.LastIndex(raw_data_path,".")
+	first_half := string(raw_data_path[0:forward_slash])
+	file_name_without_extension := string(raw_data_path[forward_slash:dot_index])
+	user_data_params_path := first_half + "/joint" + file_name_without_extension+"_params.json"
+	gauss_map_one_user := obtainMapfromJson(user_data_params_path)
+
+	fmt.Println("user_data_params_path",user_data_params_path)
 
 	for _, m := range gauss_map_one_user {
     // m is a map[string]interface.
@@ -134,15 +149,9 @@ func executeCmd(cmd *exec.Cmd) string{
 // }
 
 
-func obtainMapfromJson(raw_data_path string) (sg dict) {
 
-	forward_slash := strings.LastIndex(raw_data_path,"/")
-	dot_index := strings.LastIndex(raw_data_path,".")
-	first_half := string(raw_data_path[0:forward_slash])
-	file_name_without_extension := string(raw_data_path[forward_slash:dot_index])
-	user_data_params_path := first_half + "/joint" + file_name_without_extension+"_params.json"
+func obtainMapfromJson(user_data_params_path string) (sg dict) {
 
-	fmt.Println("user_data_params_path",user_data_params_path)
 
 	jsonFile, err := os.Open(user_data_params_path)
 	if err != nil {
