@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 # raw_data_path = 'data_sample/user_1_data.csv'
 
-json_user1_frequency_path = 'data_sample/independent/each_col_frequency_user1_data.json'
+json_user1_frequency_path = 'data_sample/independent/each_col_freq_user_1_data.json'
 # joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
 # joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
 w_the_user_params_json = 'data_sample/joint/user1_params.json'
