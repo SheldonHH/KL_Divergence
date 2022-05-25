@@ -1,11 +1,11 @@
 import csv
 import sys
 import json
-raw_data_path1 = 'data_sample/user_1_data.csv'
+# raw_data_path1 = 'data_sample/user_1_data.csv'
 raw_data_path2 = 'data_sample/user_2_data.csv'
 # w_trimmed_data_path1 = 'data_sample/trimmed/trimmed_user_1_data.csv'
 # w_trimmed_data_path2 = 'data_sample/trimmed/trimmed_user_2_data.csv'
-w_dense_trimmed_data_path1 = 'data_sample/trimmed/dense_trimmed_user_1_data.csv'
+# w_dense_trimmed_data_path1 = 'data_sample/trimmed/dense_trimmed_user_1_data.csv'
 w_dense_trimmed_data_path2 = 'data_sample/trimmed/dense_trimmed_user_2_data.csv'
 w_first_dict_json_path = 'data_sample/dict/first_dict_data.json'
 first_layer_dict = {}
@@ -47,7 +47,6 @@ def read_from_csv(raw_data_path, trimmed_data_path):
         twod_rows.append(oned_rows)
 
     for row in twod_rows:
-        # trimmed_row = trim_row(row)
         trimmed_row = dense_trim_row(row)
         writer.writerow(trimmed_row)
         str_key = str(trimmed_row[0])+"-"+str(trimmed_row[1])
@@ -84,7 +83,18 @@ def read_from_csv(raw_data_path, trimmed_data_path):
 
 def main():
     args = sys.argv[1:]
-    # raw_data_path1 = ''.join(args)
+    print(args)
+    # user_1_data
+    raw_data_path1 = args[0]
+    middle_index = args[0].rindex('/')
+    last_index = len(args[0])-1
+    first_half = args[0][0:middle_index+1]
+    print("first_half",first_half)
+    second_half = args[0][middle_index+1: len(args[0])]
+    print(second_half)
+    print(args[0].rindex('/'))
+    w_dense_trimmed_data_path1 = first_half+"trimmed/dense_trimmed_"+second_half
+    print("w_dense_trimmed_data_path1",w_dense_trimmed_data_path1)
     read_from_csv(raw_data_path1, w_dense_trimmed_data_path1)
     # read_from_csv(raw_data_path2, w_dense_trimmed_data_path1)
 
