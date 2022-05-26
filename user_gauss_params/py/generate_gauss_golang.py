@@ -40,7 +40,7 @@ def create_fig(x, y, title, *params):
     str_params = [(str(tup)) for tup in params]
     print("str_params", str_params)
     plt.text(5, 8, ''.join(str_params), fontsize=10)
-    fig.savefig("./figs"+title+'.pdf')
+    # fig.savefig("./figs"+title+'.pdf')
 
 
 def process_1D_freq_data(freq_dict):
@@ -287,7 +287,7 @@ def main():
                 plt.ylabel('data')
                 fig = plt.gcf()
                 plt.show()
-                fig.savefig("./figs"+big_key+'fig1.pdf')
+                # fig.savefig("./figs"+big_key+'fig1.pdf')
                 counttttttt += 1
                 print("≈", counttttttt)
                 break
