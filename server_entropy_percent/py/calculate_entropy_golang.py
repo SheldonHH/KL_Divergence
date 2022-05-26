@@ -2,9 +2,10 @@ import json
 import pandas as pd
 from scipy.integrate import quad
 import numpy as np
+import sys
 
-r_consolidated_params_json = '../data/server_joint/consolidated/consolidated_gauss_params.json'
-w_consolidated_percent_json = '../data/server_joint/consolidated/consolidated_entropysum_percent.json'
+# r_consolidated_params_json = '../data/server_gauss_joint/consolidated/consolidated_gauss_params.json'
+w_consolidated_percent_json = '../data/server_gauss_joint/consolidated/consolidated_entropysum_percent.json'
 
 
 def write_dict_to_json(dict, json_to_write):
@@ -41,22 +42,19 @@ def integrand(x, a, b):
 
 
 def main():
-    #   args = sys.argv[1:]
-    #   print(args)
-    #   raw_data_path1 = args[0]
-    #   middle_index = args[0].rindex('/')
-    #   last_index = len(args[0])-1
-    #   first_half = args[0][0:middle_index+1]
-    #   before_extension_half = args[0][middle_index+1: args[0].rindex('.')]
-    #   print("before_extension_half",)
+    args = sys.argv[1:]
+    gauss_users_dir = args[0]
+    print("before_extension_half",)
     users_list = ["user1","user2"]
     user_entropies_dict = {}
     user_entrosum_dict = {}
     total_entrosum = 0
+    r_consolidated_params_json = gauss_users_dir+"/consolidated/consolidated_gauss_params.json"
+    w_consolidated_percent_json = gauss_users_dir+"/consolidated_entropysum_percent.json"
     f = open(r_consolidated_params_json)
     data = json.load(f)
-    for user_str in users_list:
-        server_joint_entropy = []
+    for user_str in data.keys():
+        server_gauss_joint_entropy = []
         for subkey in data[user_str].keys():
             this_d_data = data[user_str][subkey][list(
                 data[user_str][subkey].keys())[0]]
@@ -65,11 +63,11 @@ def main():
             d_max = data[user_str][subkey]["max"]
             print(d_max)
             I = quad(multi_bimodal, d_min, d_max,  args=(list(this_d_data)))
-            server_joint_entropy.append(I[0])
-        print("server_joint_entropy", server_joint_entropy)
-        user_entropies_dict[user_str] = server_joint_entropy
-        user_entrosum_dict[user_str] = sum(server_joint_entropy)
-        total_entrosum += sum(server_joint_entropy)
+            server_gauss_joint_entropy.append(I[0])
+        print("server_gauss_joint_entropy", server_gauss_joint_entropy)
+        user_entropies_dict[user_str] = server_gauss_joint_entropy
+        user_entrosum_dict[user_str] = sum(server_gauss_joint_entropy)
+        total_entrosum += sum(server_gauss_joint_entropy)
     print("user_entropies_dict", user_entropies_dict)
     percent_dict = {}
     for key in user_entrosum_dict.keys():

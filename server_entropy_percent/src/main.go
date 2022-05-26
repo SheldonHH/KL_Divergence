@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/csv"
+	sge "server_entropy_percent/serverGenerateEntropy"
 	"fmt"
-	"io/ioutil"
-	"log"
-	"strings"
 )
 
 func main() {
-	entropy_percent_user := ugg.GenerateEntropy("user1 user2")
+	dir_path := "server_entropy_percent/data/server_gauss_joint"
+	entropy_percent_user := sge.GenerateEntropy(dir_path)
 	fmt.Println("entropy_percent_user", entropy_percent_user)
 }
