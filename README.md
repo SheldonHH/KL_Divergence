@@ -1,34 +1,6 @@
-# KL_Divergence
-### Generate requirements.txt
-```
-pip3 install pipreqs
-python3 -m  pipreqs.pipreqs . --force
-```
+高斯模拟，传入：private data，传出Gaussian模拟结果
+contribution：所有用户Gaussian模拟的结果，传出每一个user的占所有的那个比例
 
-
-### For GPU KL Divergence
-```
-sudo apt-get update
-sudo apt install nvidia-cuda-toolkit
-```
-
-
-[preprocess.py]() read from raw data and generate trimmed_data
-
-
-### 2D_KL
-Compute the Kullback-Leibler divergence between two multivariate samples.
-Parameters
-x : 2D array (n,d)
-  Samples from distribution P, which typically represents the true distribution.
-y : 2D array (m,d)
-  Samples from distribution Q, which typically represents the approximate distribution.
-Returns
--------
-out : float
-  The estimated Kullback-Leibler divergence D(P||Q).
-
-#### TL RL
-```
-python3 preprocess.py && python3 joint_frequency.py && python3 available_units.py  && python3 2d.py 
-```
+go mod init <module_name>
+go mod init gauss_entropy
+go mod tidy

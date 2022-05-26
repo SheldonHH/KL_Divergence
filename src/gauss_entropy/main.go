@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	 singapore "gauss_entropy/singapore"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -11,14 +10,12 @@ import (
 
 // go get github.com/gopherdata/gophernotes
 func main() {
-	// dataPath := "data/U0_data.csv"
-	// privateData := readPrivateData(dataPath)
-	// fmt.Println(privateData)
-	raw_data_path := "/root/KL_Divergence/data_sample/user_1_data.csv"
+
+	raw_data_path := "/root/KL_Divergence/data/user_1_data.csv"
 	individual_Gauss := singapore.GenerateGauss(raw_data_path)
 	entropy_percent_user := singapore.GenerateEntropy("user1 user2")
-	fmt.Println("individual_Gauss",individual_Gauss)
-	fmt.Println("entropy_percent_user",entropy_percent_user)
+	fmt.Println("individual_Gauss", individual_Gauss)
+	fmt.Println("entropy_percent_user", entropy_percent_user)
 	// newUpdate := modelTraining(privateData)
 	// fmt.Println(newUpdate.senderID)
 }

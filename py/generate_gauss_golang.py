@@ -15,16 +15,16 @@ import itertools
 import csv
 import matplotlib.pyplot as plt
 
-# raw_data_path = 'data_sample/user_1_data.csv'
+# raw_data_path = 'data/user_1_data.csv'
 
-# json_user1_frequency_path = 'data_sample/independent/each_col_frequency_user1_data.json'
-# joint_frequency_path1 = 'data_sample/joint/joint_frequency_1.csv'
-# joint_frequency_path2 = 'data_sample/joint/joint_frequency_2.csv'
-# w_the_user_params_json = 'data_sample/joint/user1_params.json'
-# w_the_user_entropies_json = 'data_sample/joint/user1_entropies.json'
-# w_the_user_entropies_sum_json = 'data_sample/joint/user1_entropies_sum.json'
-# w_twod_gauss_params_txt_path1 = 'data_sample/gauss_params/2d_gauss_1.txt'
-# w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
+# json_user1_frequency_path = 'data/independent/frequency_user1_data.json'
+# server_joint_frequency_path1 = 'data/server_joint/server_joint_frequency_1.csv'
+# server_joint_frequency_path2 = 'data/server_joint/server_joint_frequency_2.csv'
+# w_the_user_params_json = 'data/server_joint/user1_params.json'
+# w_the_user_entropies_json = 'data/server_joint/user1_entropies.json'
+# w_the_user_entropies_sum_json = 'data/server_joint/user1_entropies_sum.json'
+# w_twod_gauss_params_txt_path1 = 'data/gauss_params/2d_gauss_1.txt'
+# w_twod_gauss_params_txt_path2 = 'data/gauss_params/2d_gauss_2.txt'
 
 
 def create_fig(x, y, title, *params):
@@ -198,17 +198,18 @@ def main():
     last_index = len(args[0])-1
     first_half = args[0][0:middle_index+1]
     before_extension_half = args[0][middle_index+1: args[0].rindex('.')]
-    each_col_freq_path = first_half + \
-        "independent/each_col_freq_"+before_extension_half+".json"
-    w_the_user_params_json = first_half+'joint/'+before_extension_half+'_params.json'
-    print(each_col_freq_path, "each_col_freq_path")
+    freq_path = first_half + \
+        "independent/freq_"+before_extension_half+".json"
+    w_the_user_params_json = first_half+'server_joint/' + \
+        before_extension_half+'_params.json'
+    print(freq_path, "freq_path")
     print(w_the_user_params_json, "w_the_user_params_json")
 
     counttttttt = 0
     user_params_list = []
     super_global_params = []
     super_global_entropies = []
-    with open(each_col_freq_path, 'r') as f:
+    with open(freq_path, 'r') as f:
         person_dict = json.load(f)
     for big_key, big_value in person_dict.items():
         print("person_dict", len(person_dict[big_key]))
