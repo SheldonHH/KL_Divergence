@@ -27,11 +27,10 @@ import matplotlib.pyplot as plt
 # w_twod_gauss_params_txt_path2 = 'data_sample/gauss_params/2d_gauss_2.txt'
 
 
-
-def create_fig(x,y,title, *params):
+def create_fig(x, y, title, *params):
     plt.clf()
-    plt.plot(x,y,'b+:',label='data')
-    plt.plot(x,gauss(x,*params),'ro:',label='fit')
+    plt.plot(x, y, 'b+:', label='data')
+    plt.plot(x, gauss(x, *params), 'ro:', label='fit')
     plt.legend()
     plt.title("Dimension distribution for "+title)
     plt.xlabel('Frequency')
@@ -39,9 +38,9 @@ def create_fig(x,y,title, *params):
     fig = plt.gcf()
     plt.show()
     str_params = [(str(tup)) for tup in params]
-    print("str_params",str_params)
-    plt.text(5, 8, ''.join(str_params), fontsize = 10)
-    fig.savefig(title+'.pdf')
+    print("str_params", str_params)
+    plt.text(5, 8, ''.join(str_params), fontsize=10)
+    fig.savefig("./figs"+title+'.pdf')
 
 
 def process_1D_freq_data(freq_dict):
@@ -59,7 +58,6 @@ def process_1D_freq_data(freq_dict):
     x1_list = [float(i) for i in list(sorted_freq_dict.keys())]
     z_list = list(sorted_freq_dict.values())
     return [float(i) for i in list(sorted_freq_dict.keys())]
-
 
 
 def calculate_MSE(z_list, ys_for_sim):
@@ -169,24 +167,29 @@ def fit_multi_modal(mean_x, sigma_x, peak, y, x, counter):
 gauss_index = 0
 
 username = "user1"
+
+
 def Average(lst):
     return mean(lst)
-    
+
+
 def variance(data):
-     # Number of observations
-     n = len(data)
-     # Mean of the data
-     mean = sum(data) / n
-     # Square deviations
-     deviations = [(x - mean) ** 2 for x in data]
-     # Variance
-     variance = sum(deviations) / n
-     return variance
+    # Number of observations
+    n = len(data)
+    # Mean of the data
+    mean = sum(data) / n
+    # Square deviations
+    deviations = [(x - mean) ** 2 for x in data]
+    # Variance
+    variance = sum(deviations) / n
+    return variance
+
 
 def stdev(data):
-     var = variance(data)
-     std_dev = math.sqrt(var)
-     return std_dev
+    var = variance(data)
+    std_dev = math.sqrt(var)
+    return std_dev
+
 
 def main():
     args = sys.argv[1:]
@@ -195,10 +198,11 @@ def main():
     last_index = len(args[0])-1
     first_half = args[0][0:middle_index+1]
     before_extension_half = args[0][middle_index+1: args[0].rindex('.')]
-    each_col_freq_path = first_half + "independent/each_col_freq_"+before_extension_half+".json"
+    each_col_freq_path = first_half + \
+        "independent/each_col_freq_"+before_extension_half+".json"
     w_the_user_params_json = first_half+'joint/'+before_extension_half+'_params.json'
-    print(each_col_freq_path,"each_col_freq_path")
-    print(w_the_user_params_json,"w_the_user_params_json")
+    print(each_col_freq_path, "each_col_freq_path")
+    print(w_the_user_params_json, "w_the_user_params_json")
 
     counttttttt = 0
     user_params_list = []
@@ -245,7 +249,7 @@ def main():
                 mean_x, sigma_x, peak, y, x, gauss_counter)
             print(first_four_MSE)
             ySp.append(first_four_MSE)
-        print("here", gauss_counter) 
+        print("here", gauss_counter)
         while(True):
             gauss_counter += 1
             after_four_MSE = fit_multi_modal(
@@ -258,10 +262,10 @@ def main():
             x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
             y_spl_1d = y_spl.derivative(n=1)
             y_spl_2d = y_spl.derivative(n=2)
-            print("ySp",ySp)
-            print("y_spl_1d(x_range)",y_spl_1d(x_range))
-            print("y_spl_2d(x_range)",y_spl_2d(x_range))
-            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1]>0):
+            print("ySp", ySp)
+            print("y_spl_1d(x_range)", y_spl_1d(x_range))
+            print("y_spl_2d(x_range)", y_spl_2d(x_range))
+            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1] > 0):
                 print("gauss_index", gauss_index)
                 print("global_params", global_params)
                 # super_global_params.append(global_params)
@@ -269,20 +273,22 @@ def main():
                 # super_global_entropies.append(this_col_entropy)
                 print("ySp", ySp)
                 print("ySp.index(min(ySp))", ySp.index(min(ySp)))
-                fit_multi_modal(mean_x, sigma_x, peak, y, x, ySp.index(min(ySp))+1)
+                fit_multi_modal(mean_x, sigma_x, peak, y,
+                                x, ySp.index(min(ySp))+1)
                 super_global_params = global_params
                 plt.clf()
-                plt.plot(x,y,'b+:',label='data')
-                plt.plot(x,multi_bimodal(x,*global_params),'ro:',label='fit')
+                plt.plot(x, y, 'b+:', label='data')
+                plt.plot(x, multi_bimodal(
+                    x, *global_params), 'ro:', label='fit')
                 plt.legend()
                 plt.title("Dimension distribution for "+big_key)
                 plt.xlabel('Frequency')
                 plt.ylabel('data')
                 fig = plt.gcf()
                 plt.show()
-                fig.savefig(big_key+'fig1.pdf')
-                counttttttt+=1
-                print("≈",counttttttt)
+                fig.savefig("./figs"+big_key+'fig1.pdf')
+                counttttttt += 1
+                print("≈", counttttttt)
                 break
         single_d_params_dict = {}
         single_d_params_dict[big_key] = super_global_params
@@ -290,19 +296,18 @@ def main():
         single_d_params_dict["min"] = min(x1_list)
         user_params_list.append(single_d_params_dict)
         fit_one_modal(mean_x, sigma_x, peak, y, x)
-        create_fig(x,y,big_key+"special one dimensional gauss",*special_one_gauss)
+        create_fig(x, y, big_key+"special one dimensional gauss",
+                   *special_one_gauss)
 
-        
     write_dict_to_json({"user1": user_params_list}, w_the_user_params_json)
-    
-    
+
     # y_for_sim = gauss(34.8, mean_x, sigma_x, peak)
     # print("y_for_sim",y_for_sim)
+
 
 def entropy1(labels, base=None):
     print("counts", entropy(labels))
     return entropy(labels)
-
 
 
 def write_dict_to_json(dict, json_to_write):
@@ -311,6 +316,7 @@ def write_dict_to_json(dict, json_to_write):
     parsed = json.loads(result)
     with open(json_to_write, 'w') as convert_file:
         convert_file.write(json.dumps(parsed))
+
 
 if __name__ == "__main__":
     main()
