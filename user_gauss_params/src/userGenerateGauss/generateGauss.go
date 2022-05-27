@@ -42,6 +42,31 @@ func GenerateGauss(raw_data_path string) string {
 	return "success"
 }
 
+
+func MixGauss(raw_data_path string) string {
+	mixture_gaussian_path := "user_gauss_params/py/mixture_gaussian.py"
+	cmd1 := exec.Command("python3", mixture_gaussian_path, raw_data_path)
+	fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
+	executeCmd(cmd1)
+
+	// forward_slash := strings.LastIndex(raw_data_path, "/")
+	// dot_index := strings.LastIndex(raw_data_path, ".")
+	// first_half := string(raw_data_path[0:forward_slash])
+	// file_name_without_extension := string(raw_data_path[forward_slash:dot_index])
+	// user_data_params_path := first_half + "/gauss_result" + file_name_without_extension + "_params.json"
+	// gauss_map_one_user := obtainMapfromJson(user_data_params_path)
+
+	// fmt.Println("user_data_params_path", user_data_params_path)
+
+	// for _, m := range gauss_map_one_user {
+	// 	for k, v := range m {
+	// 		fmt.Println(k, "value is", v)
+	// 	}
+	// }
+	return "Mixture success"
+}
+
+
 func executeCmd(cmd *exec.Cmd) string {
 	cmd.Dir = "/root/KL_Divergence"
 	var out bytes.Buffer
