@@ -15,7 +15,6 @@ def write_to_json(df, w_freq_path):
     trimmed_dict = df.to_dict()
     freq_dict = {}
     for key, value in trimmed_dict.items():
-        key = 
         freq_dict[key] = pd.DataFrame.from_dict(
             value, orient='index').value_counts().to_dict()
         print(pd.DataFrame.from_dict(value, orient='index').value_counts())
