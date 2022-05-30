@@ -18,7 +18,8 @@ def trim_row(row):
 
 def dense_trim_row(row):
     # return [round(float(row[0]), 2), round(float(row[1]), 2)]
-    return [round(float(row[0]), 2), round(float(row[1]), 2)]
+    return [round(float(row[i]),3) for i in range(len(row))]
+    # return [round(float(row[0]), 2), round(float(row[1]), 2)]
     # round(float(row[1]), 1)
 
 
@@ -30,23 +31,24 @@ def write_first_dict():
 def read_from_csv(raw_data_path, trimmed_data_path):
     file_to_write = open(trimmed_data_path, 'w')
     writer = csv.writer(file_to_write)
-    header_to_write = ['x1', 'x2']
-    writer.writerow(header_to_write)
     # write header
 
     file = open(raw_data_path)
     csvreader = csv.reader(file)
     header = []
     header = next(csvreader)
-    twod_rows = []
-    x1_x2_col = []
+    header_to_write = header
+    writer.writerow(header_to_write)
+    oned_rows = []
+    alld_rows = []
     for row in csvreader:
-        oned_rows = []
-        oned_rows.append(row[0])
-        oned_rows.append(row[1])
-        twod_rows.append(oned_rows)
+        for i in range(len(row)):
+            # print("len(row)",len(row))
+            # print("row[0]",row[0])
+            oned_rows.append(row[i])
+        alld_rows.append(oned_rows)
 
-    for row in twod_rows:
+    for row in alld_rows:
         trimmed_row = dense_trim_row(row)
         writer.writerow(trimmed_row)
         str_key = str(trimmed_row[0])+"-"+str(trimmed_row[1])
