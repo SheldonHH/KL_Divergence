@@ -26,13 +26,15 @@ import matplotlib as mpl
 def simulated_height_normal_dist(x, mean, sd):
     # prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
     # return prob_density
-    print(norm.cdf(x, mean, sd))
+    # print(norm.cdf(x, mean, sd))
     return norm.cdf(x, mean, sd)
 
 
 def calculate_MSE(z_list, ys_for_sim):
     y = z_list
     y_bar = ys_for_sim
+    # print("z_list", z_list)
+    # print("y_bar", y_bar)
     summation = 0  # variable to store the summation of differences
     n = len(y)  # finding total number of items in list
     for i in range(0, n):  # looping through each element of the list
@@ -42,7 +44,7 @@ def calculate_MSE(z_list, ys_for_sim):
         # taking a sum of all the differences
         summation = summation + squared_difference
     MSE = summation/n  # dividing summation by total values to obtain average
-    print("The Mean Square Error is: ", MSE)
+    # print("The Mean Square Error is: ", MSE)
     return MSE
 
 
@@ -50,19 +52,11 @@ def gauss(x, mu, sigma, A):
     return A*exp(-(x-mu)**2/2/sigma**2)
 
 
-def multi_bimodal(x, *params):
-    print("*params", params)
-    print("type(*params)", type(params))
+def multi_bimodal(x, weights_array, *params):
+    gauss_index = int(len(params)/3)
     gausses = 0
-    paramssss = params
-    print("[0][0:3]", *params[0])
-    index = 0
-    gauss_index = int(len(*params)/3)
     for i in range(gauss_index):
-        # print("i::",i)
-        gausses += gauss(x, *params[0][0+index*3:3+index*3])
-        index += 1
-
+        gausses += weights_array[i]*gauss(x, *params[0+i*3:3+i*3])
     return gausses
 
 
@@ -86,7 +80,7 @@ def write_to_json(df, before_extension_half, first_half):
     for key, value in trimmed_dict.items():
         freq_dict[key] = pd.DataFrame.from_dict(
             value, orient='index').value_counts().to_dict()
-        print("len", len(freq_dict[key]))
+        # print("len", len(freq_dict[key]))
         count_dict[key] = len(freq_dict[key])
 
     final_col_percentFreq_dict = {}
@@ -176,29 +170,95 @@ def main():
             X[i, 0] = list(value.keys())[i]
             X[i, 1] = list(value.values())[i]
             i += 1
-        print("X[,]",X[:,1])
-        for index in range(10):
+        # print("X[,]",X[:,1])
+    
+        num_with_params = {}
+        # one to ten Gauss
+        counter_initial=10
+        MSE_list, ySp, xSp = [],[],[]
+        for index in range(counter_initial):
             gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=100).fit(X)
             list_params = zerolistmaker((index+1)*3)
-            print("index", index)
-            print("gmm.means_", gmm.means_[index][0])
-
-            print("weight",gmm.weights_)
+            params = tuple(list_params)
+            # print("index", index)
+            # print("gmm.means_", gmm.means_[index][0])
             simulated_y_sum = 0
             for sub_index in range(index+1):
                 list_params[sub_index*3] = gmm.means_[sub_index][0]
                 list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
-                list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))
-                print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
+                list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+                # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
                 simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
-            print("simulated_y_sum",simulated_y_sum)
-            ys_for_sim = []
+            # print("simulated_y_sum",simulated_y_sum)
+            # print("n_samples",n_samples)
+        
             params = tuple(list_params)
-            # print("#####",params)
-        # for g in range(n_samples):
-        #     y_for_sim = multi_bimodal(
-        #         X[:, 0], *params)
-        #     ys_for_sim.append(y_for_sim)
+            num_with_params[index] = list_params
+            # print(str(index+1),params,len(params))
+            # Calculate the MSE for each Gauss
+            ys_for_sim = [] # different from assign the value 
+            for g in range(X[:,0].size):
+                x_for_sim = X[g][0]
+                y_for_sim = multi_bimodal(
+                    x_for_sim, gmm.weights_ , *params)
+                ys_for_sim.append(y_for_sim)
+            MSE = calculate_MSE(X[:,1].tolist(), ys_for_sim)
+            ySp.append(MSE)
+            xSp.append(index)
+            MSE_list.append(MSE)
+
+        # print("MSE_list,",MSE_list)
+        # print("min(MSE_list),",min(MSE_list))
+        # print("sss.index(min(MSE_list)),",MSE_list.index(min(MSE_list)))
+        incre_index = counter_initial
+
+        while(True):
+            incre_index += 1
+            gmm = mixture.GaussianMixture(n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
+            list_params = zerolistmaker((incre_index+1)*3)
+            params = tuple(list_params)
+            simulated_y_sum = 0
+            for sub_index in range(incre_index+1):
+                list_params[sub_index*3] = gmm.means_[sub_index][0]
+                list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
+                list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+                # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
+                simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
+            params = tuple(list_params)
+            num_with_params[index] = list_params
+            # print(str(index+1),params,len(params))
+            # Calculate the MSE for each Gauss
+            ys_for_sim = [] # different from assign the value 
+            for g in range(X[:,0].size):
+                x_for_sim = X[g][0]
+                y_for_sim = multi_bimodal(
+                    x_for_sim, gmm.weights_ , *params)
+                ys_for_sim.append(y_for_sim)
+            MSE = calculate_MSE(X[:,1].tolist(), ys_for_sim)
+            MSE_list.append(MSE)
+            
+            # print(MSE_list)
+            # print("-----------------------------")
+            ySp.append(MSE)
+            xSp.append(incre_index)
+            y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
+            x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
+            y_spl_1d = y_spl.derivative(n=1)
+            y_spl_2d = y_spl.derivative(n=2)
+            # print("ySp", ySp)
+            # print("y_spl_1d",y_spl_1d)
+            # print("y_spl_1d(x_range)", y_spl_1d(x_range))
+            # print("y_spl_2d(x_range)", y_spl_2d(x_range))
+            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1] > 0):
+                print("incre_index", incre_index)
+                print("global_params", params)
+                print("ySp", ySp)
+                print("ySp.index(min(ySp))", ySp.index(min(ySp)))
+                super_global_params = params
+                break
+            
+            
+        # ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
             # print("gmm.covariances_", gmm.covariances_)
             # print("gmm.precisions_cholesky_", gmm.precisions_cholesky_)
