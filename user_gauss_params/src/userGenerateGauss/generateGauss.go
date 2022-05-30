@@ -43,10 +43,14 @@ func GenerateGauss(raw_data_path string) string {
 }
 
 func MixGauss(raw_data_path string) string {
+	// trim_data_path := "user_gauss_params/py/preprocess_golang.py"
+	// cmd1 := exec.Command("python3", trim_data_path, raw_data_path)
+	// fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
+	// executeCmd(cmd1)
 	mixture_gaussian_path := "user_gauss_params/py/mixture_gaussian.py"
-	cmd1 := exec.Command("python3", mixture_gaussian_path, raw_data_path)
-	fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
-	executeCmd(cmd1)
+	cmd2 := exec.Command("python3", mixture_gaussian_path, raw_data_path)
+	fmt.Println("cmd2 = ", reflect.TypeOf(cmd2))
+	executeCmd(cmd2)
 
 	// forward_slash := strings.LastIndex(raw_data_path, "/")
 	// dot_index := strings.LastIndex(raw_data_path, ".")
