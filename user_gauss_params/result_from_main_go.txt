@@ -5828,4 +5828,4 @@ y_firsts [-3.97615574e-02 -7.21511519e-03  1.21411051e-03 -8.10041653e-04
 less_1 0 equal_1 147 larger_1 637
 
 individual_Gauss Mixture success
-2022/05/30 11:40:26 user_1_mnist_train Gauss generation took 2m51.568046407s
+2022/05/30 11:48:40 user_1_mnist_train Gauss generation took 2m59.041099069s
