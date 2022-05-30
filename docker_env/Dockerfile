@@ -7,4 +7,6 @@ RUN pip3 install lmfit
 RUN pip3 install sklearn
 RUN cd /root && wget https://go.dev/dl/go1.18.2.linux-amd64.tar.gz && tar -C /usr/local -xzf go1.18.2.linux-amd64.tar.gz
 RUN echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile
+RUN apt-get update
+RUN apt-get install tmux -y
 # RUN source /etc/profile

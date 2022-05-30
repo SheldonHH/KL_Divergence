@@ -135,6 +135,8 @@ def fit_bimodal(mean_x, sigma_x, peak, y, x):
 def multi_bimodal(x, *params):
     gausses = 0
     index = 0
+    print("*************",(params))
+    print("type**********",type(params))
     for i in range(gauss_index):
         gausses += gauss(x, *params[0+index*3:3+index*3])
         index += 1

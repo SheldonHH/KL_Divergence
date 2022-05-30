@@ -8,6 +8,7 @@ from pylab import *
 from scipy import linalg
 from scipy.optimize import curve_fit
 from scipy.stats import entropy
+from scipy.stats import norm
 from sklearn import mixture
 import numpy as np
 import pandas as pd
@@ -23,13 +24,23 @@ import matplotlib as mpl
 
 # Creating a Function.
 def simulated_height_normal_dist(x, mean, sd):
-    prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
-    return prob_density
+    # prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
+    # return prob_density
+    # print(norm.cdf(x, mean, sd))
+    return norm.cdf(x, mean, sd)
 
+def write_dict_to_json(dict, json_to_write):
+    df_params = pd.DataFrame.from_dict(dict)
+    result = df_params.to_json(orient="columns")
+    parsed = json.loads(result)
+    with open(json_to_write, 'w') as convert_file:
+        convert_file.write(json.dumps(parsed))
 
 def calculate_MSE(z_list, ys_for_sim):
     y = z_list
     y_bar = ys_for_sim
+    # print("z_list", z_list)
+    # print("y_bar", y_bar)
     summation = 0  # variable to store the summation of differences
     n = len(y)  # finding total number of items in list
     for i in range(0, n):  # looping through each element of the list
@@ -39,27 +50,33 @@ def calculate_MSE(z_list, ys_for_sim):
         # taking a sum of all the differences
         summation = summation + squared_difference
     MSE = summation/n  # dividing summation by total values to obtain average
-    print("The Mean Square Error is: ", MSE)
+    # print("The Mean Square Error is: ", MSE)
     return MSE
 
+def obtain_first_second(x, y, strtype):
+    dy=np.diff(x,1)
+    dx=np.diff(y,1)
+    yfirst=dy/dx
+    xfirst=0.5*(x[:-1]+x[1:])
+    dyfirst=np.diff(yfirst,1)
+    dxfirst=np.diff(xfirst,1)
+    
+    if(strtype == "second"):
+        ysecond=dyfirst/dxfirst
+        xsecond=0.5*(xfirst[:-1]+xfirst[1:])
+        return ysecond
+    else:
+        return yfirst
 
 def gauss(x, mu, sigma, A):
     return A*exp(-(x-mu)**2/2/sigma**2)
 
 
-def multi_bimodal(x, *params):
-    print("*params", params)
-    print("type(*params)", type(params))
+def multi_bimodal(x, weights_array, *params):
+    gauss_index = int(len(params)/3)
     gausses = 0
-    paramssss = params
-    print("[0][0:3]", *params[0])
-    index = 0
-    gauss_index = int(len(*params)/3)
     for i in range(gauss_index):
-        # print("i::",i)
-        gausses += gauss(x, *params[0][0+index*3:3+index*3])
-        index += 1
-
+        gausses += weights_array[i]*gauss(x, *params[0+i*3:3+i*3])
     return gausses
 
 
@@ -83,7 +100,7 @@ def write_to_json(df, before_extension_half, first_half):
     for key, value in trimmed_dict.items():
         freq_dict[key] = pd.DataFrame.from_dict(
             value, orient='index').value_counts().to_dict()
-        print("len", len(freq_dict[key]))
+        # print("len", len(freq_dict[key]))
         count_dict[key] = len(freq_dict[key])
 
     final_col_percentFreq_dict = {}
@@ -152,6 +169,10 @@ def main():
     last_index = len(args[0])-1
     first_half = args[0][0:middle_index+1]
     before_extension_half = args[0][middle_index+1: args[0].rindex('.')]
+    w_the_user_params_json = first_half+'gauss_result/' + \
+        before_extension_half+'_params.json'
+
+
     r_dense_trimmed_data_path1 = first_half + \
         "trimmed/dense_trimmed_"+before_extension_half+".csv"
     final_col_percentFreq_dict = read_from_csv(
@@ -163,43 +184,123 @@ def main():
     # Generate random sample following a sine curve
     np.random.seed(0)
     X = np.zeros((n_samples, 2))
-    # step = 4.0 * np.pi / n_samples
 
-    # for i in range(X.shape[0]):
-    #     x = i * step - 6.0
-    # X[i, 0] = x + np.random.normal(0, 0.1)
-    # X[i, 1] = 3.0 * (np.sin(x) + np.random.normal(0, 0.2))
-    # print("final_col_percentFreq_dict",final_col_percentFreq_dict)
     i = 0
+    dimension_min_with_params = []
+    less_1, equal_1, larger_1 = 0,0,0
     for key, value in final_col_percentFreq_dict.items():
-        # print("key", value)
-        # print("value.keys()", list(value.keys()))
+        min_index = 0
         n_samples = len(list(value.keys()))
         X = np.zeros((n_samples, 2))
         # for each dimension
-        for i in range(len(list(value.keys()))):
-            X[i, 0] = list(value.keys())[i]
-            X[i, 1] = list(value.values())[i]
-            i += 1
-            # gmm1 = mixture.GaussianMixture(
-            #     n_components=1, covariance_type="diag", max_iter=100).fit(X)
-            # print("gmm1.covariances_", gmm1.covariances_)
+        if len(value.keys())<1:
+            dimension_min_with_params.append({key+"_gauss": [0],"max":0, "min":0})
+            less_than_1 += 1
+        if len(value.keys())==1:
+            equal_1 += 1
+            dimension_min_with_params.append({key+"_gauss": X[0][0],"max":max(X[:,0]),"min":min(X[:,0])})
+        if len(value.keys()) >1:
+            larger_1 +=1
+            for i in range(len(list(value.keys()))):
+                X[i, 0] = list(value.keys())[i]
+                X[i, 1] = list(value.values())[i]
+                i += 1
+            # print("X[,]",X[:,1])
+        
+            num_with_params = {}
+            # one to ten Gauss
+            counter_initial=10
+            MSE_list, ySp, xSp = [],[],[]
+            y_firsts, y_seconds = [],[]
+            for index in range(counter_initial):
+                if n_samples < index+1:
+                    # dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
+                    break
+                gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
+                list_params = zerolistmaker((index+1)*3)
+                params = tuple(list_params)
+                # print("index", index)
+                # print("gmm.means_", gmm.means_[index][0])
+                simulated_y_sum = 0
+                for sub_index in range(index+1):
+                    list_params[sub_index*3] = gmm.means_[sub_index][0]
+                    list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
+                    list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+                    # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
+                    simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
+            
+                params = tuple(list_params)
+                num_with_params[index] = list_params
+                # Calculate the MSE for each Gauss
+                ys_for_sim = [] # different from assign the value 
+                for g in range(X[:,0].size):
+                    x_for_sim = X[g][0]
+                    y_for_sim = multi_bimodal(
+                        x_for_sim, gmm.weights_ , *params)
+                    ys_for_sim.append(y_for_sim)
+                MSE = calculate_MSE(X[:,1].tolist(), ys_for_sim)
+                ySp.append(MSE)
+                xSp.append(index)
+                MSE_list.append(MSE)
+            incre_index = counter_initial
 
-        for index in range(10):
-            gmm = mixture.GaussianMixture(
-                n_components=index+1, covariance_type="diag", max_iter=100).fit(X)
-            params = zerolistmaker((index+1)*3)
-            print("index", index)
-            print("gmm.means_", gmm.means_[index][0])
-            params[index*3] = gmm.means_[index][0]
-            params[index*3+1] = gmm.covariances_[index][0]
-            params[index*3+2] = simulated_height_normal_dist(
-                gmm.means_[index][0], gmm.means_[index][0], gmm.covariances_[index][0])
-            ys_for_sim = []
-            for g in range(n_samples):
-                y_for_sim = multi_bimodal(
-                    X[:, 0], *params)
-                ys_for_sim.append(y_for_sim)
+            while(True):
+                if n_samples < incre_index+1:
+                    # dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
+                    break
+                gmm = mixture.GaussianMixture(n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
+                list_params = zerolistmaker((incre_index+1)*3)
+                params = tuple(list_params)
+                simulated_y_sum = 0
+                for sub_index in range(incre_index+1):
+                    list_params[sub_index*3] = gmm.means_[sub_index][0]
+                    list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
+                    list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+                    # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
+                    simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
+                params = tuple(list_params)
+                num_with_params[incre_index] = list_params
+                # print(str(index+1),params,len(params))
+                # Calculate the MSE for each Gauss
+                ys_for_sim = [] # different from assign the value 
+                for g in range(X[:,0].size):
+                    x_for_sim = X[g][0]
+                    y_for_sim = multi_bimodal(
+                        x_for_sim, gmm.weights_ , *params)
+                    ys_for_sim.append(y_for_sim)
+                MSE = calculate_MSE(X[:,1].tolist(), ys_for_sim)
+                MSE_list.append(MSE)
+                
+                # print(MSE_list)
+                # print("-----------------------------")
+                ySp.append(MSE)
+                xSp.append(incre_index)
+
+
+                y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
+                y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
+                if(abs(y_seconds[-1]) < 0.1 or y_firsts[-1]>0 or incre_index==100):
+                    print("incre_index", incre_index)
+                    print("global_params", params)
+                    print("ySp", ySp)
+                    print("ySp.index(min(ySp))", ySp.index(min(ySp)))
+                    min_index = ySp.index(min(ySp))
+                    print("xSp",xSp)
+                    # print("x_range",x_range)
+                    y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
+                    y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
+
+                    print("y_seconds",y_seconds)
+                    print("y_firsts",y_firsts)
+                    super_global_params = params
+                    break
+                incre_index += 1
+            print(key," result:", num_with_params[min_index])
+            dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
+    print("less_1",less_1,"equal_1",equal_1,"larger_1",larger_1)
+    write_dict_to_json({"user1": dimension_min_with_params}, w_the_user_params_json)     
+   
+        # ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
             # print("gmm.covariances_", gmm.covariances_)
             # print("gmm.precisions_cholesky_", gmm.precisions_cholesky_)
