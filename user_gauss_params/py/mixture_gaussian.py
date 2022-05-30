@@ -8,6 +8,7 @@ from pylab import *
 from scipy import linalg
 from scipy.optimize import curve_fit
 from scipy.stats import entropy
+from scipy.stats import norm
 from sklearn import mixture
 import numpy as np
 import pandas as pd
@@ -23,8 +24,10 @@ import matplotlib as mpl
 
 # Creating a Function.
 def simulated_height_normal_dist(x, mean, sd):
-    prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
-    return prob_density
+    # prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
+    # return prob_density
+    print(norm.cdf(x, mean, sd))
+    return norm.cdf(x, mean, sd)
 
 
 def calculate_MSE(z_list, ys_for_sim):
@@ -163,17 +166,9 @@ def main():
     # Generate random sample following a sine curve
     np.random.seed(0)
     X = np.zeros((n_samples, 2))
-    # step = 4.0 * np.pi / n_samples
 
-    # for i in range(X.shape[0]):
-    #     x = i * step - 6.0
-    # X[i, 0] = x + np.random.normal(0, 0.1)
-    # X[i, 1] = 3.0 * (np.sin(x) + np.random.normal(0, 0.2))
-    # print("final_col_percentFreq_dict",final_col_percentFreq_dict)
     i = 0
     for key, value in final_col_percentFreq_dict.items():
-        # print("key", value)
-        # print("value.keys()", list(value.keys()))
         n_samples = len(list(value.keys()))
         X = np.zeros((n_samples, 2))
         # for each dimension
@@ -181,25 +176,26 @@ def main():
             X[i, 0] = list(value.keys())[i]
             X[i, 1] = list(value.values())[i]
             i += 1
-            # gmm1 = mixture.GaussianMixture(
-            #     n_components=1, covariance_type="diag", max_iter=100).fit(X)
-            # print("gmm1.covariances_", gmm1.covariances_)
-
-        for index in range(10):
-            gmm = mixture.GaussianMixture(
-                n_components=index+1, covariance_type="diag", max_iter=100).fit(X)
-            params = zerolistmaker((index+1)*3)
+        print("X[,]",X[:,1])
+        for index in range(1):
+            gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=100).fit(X)
+            list_params = zerolistmaker((index+1)*3)
             print("index", index)
             print("gmm.means_", gmm.means_[index][0])
-            params[index*3] = gmm.means_[index][0]
-            params[index*3+1] = gmm.covariances_[index][0]
-            params[index*3+2] = simulated_height_normal_dist(
-                gmm.means_[index][0], gmm.means_[index][0], gmm.covariances_[index][0])
+
+            print("weight",gmm.weights_)
+            for sub_index in range(index+1):
+                list_params[sub_index*3] = gmm.means_[sub_index][0]
+                list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
+                list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))
+                print("simulated_height_normal_dist",list_params[sub_index*3+2])
             ys_for_sim = []
-            for g in range(n_samples):
-                y_for_sim = multi_bimodal(
-                    X[:, 0], *params)
-                ys_for_sim.append(y_for_sim)
+            params = tuple(list_params)
+            # print("#####",params)
+        # for g in range(n_samples):
+        #     y_for_sim = multi_bimodal(
+        #         X[:, 0], *params)
+        #     ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
             # print("gmm.covariances_", gmm.covariances_)
             # print("gmm.precisions_cholesky_", gmm.precisions_cholesky_)
