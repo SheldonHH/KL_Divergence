@@ -177,18 +177,21 @@ def main():
             X[i, 1] = list(value.values())[i]
             i += 1
         print("X[,]",X[:,1])
-        for index in range(1):
+        for index in range(10):
             gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=100).fit(X)
             list_params = zerolistmaker((index+1)*3)
             print("index", index)
             print("gmm.means_", gmm.means_[index][0])
 
             print("weight",gmm.weights_)
+            simulated_y_sum = 0
             for sub_index in range(index+1):
                 list_params[sub_index*3] = gmm.means_[sub_index][0]
                 list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
                 list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))
-                print("simulated_height_normal_dist",list_params[sub_index*3+2])
+                print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
+                simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
+            print("simulated_y_sum",simulated_y_sum)
             ys_for_sim = []
             params = tuple(list_params)
             # print("#####",params)
