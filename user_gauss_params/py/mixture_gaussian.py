@@ -47,6 +47,20 @@ def calculate_MSE(z_list, ys_for_sim):
     # print("The Mean Square Error is: ", MSE)
     return MSE
 
+def obtain_first_second(x, y, strtype):
+    dy=np.diff(x,1)
+    dx=np.diff(y,1)
+    yfirst=dy/dx
+    xfirst=0.5*(x[:-1]+x[1:])
+    dyfirst=np.diff(yfirst,1)
+    dxfirst=np.diff(xfirst,1)
+    
+    if(strtype == "second"):
+        ysecond=dyfirst/dxfirst
+        xsecond=0.5*(xfirst[:-1]+xfirst[1:])
+        return ysecond
+    else:
+        return yfirst
 
 def gauss(x, mu, sigma, A):
     return A*exp(-(x-mu)**2/2/sigma**2)
@@ -176,6 +190,7 @@ def main():
         # one to ten Gauss
         counter_initial=10
         MSE_list, ySp, xSp = [],[],[]
+        y_firsts, y_seconds = [],[]
         for index in range(counter_initial):
             gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
             list_params = zerolistmaker((index+1)*3)
@@ -206,10 +221,6 @@ def main():
             ySp.append(MSE)
             xSp.append(index)
             MSE_list.append(MSE)
-
-        # print("MSE_list,",MSE_list)
-        # print("min(MSE_list),",min(MSE_list))
-        # print("sss.index(min(MSE_list)),",MSE_list.index(min(MSE_list)))
         incre_index = counter_initial
 
         while(True):
@@ -240,15 +251,11 @@ def main():
             # print("-----------------------------")
             ySp.append(MSE)
             xSp.append(incre_index)
-            y_spl = UnivariateSpline(xSp, ySp, s=0, k=2)
-            x_range = np.linspace(xSp[0], ySp[-1], len(xSp)-2)
-            y_spl_1d = y_spl.derivative(n=1)
-            y_spl_2d = y_spl.derivative(n=2)
-            # print("ySp", ySp)
-            # print("y_spl_1d",y_spl_1d)
-            # print("y_spl_1d(x_range)", y_spl_1d(x_range))
-            # print("y_spl_2d(x_range)", y_spl_2d(x_range))
-            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1] > 0 or incre_index==20):
+
+
+            y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
+            y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
+            if(abs(y_seconds[-1]) < 0.1 or y_firsts[-1]>0 or incre_index==100):
                 print("incre_index", incre_index)
                 print("global_params", params)
                 print("ySp", ySp)
@@ -258,6 +265,12 @@ def main():
                 print(" y_spl_2d(x_range)", y_spl_2d(x_range))
                 print("lennn y_spl_2d(x_range)", len(y_spl_2d(x_range)))
                 print("xSp",xSp)
+                # print("x_range",x_range)
+                y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
+                y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
+
+                print("y_seconds",y_seconds)
+                print("y_firsts",y_firsts)
                 super_global_params = params
                 break
             incre_index += 1
