@@ -177,6 +177,7 @@ def main():
 
     i = 0
     for key, value in final_col_percentFreq_dict.items():
+        min_index = 0
         n_samples = len(list(value.keys()))
         X = np.zeros((n_samples, 2))
         # for each dimension
@@ -235,7 +236,7 @@ def main():
                 # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
                 simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
             params = tuple(list_params)
-            num_with_params[index] = list_params
+            num_with_params[incre_index] = list_params
             # print(str(index+1),params,len(params))
             # Calculate the MSE for each Gauss
             ys_for_sim = [] # different from assign the value 
@@ -260,10 +261,7 @@ def main():
                 print("global_params", params)
                 print("ySp", ySp)
                 print("ySp.index(min(ySp))", ySp.index(min(ySp)))
-                print(" y_spl_1d(x_range)", y_spl_1d(x_range))
-                print("lennn y_spl_1d(x_range)", len(y_spl_1d(x_range)))
-                print(" y_spl_2d(x_range)", y_spl_2d(x_range))
-                print("lennn y_spl_2d(x_range)", len(y_spl_2d(x_range)))
+                min_index = ySp.index(min(ySp))
                 print("xSp",xSp)
                 # print("x_range",x_range)
                 y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
@@ -274,7 +272,7 @@ def main():
                 super_global_params = params
                 break
             incre_index += 1
-            
+        print(key," result:", num_with_params[min_index])
             
         # ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
