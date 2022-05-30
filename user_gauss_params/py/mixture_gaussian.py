@@ -177,7 +177,7 @@ def main():
         counter_initial=10
         MSE_list, ySp, xSp = [],[],[]
         for index in range(counter_initial):
-            gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=100).fit(X)
+            gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
             list_params = zerolistmaker((index+1)*3)
             params = tuple(list_params)
             # print("index", index)
@@ -213,7 +213,6 @@ def main():
         incre_index = counter_initial
 
         while(True):
-            incre_index += 1
             gmm = mixture.GaussianMixture(n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
             list_params = zerolistmaker((incre_index+1)*3)
             params = tuple(list_params)
@@ -249,13 +248,19 @@ def main():
             # print("y_spl_1d",y_spl_1d)
             # print("y_spl_1d(x_range)", y_spl_1d(x_range))
             # print("y_spl_2d(x_range)", y_spl_2d(x_range))
-            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1] > 0):
+            if(abs(y_spl_2d(x_range)[-1]) < 0.1 or y_spl_1d(x_range)[-1] > 0 or incre_index==20):
                 print("incre_index", incre_index)
                 print("global_params", params)
                 print("ySp", ySp)
                 print("ySp.index(min(ySp))", ySp.index(min(ySp)))
+                print(" y_spl_1d(x_range)", y_spl_1d(x_range))
+                print("lennn y_spl_1d(x_range)", len(y_spl_1d(x_range)))
+                print(" y_spl_2d(x_range)", y_spl_2d(x_range))
+                print("lennn y_spl_2d(x_range)", len(y_spl_2d(x_range)))
+                print("xSp",xSp)
                 super_global_params = params
                 break
+            incre_index += 1
             
             
         # ys_for_sim.append(y_for_sim)
