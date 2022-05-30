@@ -42,7 +42,6 @@ func GenerateGauss(raw_data_path string) string {
 	return "success"
 }
 
-
 func MixGauss(raw_data_path string) string {
 	mixture_gaussian_path := "user_gauss_params/py/mixture_gaussian.py"
 	cmd1 := exec.Command("python3", mixture_gaussian_path, raw_data_path)
@@ -65,7 +64,6 @@ func MixGauss(raw_data_path string) string {
 	// }
 	return "Mixture success"
 }
-
 
 func executeCmd(cmd *exec.Cmd) string {
 	cmd.Dir = "/root/KL_Divergence"
