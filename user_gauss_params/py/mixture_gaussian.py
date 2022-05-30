@@ -29,6 +29,12 @@ def simulated_height_normal_dist(x, mean, sd):
     # print(norm.cdf(x, mean, sd))
     return norm.cdf(x, mean, sd)
 
+def write_dict_to_json(dict, json_to_write):
+    df_params = pd.DataFrame.from_dict(dict)
+    result = df_params.to_json(orient="columns")
+    parsed = json.loads(result)
+    with open(json_to_write, 'w') as convert_file:
+        convert_file.write(json.dumps(parsed))
 
 def calculate_MSE(z_list, ys_for_sim):
     y = z_list
@@ -163,6 +169,10 @@ def main():
     last_index = len(args[0])-1
     first_half = args[0][0:middle_index+1]
     before_extension_half = args[0][middle_index+1: args[0].rindex('.')]
+    w_the_user_params_json = first_half+'gauss_result/' + \
+        before_extension_half+'_params.json'
+
+
     r_dense_trimmed_data_path1 = first_half + \
         "trimmed/dense_trimmed_"+before_extension_half+".csv"
     final_col_percentFreq_dict = read_from_csv(
@@ -176,6 +186,7 @@ def main():
     X = np.zeros((n_samples, 2))
 
     i = 0
+    dimension_min_with_params = []
     for key, value in final_col_percentFreq_dict.items():
         min_index = 0
         n_samples = len(list(value.keys()))
@@ -273,6 +284,8 @@ def main():
                 break
             incre_index += 1
         print(key," result:", num_with_params[min_index])
+        dimension_min_with_params.append({"gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
+    write_dict_to_json({"user1": dimension_min_with_params}, w_the_user_params_json)     
             
         # ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
