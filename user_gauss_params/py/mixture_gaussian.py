@@ -130,12 +130,18 @@ def main():
             X[i, 1] = list(value.values())[i]
             i+=1
         print("X[]",X)
-        gmm = mixture.GaussianMixture(n_components=10, covariance_type="full", max_iter=100).fit(X)
+        gmm = mixture.GaussianMixture(n_components=10, covariance_type="diag", max_iter=100).fit(X)
         print("gmm.weights_",gmm.weights_)
         print("gmm.covariances_",gmm.covariances_)
+        print("len(gmm.covariances_)",len(gmm.covariances_))
+
+        # decomposition of a Hermitian, positive-define matrix into the product of
+        # 
         print("gmm.precisions_cholesky_",gmm.precisions_cholesky_)
+        print("len(gmm.precisions_cholesky_)",len(gmm.precisions_cholesky_))
         print("sum(gmm.weights_)",sum(gmm.weights_))
         print("gmm.means_",gmm.means_)
+        print("len(gmm.means_)",len(gmm.means_))
     # plt.figure(figsize=(10, 10))
     # plt.subplots_adjust(
     #     bottom=0.04, top=0.95, hspace=0.2, wspace=0.05, left=0.03, right=0.97
