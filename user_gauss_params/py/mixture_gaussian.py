@@ -171,6 +171,8 @@ def main():
     before_extension_half = args[0][middle_index+1: args[0].rindex('.')]
     w_the_user_params_json = first_half+'gauss_result/' + \
         before_extension_half+'_params.json'
+    w_distinct_count_json = first_half+'gauss_result/' + \
+        before_extension_half+'_distinct_count.json'
 
 
     r_dense_trimmed_data_path1 = first_half + \
@@ -191,10 +193,15 @@ def main():
     less_1, equal_1, larger_1 = 0,0,0
     max_key = 0
     max_count = 0
+    count_dict = {}
     for key, value in final_col_percentFreq_dict.items():
         min_index = 0
         n_samples = len(list(value.keys()))
         X = np.zeros((n_samples, 2))
+        if count_dict.get(len(value.keys())) == None:
+            count_dict[len(value.keys())] = 1
+        else: 
+            count_dict[len(value.keys())] +=1
         # for each dimension
         if len(value.keys()) > max_count:
             max_key = key
@@ -311,6 +318,8 @@ def main():
     print("available_dimension_for_sample",available_dimension_for_sample)
     print("max_count",max_count)
     print("max_key", max_key)
+    with open(w_distinct_count_json, "w") as outfile:
+        json.dump(count_dict, outfile)
    
         # ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
