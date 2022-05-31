@@ -187,12 +187,18 @@ def main():
 
     i = 0
     dimension_min_with_params = []
+    available_dimension_for_sample = []
     less_1, equal_1, larger_1 = 0,0,0
+    max_key = 0
+    max_count = 0
     for key, value in final_col_percentFreq_dict.items():
         min_index = 0
         n_samples = len(list(value.keys()))
         X = np.zeros((n_samples, 2))
         # for each dimension
+        if len(value.keys()) > max_count:
+            max_key = key
+            max_count = len(value.keys())
         if len(value.keys())<1:
             dimension_min_with_params.append({key+"_gauss": [0],"max":0, "min":0})
             less_than_1 += 1
@@ -200,6 +206,8 @@ def main():
             equal_1 += 1
             dimension_min_with_params.append({key+"_gauss": X[0][0],"max":max(X[:,0]),"min":min(X[:,0])})
         if len(value.keys()) >1:
+            if len(value.keys())>29:
+                available_dimension_for_sample.append(key)
             larger_1 +=1
             for i in range(len(list(value.keys()))):
                 X[i, 0] = list(value.keys())[i]
@@ -298,7 +306,11 @@ def main():
             print(key," result:", num_with_params[min_index])
             dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
     print("less_1",less_1,"equal_1",equal_1,"larger_1",larger_1)
-    write_dict_to_json({"user1": dimension_min_with_params}, w_the_user_params_json)     
+    write_dict_to_json({"user1": dimension_min_with_params}, w_the_user_params_json)    
+    print("len available_dimension_for_sample",len(available_dimension_for_sample))
+    print("available_dimension_for_sample",available_dimension_for_sample)
+    print("max_count",max_count)
+    print("max_key", max_key)
    
         # ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
