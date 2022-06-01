@@ -199,7 +199,7 @@ def main():
     print("non_zero_count",non_zero_count)
     # np.savetxt("test_with_zero.txt", actual[~np.all(actual == 0, axis=1)])
     np.savetxt("test.txt", actual[~np.all(actual == 0, axis=1)])
-
+    
     # png.from_array(np.array(str_list), 'L').save("small_smiley.png")
     # a = np.arange(sg.values).reshape((38,38))
     # print(a)
