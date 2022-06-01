@@ -191,9 +191,10 @@ def main():
     directory = os.path.join(dir_str)
     os.chdir(dir_str)   
     num_with_params = {}
-    dimension_min_with_params = []
+    all_files_dimension_with_params = {}
     for root,dirs,files in os.walk(directory):
         for file in files:
+            dimension_min_with_params = {}
             if file.endswith(".csv"):
                 f=open(file, 'r')
                 data_iter = csv.reader(f)
@@ -298,8 +299,12 @@ def main():
                         break
                     incre_index += 1
                 print(file," result:", num_with_params[min_index])
-                dimension_min_with_params.append({file+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
-        json.dump(dimension_min_with_params,"sd.json")
+                dimension_min_with_params["gauss"] = [num_with_params[min_index]]
+                dimension_min_with_params["max"] = max(X[:,0])
+                dimension_min_with_params["min"] = min(X[:,0])
+            all_files_dimension_with_params[file] = dimension_min_with_params
+        with open("sample.json", "w") as outfile:
+            json.dump(all_files_dimension_with_params,outfile)
         # with file:   
         #     write = csv.writer(file)
         #     write.writerows(data)

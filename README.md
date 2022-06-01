@@ -7,3 +7,7 @@ server_entropy_percent
 go mod init <module_name>
 go mod tidy
 ```
+
+```
+git filter-branch -f  --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch user_gauss_params/data/uneven/user_4.txt' --tag-name-filter cat -- --all
+```
