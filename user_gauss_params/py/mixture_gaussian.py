@@ -318,8 +318,10 @@ def main():
     print("available_dimension_for_sample",available_dimension_for_sample)
     print("max_count",max_count)
     print("max_key", max_key)
+    sorted_count_dict = {k : count_dict[k] for k in sorted(count_dict)}
+
     with open(w_distinct_count_json, "w") as outfile:
-        json.dump(count_dict, outfile)
+        json.dump(sorted_count_dict, outfile)
    
         # ys_for_sim.append(y_for_sim)
             # print("gmm.weights_", gmm.weights_)
