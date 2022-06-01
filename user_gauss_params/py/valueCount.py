@@ -1,7 +1,7 @@
 import pandas as pd
 lists = []
 
-with open('/root/KL_Divergence/user_gauss_params/data/uniform/user_1.txt') as f:
+with open('/root/KL_Divergence/user_gauss_params/data/uneven/user_4.txt') as f:
     line = f.readline()
     while line:
         line = f.readline()
@@ -11,4 +11,4 @@ with open('/root/KL_Divergence/user_gauss_params/data/uniform/user_1.txt') as f:
 x=pd.Series(lists)
 
 
-x.value_counts().to_csv("sg.csv", header=False)
+x.value_counts().to_csv("/root/KL_Divergence/user_gauss_params/data/uneven/trimmed_user_4_freq.csv", header=False)
