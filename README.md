@@ -28,6 +28,7 @@ git filter-branch -f  --prune-empty --index-filter 'git rm -rf --cached --ignore
 git filter-branch -f  --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch ./user_gauss_params/data/uniform/user_4.txt' --tag-name-filter cat -- --all
 git filter-branch -f  --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch ./user_gauss_params/data/uniform/user_3.txt' --tag-name-filter cat -- --all
 git filter-branch -f  --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch ./user_gauss_params/data/uniform/user_1.txt' --tag-name-filter cat -- --all
+git filter-branch -f  --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch ./user_gauss_params/data/uniform/user_2.txt' --tag-name-filter cat -- --all
 git filter-branch -f  --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch user_gauss_params/data/uniform/features/freq/test.txt' --tag-name-filter cat -- --all
 
 rm ./user_gauss_params/py/test.txt
