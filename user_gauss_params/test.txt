@@ -5833,3 +5833,4 @@ max_key 408
 
 individual_Gauss Mixture success
 2022/06/01 01:14:28 user_1_mnist_train Gauss generation took 3m4.358911751s
+
