@@ -304,7 +304,6 @@ def main():
                     # print("x_range",x_range)
                     y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
                     y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
-
                     print("y_seconds",y_seconds)
                     print("y_firsts",y_firsts)
                     super_global_params = params
@@ -318,11 +317,47 @@ def main():
     print("available_dimension_for_sample",available_dimension_for_sample)
     print("max_count",max_count)
     print("max_key", max_key)
-    sorted_count_dict = {k : count_dict[k] for k in sorted(count_dict)}
+    with open(w_distinct_count_json, "w") as outfile:
+        json.dump(count_dict, outfile)
+   
+        # ys_for_sim.append(y_for_sim)
+            # print("gmm.weights_", gmm.weights_)
+            # print("gmm.covariances_", gmm.covariances_)
+            # print("gmm.precisions_cholesky_", gmm.precisions_cholesky_)
+            # print("sum(gmm.weights_)", sum(gmm.weights_))
+            # print("gmm.means_", gmm.means_)
+            #
+            #
+            # for sub_index in range(index+1):
+            #     print("sub_index", sub_index)
+            # params[sub_index*3] = gmm.means_[sub_index]
+            #     params[sub_index*3+1] = gmm.covariances_array[sub_index][0]
+            #     params[sub_index*3+2] = simulated_height_normal_dist(
+            #         gmm.means_[sub_index], gmm.means_[sub_index], gmm.covariances_array[sub_index][0])
+            #     # calculate the MSE for each Gauss number of test
+            # ys_for_sim = []
+            # for g in range(len(X[i, 0])):
+            #     x_for_sim = float(decimal.Decimal(random.randrange(
+            #         int(min(X[i, 0])*100), int(max(X[i, 0])*100)))/100)
+            #     y_for_sim = multi_bimodal(
+            #         x_for_sim, *params)
+            #     ys_for_sim.append(y_for_sim)
+        # print("gmm.weights_", gmm.weights_)
+        # print("gmm.covariances_", gmm.covariances_)
+        # print("gmm.precisions_cholesky_", gmm.precisions_cholesky_)
+        # print("sum(gmm.weights_)", sum(gmm.weights_))
+        # print("gmm.means_", gmm.means_)
+    # plt.figure(figsize=(10, 10))
+    # plt.subplots_adjust(
+    #     bottom=0.04, top=0.95, hspace=0.2, wspace=0.05, left=0.03, right=0.97
+    # )
+    # Fit a Gaussian mixture with EM using ten components
 
+    # plot_results(
+    #     X, gmm.predict(X), gmm.means_, gmm.covariances_, 0, "Expectation-maximization"
+    # )
     with open(w_distinct_count_json, "w") as outfile:
         json.dump(sorted_count_dict, outfile)
-
 
 if __name__ == "__main__":
 
