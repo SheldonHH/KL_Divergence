@@ -8,4 +8,3 @@ export PATH=$PATH:/usr/local/go/bin
 echo "export PATH=$PATH:/usr/local/go/bin" >>  /etc/profile
 source /etc/profile
 # pip3 install matplotlib
-# pip3 install scipy

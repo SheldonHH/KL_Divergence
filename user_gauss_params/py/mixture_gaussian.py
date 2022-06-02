@@ -304,7 +304,6 @@ def main():
                     # print("x_range",x_range)
                     y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
                     y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
-
                     print("y_seconds",y_seconds)
                     print("y_firsts",y_firsts)
                     super_global_params = params
@@ -357,7 +356,8 @@ def main():
     # plot_results(
     #     X, gmm.predict(X), gmm.means_, gmm.covariances_, 0, "Expectation-maximization"
     # )
-
+    with open(w_distinct_count_json, "w") as outfile:
+        json.dump(sorted_count_dict, outfile)
 
 if __name__ == "__main__":
 
