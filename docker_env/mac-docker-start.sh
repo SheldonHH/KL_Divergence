@@ -9,3 +9,5 @@ echo "export PATH=$PATH:/usr/local/go/bin" >>  /etc/profile
 source /etc/profile
 # pip3 install matplotlib
 # pip3 install scipy
+
+bazel build --config=v1 /tools/pip_package:build_pip_package

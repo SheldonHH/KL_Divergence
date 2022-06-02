@@ -14,6 +14,7 @@ from sklearn import mixture
 import pandas as pd
 import json
 import png
+from PIL import Image
 import random
 import decimal
 from scipy.interpolate import UnivariateSpline
@@ -187,7 +188,7 @@ def numpy_savetxt(data):
     np.savetxt("test.txt", data)
 
 def main():
-    dir_str = "/root/KL_Divergence/user_gauss_params/data/uniform/freq/"
+    dir_str = "/root/KL_Divergence/user_gauss_params/data/uneven/features/freq/"
     directory = os.path.join(dir_str)
     os.chdir(dir_str)   
     num_with_params = {}
@@ -308,19 +309,9 @@ def main():
         # with file:   
         #     write = csv.writer(file)
         #     write.writerows(data)
-    # sg = read_from_csv_1('../data/uneven/user_4_mnist_Xtrain.csv')
-    # print("sg.values",(sg.values))
-    # str_list = []
-    # for b in sg.values: 
-    #     str_list.append(['{:}'.format(x) for x in b])
-    # # print("str_list",str_list)
-    # length_size = int(len(sg.values)*len(sg.values[0])/28/28)
-    # actual = image_to_vector(length_size,sg.values)
-    # print("vector: {}".format(actual))
-    # non_zero_count = np.count_nonzero(actual)
-    # print("non_zero_count",non_zero_count)
-    # # np.savetxt("test_with_zero.txt", actual[~np.all(actual == 0, axis=1)])
-    # np.savetxt("test.txt", actual[~np.all(actual == 0, axis=1)])
+    # sg = read_from_csv_1('/root/KL_Divergence/user_gauss_params/data/uneven/trimmed_user4_freq.csv')
+
+
 
     # png.from_array(np.array(str_list), 'L').save("small_smiley.png")
     # a = np.arange(sg.values).reshape((38,38))
