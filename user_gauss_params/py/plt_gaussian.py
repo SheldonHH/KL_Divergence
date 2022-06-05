@@ -29,6 +29,22 @@ from expects import (
 )
 
 
+def create_fig(x, y, title, *params):
+    plt.clf()
+    plt.plot(x, y, 'b+:', label='data')
+    plt.plot(x, gauss(x, *params), 'ro:', label='fit')
+    plt.legend()
+    plt.title("Dimension distribution for "+title)
+    plt.xlabel('Frequency')
+    plt.ylabel('data')
+    fig = plt.gcf()
+    plt.show()
+    str_params = [(str(tup)) for tup in params]
+    print("str_params", str_params)
+    plt.text(5, 8, ''.join(str_params), fontsize=10)
+    fig.savefig("fig/figs"+title+'.pdf')
+
+
 # Creating a Function.
 def simulated_height_normal_dist(x, mean, sd):
     # prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
@@ -187,7 +203,7 @@ def numpy_savetxt(data):
     np.savetxt("test.txt", data)
 
 def main():
-    dir_str = "/root/KL_Divergence/user_gauss_params/data/uniform/features/freq/"
+    dir_str = "/root/KL_Divergence/user_gauss_params/data/uneven/features/freq/"
     directory = os.path.join(dir_str)
     os.chdir(dir_str)   
     num_with_params = {}
@@ -195,7 +211,7 @@ def main():
     for root,dirs,files in os.walk(directory):
         for file in files:
             dimension_min_with_params = {}
-            if file.endswith("freq.csv"):
+            if file.endswith(".csv"):
                 f=open(file, 'r')
                 data_iter = csv.reader(f)
                 data = [data for data in data_iter]
@@ -207,8 +223,12 @@ def main():
                     final_list.append(row_list)
 
                 # print("data",data)
-                raw_X = np.array(final_list)
-                X = np.sort(raw_X, axis=0)     
+                X = np.array(final_list)
+                # print("X[:,1]",X[:,1])
+                # print("X[:,0]",X[:,0])
+                # print("X",X)
+                # break
+                #  perform calculation
                 f.close()
                 MSE_list, ySp, xSp = [],[],[]
                 y_firsts, y_seconds = [],[]
@@ -237,7 +257,6 @@ def main():
                     # Calculate the MSE for each Gauss
                     ys_for_sim = [] # different from assign the value 
                     for g in range(X[:,0].size):
-                        print(" X[g]", X[g])
                         x_for_sim = X[g][0]
                         y_for_sim = multi_bimodal(
                             x_for_sim, gmm.weights_ , *params)
@@ -253,6 +272,7 @@ def main():
                         dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
                         break
                     gmm = mixture.GaussianMixture(n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
+                    list_params = []
                     list_params = zerolistmaker((incre_index+1)*3)
                     params = tuple(list_params)
                     simulated_y_sum = 0
@@ -305,9 +325,28 @@ def main():
                 dimension_min_with_params["gauss"] = [num_with_params[min_index]]
                 dimension_min_with_params["max"] = max(X[:,0])
                 dimension_min_with_params["min"] = min(X[:,0])
+                print("type(X[:,0])", type(X[:,0]))
+                plt.clf()
+                sorted_X = np.sort(X, axis=0)
+                plt.plot(sorted_X[:,0].tolist(), sorted_X[:,1].tolist(), 'b+:', label='data')
+                plt.plot(sorted_X[:,0].tolist(), multi_bimodal(
+                    sorted_X[:,0].tolist(), gmm.weights_, *tuple(num_with_params[min_index])), 'ro:', label='fit')
+                plt.legend()
+                plt.title("Dimension distribution for "+file)
+                plt.xlabel('Data')
+                plt.ylabel('Frequency')
+                fig = plt.gcf()
+                plt.show()
+                fig.savefig(file+'fig.pdf')
                 all_files_dimension_with_params[file] = dimension_min_with_params
-    with open("users_gauss.json", "w") as outfile:
+            # create_fig(X[:,0], X[:,1], file+"special one dimensional gauss",
+            #     *num_with_params[min_index])
+              
+            
+    with open("uneven_features_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params,outfile)
+
+
         # with file:   
         #     write = csv.writer(file)
         #     write.writerows(data)
@@ -337,7 +376,7 @@ def main():
     # max_key = 0
     # max_count = 0
     # count_dict = {}
-#     dir_str = r"/root/KL_Divergence/user_gauss_params/data/uniform/freq/"
+#     dir_str = r"/root/KL_Divergence/user_gauss_params/data/uneven/freq/"
 #     os.chdir(dir_str)
 #     # for file in os.listdir(dir_str):
 #     #     filename = os.fsdecode(file)

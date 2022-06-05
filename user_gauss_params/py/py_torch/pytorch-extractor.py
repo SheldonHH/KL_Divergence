@@ -11,8 +11,6 @@ import pandas as pd
 model = models.vgg16(pretrained=True)
 
 
-
-
 class FeatureExtractor(nn.Module):
   def __init__(self, model):
     super(FeatureExtractor, self).__init__()
