@@ -6,6 +6,7 @@ from ntpath import join
 from re import S
 import os
 from pylab import *
+from functools import reduce
 from scipy import linalg
 from scipy.optimize import curve_fit
 from scipy.stats import entropy
@@ -202,8 +203,14 @@ def image_to_vector(length_size,image: np.ndarray) -> np.ndarray:
 def numpy_savetxt(data):
     np.savetxt("test.txt", data)
 
+def findNth(a, b, n):
+    return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
+
 def main():
-    dir_str = "/root/KL_Divergence/user_gauss_params/data/uneven/features/freq/"
+    uneven_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uneven/features/freq/"
+    uniform_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uniform/features/freq/"
+    dir_str = uniform_freq_dir
+    gauss_filetype = "uniform"
     directory = os.path.join(dir_str)
     os.chdir(dir_str)   
     num_with_params = {}
@@ -221,8 +228,6 @@ def main():
                     for item in row:
                         row_list.append(float(item))
                     final_list.append(row_list)
-
-                # print("data",data)
                 X = np.array(final_list)
                 # print("X[:,1]",X[:,1])
                 # print("X[:,0]",X[:,0])
@@ -321,7 +326,6 @@ def main():
                         super_global_params = params
                         break
                     incre_index += 1
-                print(file," result:", num_with_params[min_index])
                 dimension_min_with_params["gauss"] = [num_with_params[min_index]]
                 dimension_min_with_params["max"] = max(X[:,0])
                 dimension_min_with_params["min"] = min(X[:,0])
@@ -337,185 +341,12 @@ def main():
                 plt.ylabel('Frequency')
                 fig = plt.gcf()
                 plt.show()
-                fig.savefig(file+'fig.pdf')
-                all_files_dimension_with_params[file] = dimension_min_with_params
-            # create_fig(X[:,0], X[:,1], file+"special one dimensional gauss",
-            #     *num_with_params[min_index])
+                fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
+                all_files_dimension_with_params[file[0:findNth(file,"_",2)]] = dimension_min_with_params
               
             
-    with open("uneven_features_gauss.json", "w") as outfile:
+    with open(gauss_filetype+"_features_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params,outfile)
-
-
-        # with file:   
-        #     write = csv.writer(file)
-        #     write.writerows(data)
-    # sg = read_from_csv_1('/root/KL_Divergence/user_gauss_params/data/uneven/trimmed_user4_freq.csv')
-
-
-
-    # png.from_array(np.array(str_list), 'L').save("small_smiley.png")
-    # a = np.arange(sg.values).reshape((38,38))
-    # print(a)
-    # r_dense_trimmed_data_path1 = first_half + \
-    #     "trimmed/dense_trimmed_"+before_extension_half+".csv"
-    # final_col_percentFreq_dict = read_from_csv(
-    #     r_dense_trimmed_data_path1, before_extension_half, first_half)
-
-    # # Parameters
-    # n_samples = 100
-
-    # # Generate random sample following a sine curve
-    # np.random.seed(0)
-    # X = np.zeros((n_samples, 2))
-
-    # i = 0
-    # dimension_min_with_params = []
-    # available_dimension_for_sample = []
-    # less_1, equal_1, larger_1 = 0,0,0
-    # max_key = 0
-    # max_count = 0
-    # count_dict = {}
-#     dir_str = r"/root/KL_Divergence/user_gauss_params/data/uneven/freq/"
-#     os.chdir(dir_str)
-#     # for file in os.listdir(dir_str):
-#     #     filename = os.fsdecode(file)
-#     #     with load(filename) as X:
-#     #         counter_initial=10
-#     MSE_list, ySp, xSp = [],[],[]
-#     y_firsts, y_seconds = [],[]
-#     for index in range(counter_initial):
-#         if n_samples < index+1:
-#             # dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
-#             break
-#         gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
-#         list_params = zerolistmaker((index+1)*3)
-#         params = tuple(list_params)
-#         # print("index", index)
-#         # print("gmm.means_", gmm.means_[index][0])
-#         simulated_y_sum = 0
-#         for sub_index in range(index+1):
-#             list_params[sub_index*3] = gmm.means_[sub_index][0]
-#             list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
-#             list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
-#             # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
-#             simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
-
-#         params = tuple(list_params)
-#         num_with_params[index] = list_params
-#         # Calculate the MSE for each Gauss
-#         ys_for_sim = [] # different from assign the value 
-#         for g in range(X[:,0].size):
-#             x_for_sim = X[g][0]
-#             y_for_sim = multi_bimodal(
-#                 x_for_sim, gmm.weights_ , *params)
-#             ys_for_sim.append(y_for_sim)
-#         MSE = calculate_MSE(X[:,1].tolist(), ys_for_sim)
-#         ySp.append(MSE)
-#         xSp.append(index)
-#         MSE_list.append(MSE)
-#     incre_index = counter_initial
-
-#     while(True):
-#         if n_samples < incre_index+1:
-#             # dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
-#             break
-#         gmm = mixture.GaussianMixture(n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
-#         list_params = zerolistmaker((incre_index+1)*3)
-#         params = tuple(list_params)
-#         simulated_y_sum = 0
-#         for sub_index in range(incre_index+1):
-#             list_params[sub_index*3] = gmm.means_[sub_index][0]
-#             list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
-#             list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
-#             # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
-#             simulated_y_sum += list_params[sub_index*3+2]*gmm.weights_[sub_index]
-#         params = tuple(list_params)
-#         num_with_params[incre_index] = list_params
-#         # print(str(index+1),params,len(params))
-#         # Calculate the MSE for each Gauss
-#         ys_for_sim = [] # different from assign the value 
-#         for g in range(X[:,0].size):
-#             x_for_sim = X[g][0]
-#             y_for_sim = multi_bimodal(
-#                 x_for_sim, gmm.weights_ , *params)
-#             ys_for_sim.append(y_for_sim)
-#         MSE = calculate_MSE(X[:,1].tolist(), ys_for_sim)
-#         MSE_list.append(MSE)
-    
-#         # print(MSE_list)
-#         # print("-----------------------------")
-#         ySp.append(MSE)
-#         xSp.append(incre_index)
-
-
-#         y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
-#         y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
-#         if(abs(y_seconds[-1]) < 0.1 or y_firsts[-1]>0 or incre_index==100):
-#             print("incre_index", incre_index)
-#             print("global_params", params)
-#             print("ySp", ySp)
-#             print("ySp.index(min(ySp))", ySp.index(min(ySp)))
-#             min_index = ySp.index(min(ySp))
-#             print("xSp",xSp)
-#             # print("x_range",x_range)
-#             y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
-#             y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
-
-#             print("y_seconds",y_seconds)
-#             print("y_firsts",y_firsts)
-#             super_global_params = params
-#             break
-#         incre_index += 1
-#     print(key," result:", num_with_params[min_index])
-#     dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
-# # print("less_1",less_1,"equal_1",equal_1,"larger_1",larger_1)
-# # write_dict_to_json({"user1": dimension_min_with_params}, w_the_user_params_json)    
-# # print("len available_dimension_for_sample",len(available_dimension_for_sample))
-# # print("available_dimension_for_sample",available_dimension_for_sample)
-# # print("max_count",max_count)
-# # print("max_key", max_key)
-# # sorted_count_dict = {k : count_dict[k] for k in sorted(count_dict)}
-
-# with open(w_distinct_count_json, "w") as outfile:
-#     json.dump(sorted_count_dict, outfile)
-    
-#         # ys_for_sim.append(y_for_sim)
-#             # print("gmm.weights_", gmm.weights_)
-#             # print("gmm.covariances_", gmm.covariances_)
-#             # print("gmm.precisions_cholesky_", gmm.precisions_cholesky_)
-#             # print("sum(gmm.weights_)", sum(gmm.weights_))
-            # print("gmm.means_", gmm.means_)
-            #
-            #
-            # for sub_index in range(index+1):
-            #     print("sub_index", sub_index)
-            # params[sub_index*3] = gmm.means_[sub_index]
-            #     params[sub_index*3+1] = gmm.covariances_array[sub_index][0]
-            #     params[sub_index*3+2] = simulated_height_normal_dist(
-            #         gmm.means_[sub_index], gmm.means_[sub_index], gmm.covariances_array[sub_index][0])
-            #     # calculate the MSE for each Gauss number of test
-            # ys_for_sim = []
-            # for g in range(len(X[i, 0])):
-            #     x_for_sim = float(decimal.Decimal(random.randrange(
-            #         int(min(X[i, 0])*100), int(max(X[i, 0])*100)))/100)
-            #     y_for_sim = multi_bimodal(
-            #         x_for_sim, *params)
-            #     ys_for_sim.append(y_for_sim)
-        # print("gmm.weights_", gmm.weights_)
-        # print("gmm.covariances_", gmm.covariances_)
-        # print("gmm.precisions_cholesky_", gmm.precisions_cholesky_)
-        # print("sum(gmm.weights_)", sum(gmm.weights_))
-        # print("gmm.means_", gmm.means_)
-    # plt.figure(figsize=(10, 10))
-    # plt.subplots_adjust(
-    #     bottom=0.04, top=0.95, hspace=0.2, wspace=0.05, left=0.03, right=0.97
-    # )
-    # Fit a Gaussian mixture with EM using ten components
-
-    # plot_results(
-    #     X, gmm.predict(X), gmm.means_, gmm.covariances_, 0, "Expectation-maximization"
-    # )
 
 
 if __name__ == "__main__":
