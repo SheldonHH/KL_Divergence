@@ -252,16 +252,28 @@ def main():
                     # print("index", index)
                     # print("gmm.means_", gmm.means_[index][0])
                     simulated_y_sum = 0
+                    sort_mch = [[],[],[],[]] # means_cov_height
                     for sub_index in range(index+1):
-                        list_params[sub_index*3] = gmm.means_[sub_index][0]
-                        list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
-                        list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
-                        # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
-                        simulated_y_sum += list_params[sub_index*3+2]
-                    print(index,"simulated_y_sum",simulated_y_sum)
+                        sort_mch[0].append(gmm.weights_[sub_index])
+                        sort_mch[1].append(gmm.means_[sub_index][0])
+                        sort_mch[2].append(gmm.covariances_[sub_index][0])
+                        simulated_height = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+                        sort_mch[3].append(simulated_height)
+                        simulated_y_sum += simulated_height
+                    # print(index,"simulated_y_sum",simulated_y_sum)
+                    sort_mch = np.array(list(map(list, zip(*sort_mch))))
+                    print(sort_mch)
+                    # sg = sorted(sort_mch, key=lambda a_entry: sort_mch[0]) 
+                    sort_mch = sort_mch[sort_mch[:, 0].argsort(kind='mergesort')]  # sort by year
+                    # print("sgggg",sg)
+                    for sub_index in range(index+1):
+                        list_params[sub_index*3] = sort_mch[sub_index][1]
+                        list_params[sub_index*3+1] = sort_mch[sub_index][2]
+                        list_params[sub_index*3+2] = sort_mch[sub_index][3]
                     params = tuple(list_params)
                     num_with_params[index] = list_params
-                    num_with_weights[index] = gmm.weights_.tolist()
+                    num_with_weights[index] = [i[0] for i in sort_mch]
+                    # print("[i[0] for i in sort_mch]",[i[0] for i in sort_mch])
                     # Calculate the MSE for each Gauss
                     ys_for_sim = [] # different from assign the value 
                     for g in range(X[:,0].size):
