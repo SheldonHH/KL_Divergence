@@ -213,7 +213,8 @@ def main():
     gauss_filetype = "uneven"
     directory = os.path.join(dir_str)
     os.chdir(dir_str)   
-    num_with_params = {}
+    num_with_params = {} # (num_of_gauss, [params])
+    num_with_weights = {}
     all_files_dimension_with_params = {}
     for root,dirs,files in os.walk(directory):
         for file in files:
@@ -260,6 +261,7 @@ def main():
                     print(index,"simulated_y_sum",simulated_y_sum)
                     params = tuple(list_params)
                     num_with_params[index] = list_params
+                    num_with_weights[index] = gmm.weights_.tolist()
                     # Calculate the MSE for each Gauss
                     ys_for_sim = [] # different from assign the value 
                     for g in range(X[:,0].size):
@@ -312,7 +314,7 @@ def main():
                     y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
                     y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
                     if(abs(y_seconds[-1]) < 0.1 or y_firsts[-1]>0 or incre_index==100):
-                        final_weights = gmm.weights_
+                        
                         print("incre_index", incre_index)
                         # print("global_params", params)
                         print("ySp", ySp)
@@ -328,8 +330,8 @@ def main():
                         super_global_params = params
                         break
                     incre_index += 1
-                dimension_min_with_params["gauss"] = [num_with_params[min_index]]
-                dimension_min_with_params["weights"] = final_weights.tolist()
+                dimension_min_with_params["gauss"] = num_with_params[min_index]
+                dimension_min_with_params["weights"] = num_with_weights[min_index]
                 dimension_min_with_params["max"] = max(X[:,0])
                 dimension_min_with_params["min"] = min(X[:,0])
                 print("type(X[:,0])", type(X[:,0]))

@@ -73,9 +73,9 @@ def main():
               population_gauss = json.load(f)
               print('len=-----',len(population_gauss))
               for uname, user in population_gauss.items():
-                  print(len(user["gauss"][0])/3)
+                  # print(len(user["gauss"][0])/3)
                   print("uname",uname)
-                  all_population_gauss[uname]=user["gauss"][0]
+                  all_population_gauss[uname]=user["gauss"]
                   
     rounded_data_directory = os.path.join(dir_str)
     os.chdir(dir_str)   
@@ -121,7 +121,7 @@ def main():
                     theuser_sample.extend(sample_subportion(sub_portion, percent_in_decimal))
                     pos += step
                 # Xsample = pd.Series(theuser_sample, index='x1')
-                gaussNum = len(all_population_gauss[file[findNth(file,"_",1)+1:findNth(file,"_",3)]])
+                gaussNum=int(len(all_population_gauss[file[findNth(file,"_",1)+1:findNth(file,"_",3)]])/3)
                 print("value_counts(np.array(theuser_sample))",type(pd.Series(np.array(theuser_sample)).value_counts().to_numpy()))
                 # ready_for_gmm = np.array(theuser_sample)
 
@@ -138,6 +138,7 @@ def main():
                 # print("ready_for_gmm: ",ready_for_gmm)
                 # np.append(np.array(theuser_sample),pd.Series(np.array(theuser_sample)).value_counts().to_numpy())
                 # print("pd.Series(np.array(theuser_sample)).value_counts().to_numpy()",pd.Series(np.array(theuser_sample)).value_counts().to_numpy())
+                print("gaussNumgaussNumgaussNum",gaussNum)
                 gmm = mixture.GaussianMixture(n_components=gaussNum, covariance_type="diag", max_iter=500000).fit(ready_for_gmm)
                 gauss_weights_dict = {}
                 sample_params = []
