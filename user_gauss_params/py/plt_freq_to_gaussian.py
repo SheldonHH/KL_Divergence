@@ -209,8 +209,8 @@ def findNth(a, b, n):
 def main():
     uneven_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uneven/features/freq/"
     uniform_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uniform/features/freq/"
-    dir_str = uniform_freq_dir
-    gauss_filetype = "uniform"
+    dir_str = uneven_freq_dir
+    gauss_filetype = "uneven"
     directory = os.path.join(dir_str)
     os.chdir(dir_str)   
     num_with_params = {}
@@ -239,6 +239,7 @@ def main():
                 y_firsts, y_seconds = [],[]
                 counter_initial = 10
                 n_samples = len(data)
+                final_weights = 0
                 for index in range(counter_initial):
                     if n_samples < index+1:
                         dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
@@ -311,6 +312,7 @@ def main():
                     y_firsts = obtain_first_second(np.array(ySp),np.array(xSp),"first")
                     y_seconds = obtain_first_second(np.array(ySp),np.array(xSp),"second")
                     if(abs(y_seconds[-1]) < 0.1 or y_firsts[-1]>0 or incre_index==100):
+                        final_weights = gmm.weights_
                         print("incre_index", incre_index)
                         # print("global_params", params)
                         print("ySp", ySp)
@@ -327,6 +329,7 @@ def main():
                         break
                     incre_index += 1
                 dimension_min_with_params["gauss"] = [num_with_params[min_index]]
+                dimension_min_with_params["weights"] = final_weights.tolist()
                 dimension_min_with_params["max"] = max(X[:,0])
                 dimension_min_with_params["min"] = min(X[:,0])
                 print("type(X[:,0])", type(X[:,0]))
