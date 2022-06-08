@@ -57,7 +57,8 @@ def main():
     num_of_slides = 10
     uneven_dir = "/root/KL_Divergence/user_gauss_params/data/uneven/features/"
     uniform_dir = "/root/KL_Divergence/user_gauss_params/data/uniform/features/"
-    dir_str = uniform_dir
+    dir_str = uneven_dir
+    gauss_filetype = "uneven"
 
     num_with_params = {}
     all_files_dimension_with_params = {}
@@ -151,7 +152,7 @@ def main():
                 gauss_weights_dict["weights"] = gmm.weights_.tolist()
                 file_gauss_dict[file[findNth(file,"_",1)+1:findNth(file,"_",3)]] = gauss_weights_dict
         print("file_gauss_dict",file_gauss_dict)
-        write_dict_to_json(file_gauss_dict, "sample_gauss.json")
+        write_dict_to_json(file_gauss_dict, gauss_filetype+"_sample_gauss.json")
                 
                 
                 
