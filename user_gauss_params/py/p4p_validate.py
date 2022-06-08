@@ -58,13 +58,12 @@ def main():
             f.close()
 
     all_population_gauss = {}
-    os.chdir(dir_str+"/freq")
+    os.chdir(dir_str+"/freq/")
     cwd = os.getcwd()
     print("Current working directory is:", cwd)
-    sample_data_directory = os.path.join(dir_str+"/freq")
     # DON"T USE os.walk
-    for item in os.listdir(dir_str+"/freq"):
-        if os.path.isfile(os.path.join(dir_str, item)) and item.endswith('.json'):
+    for item in os.listdir(dir_str+"/freq/"):
+        if os.path.isfile(os.path.join(dir_str+"/freq/", item)) and item.endswith('.json'):
             print(item)
             f=open(item)
             data = json.load(f)
@@ -72,40 +71,25 @@ def main():
             for uname, user in data.items():
                 all_population_gauss[uname] = user["gauss"]
             f.close()
-    print("all_population",sample_gauss)
-    # os.chdir(dir_str+"/freq/") 
-    # freq_directory = os.path.join(dir_str+"/freq/")
-    # cwd = os.getcwd()
-    # print("Current working directory is:", cwd)
-
-    # os.chdir(dir_str+"/freq/") 
-    # for root,dirs,files in os.walk(freq_directory):
-    #   print("files",files)
-      # for file in files:
-      #   if file.endswith(".json"):
-      #         f=open(file)
-      #         population_gauss = json.load(f)
-      #         print('len=-----',len(population_gauss))
-      #         for uname, user in population_gauss.items():
-      #           all_population_gauss[uname]=user["gauss"]
-      #         f.close()
-    
+    print("all_population",all_population_gauss)
     
     user_distance_map = {}
     for key,value in all_population_gauss.items(): 
       dimen_distance_array = []
-      for inx in range(len(value)):
-        population_mean = value[3*inx]
-        population_cov = value[3*inx+1]
-        sample_mean = sample_gauss[3*inx]
-        sample_cov = sample_gauss[3*inx+1]
-        distance = abs(population_mean-sample_mean)-(population_cov+sample_cov)
-        dimen_distance_array.append(distance<0)
+      print("len(value)",len(value))
+      for inx in range(0,len(value),3):
+        population_mean = value[inx]
+        population_cov = value[inx+1]
+        sample_mean = sample_gauss[key][inx]
+        sample_cov = sample_gauss[key][inx+1]
+        distance = abs(population_mean-sample_mean)-(sqrt(population_cov)+sqrt(sample_cov))
+        dimen_distance_array.append(distance>0)
         if distance<0:
           print("distance check fail")
       user_distance_map[key]=dimen_distance_array
-
-    write_dict_to_json(user_distance_map, "population_sample_map.json")
+    
+    print(user_distance_map)
+    # write_dict_to_json(user_distance_map, "population_sample_map.json")
              
             
 if __name__ == "__main__":
