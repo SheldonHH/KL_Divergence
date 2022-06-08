@@ -57,8 +57,8 @@ def main():
     num_of_slides = 10
     uneven_dir = "/root/KL_Divergence/user_gauss_params/data/uneven/features/"
     uniform_dir = "/root/KL_Divergence/user_gauss_params/data/uniform/features/"
-    dir_str = uneven_dir
-    gauss_filetype = "uneven"
+    dir_str = uniform_dir
+    gauss_filetype = "uniform"
 
     num_with_params = {}
     all_files_dimension_with_params = {}
@@ -144,13 +144,27 @@ def main():
                 sample_params = []
                 sample_params = zerolistmaker(gaussNum*3)
                 simulated_y_sum = 0
+                sort_mch = [[],[],[],[]] # means_cov_height
                 for sub_index in range(gaussNum):
-                    sample_params[sub_index*3] = gmm.means_[sub_index][0]
-                    sample_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
-                    sample_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+                    sort_mch[0].append(gmm.weights_[sub_index])
+                    sort_mch[1].append(gmm.means_[sub_index][0])
+                    sort_mch[2].append(gmm.covariances_[sub_index][0])
+                    simulated_height = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+                    sort_mch[3].append(simulated_height)
+                    simulated_y_sum += simulated_height
+                # print(index,"simulated_y_sum",simulated_y_sum)
+                sort_mch = np.array(list(map(list, zip(*sort_mch))))
+                print(sort_mch)
+                # sg = sorted(sort_mch, key=lambda a_entry: sort_mch[0]) 
+                sort_mch = sort_mch[sort_mch[:, 0].argsort(kind='mergesort')]  # sort by year
+                # print("sgggg",sg)
+                for sub_index in range(gaussNum):
+                    sample_params[sub_index*3] = sort_mch[sub_index][1]
+                    sample_params[sub_index*3+1] = sort_mch[sub_index][2]
+                    sample_params[sub_index*3+2] = sort_mch[sub_index][3]
                 # print("sample_params", sample_params)  
                 gauss_weights_dict["gauss"] = sample_params
-                gauss_weights_dict["weights"] = gmm.weights_.tolist()
+                gauss_weights_dict["weights"] = [i[0] for i in sort_mch]
                 file_gauss_dict[file[findNth(file,"_",1)+1:findNth(file,"_",3)]] = gauss_weights_dict
         print("file_gauss_dict",file_gauss_dict)
         write_dict_to_json(file_gauss_dict, gauss_filetype+"_sample_gauss.json")

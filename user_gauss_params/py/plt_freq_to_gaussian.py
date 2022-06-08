@@ -209,8 +209,8 @@ def findNth(a, b, n):
 def main():
     uneven_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uneven/features/freq/"
     uniform_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uniform/features/freq/"
-    dir_str = uneven_freq_dir
-    gauss_filetype = "uneven"
+    dir_str = uniform_freq_dir
+    gauss_filetype = "uniform"
     directory = os.path.join(dir_str)
     os.chdir(dir_str)   
     num_with_params = {} # (num_of_gauss, [params])
