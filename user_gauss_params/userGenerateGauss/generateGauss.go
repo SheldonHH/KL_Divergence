@@ -14,13 +14,13 @@ import (
 type dict map[string]map[string]interface{}
 
 func GenerateGauss(raw_data_path string) string {
-	trim_data_path := "user_gauss_params/py/preprocess_golang.py"
-	independent_freq_path := "user_gauss_params/py/independent_frequency_golang.py"
-	generate_gauss_path := "user_gauss_params/py/generate_gauss_golang.py"
-	cmd1 := exec.Command("python3", trim_data_path, raw_data_path)
+	rounded_py_path := "user_gauss_params/py/golang/round_data_golang.py"
+	countFreq_path := "user_gauss_params/py/golang/countFreq_golang.py"
+	freq_to_gauss_path := "user_gauss_params/py/freq_to_gauss_golang.py"
+	cmd1 := exec.Command("python3", rounded_py_path, raw_data_path)
 	fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
-	cmd2 := exec.Command("python3", independent_freq_path, raw_data_path)
-	cmd3 := exec.Command("python3", generate_gauss_path, raw_data_path)
+	cmd2 := exec.Command("python3", countFreq_path, raw_data_path)
+	cmd3 := exec.Command("python3", freq_to_gauss_path, raw_data_path)
 	executeCmd(cmd1)
 	executeCmd(cmd2)
 	executeCmd(cmd3)
@@ -43,29 +43,10 @@ func GenerateGauss(raw_data_path string) string {
 }
 
 func MixGauss(raw_data_path string) string {
-	// trim_data_path := "user_gauss_params/py/preprocess_golang.py"
-	// cmd1 := exec.Command("python3", trim_data_path, raw_data_path)
-	// fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
-	// executeCmd(cmd1)
 	mixture_gaussian_path := "user_gauss_params/py/mixture_gaussian.py"
 	cmd2 := exec.Command("python3", mixture_gaussian_path, raw_data_path)
 	fmt.Println("cmd2 = ", reflect.TypeOf(cmd2))
 	executeCmd(cmd2)
-
-	// forward_slash := strings.LastIndex(raw_data_path, "/")
-	// dot_index := strings.LastIndex(raw_data_path, ".")
-	// first_half := string(raw_data_path[0:forward_slash])
-	// file_name_without_extension := string(raw_data_path[forward_slash:dot_index])
-	// user_data_params_path := first_half + "/gauss_result" + file_name_without_extension + "_params.json"
-	// gauss_map_one_user := obtainMapfromJson(user_data_params_path)
-
-	// fmt.Println("user_data_params_path", user_data_params_path)
-
-	// for _, m := range gauss_map_one_user {
-	// 	for k, v := range m {
-	// 		fmt.Println(k, "value is", v)
-	// 	}
-	// }
 	return "Mixture success"
 }
 
