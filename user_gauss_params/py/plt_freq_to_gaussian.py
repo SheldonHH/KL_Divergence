@@ -281,6 +281,7 @@ def main():
                         y_for_sim = multi_bimodal(
                             x_for_sim, gmm.weights_ , *params)
                         ys_for_sim.append(y_for_sim)
+                    print(X)
                     MSE = calculate_MSE(X[:,1].tolist(), ys_for_sim)
                     ySp.append(MSE)
                     xSp.append(index)

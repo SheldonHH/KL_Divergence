@@ -53,7 +53,7 @@ def main():
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     r_features_csv = path+username+"_features.csv"
-    w_rounded_data_path1 = first_half+"features/rounded_"+second_half
+    w_rounded_data_path1 = path+"features/rounded_"+username+"_features.csv"
     # print("w_dense_rounded_data_path1", w_rounded_data_path1)
     read_from_csv(r_features_csv, w_rounded_data_path1)
     # read_from_csv(raw_data_path2, w_dense_rounded_data_path1)
