@@ -81,44 +81,6 @@ def multi_bimodal(x, weights_array, *params):
     return gausses
 
 
-def write_to_json(df, before_extension_half, first_half):
-    w_freq_path = first_half + \
-        "independent/freq_"+before_extension_half+".json"
-    w_percent_freq_path = first_half + \
-        "independent/percent_freq_"+before_extension_half+".json"
-    freq_json_file_to_write = open(w_freq_path, 'w')
-    percent_freq_json_file_to_write = open(w_percent_freq_path, 'w')
-    # json_file_to_write.write(json.dumps(df['x1'].value_counts().to_dict()))
-    trimmed_dict = df.to_dict()
-    freq_dict = {}
-
-    count_dict = {}
-    for key, value in trimmed_dict.items():
-        freq_dict[key] = pd.DataFrame.from_dict(
-            value, orient='index').value_counts().to_dict()
-        # print("len", len(freq_dict[key]))
-        count_dict[key] = len(freq_dict[key])
-
-    final_col_percentFreq_dict = {}
-    final_col_freq_dict = {}
-    for bigger_key, bigger_value in freq_dict.items():
-        col_freq_dict = {}
-        col_percentFreq_dict = {}
-        for key, value in bigger_value.items():
-            col_freq_dict[key[0]] = value
-            col_percentFreq_dict[key[0]] = value / count_dict[bigger_key]
-        final_col_freq_dict[bigger_key] = col_freq_dict
-        final_col_percentFreq_dict[bigger_key] = col_percentFreq_dict
-    freq_json_file_to_write.write(json.dumps(final_col_freq_dict))
-    percent_freq_json_file_to_write.write(
-        json.dumps(final_col_percentFreq_dict))
-    return final_col_percentFreq_dict
-    # with open(w_freq_path, 'r') as f:
-    #     freq_dict = json.load(f)
-    # with open(w_percent_freq_path, 'r') as f:
-    #     freq_dict = json.load(f)
-
-
 
 
 def zerolistmaker(n):
