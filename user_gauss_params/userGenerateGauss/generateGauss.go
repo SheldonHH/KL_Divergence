@@ -7,10 +7,18 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"reflect"
+	"runtime"
+	"strings"
 )
 
 type dict map[string]map[string]interface{}
+
+var (
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
+)
 
 func GenerateGauss(raw_data_path string) string {
 	csv_to_jpeg_path := "user_gauss_params/py/py_golang/csv_to_jpeg.py"
@@ -56,7 +64,10 @@ func MixGauss(raw_data_path string) string {
 }
 
 func executeCmd(cmd *exec.Cmd) string {
-	cmd.Dir = "/root/KL_Divergence"
+
+	exclude_last := basepath[0:strings.LastIndex(basepath, "/")]
+	exclude_second_last := exclude_last[0:strings.LastIndex(exclude_last, "/")]
+	cmd.Dir = exclude_second_last
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &out
