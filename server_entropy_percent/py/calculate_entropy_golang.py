@@ -20,27 +20,23 @@ def write_dict_to_json(dict, json_to_write):
 def gauss(x, mu, sigma, A):
     return A*np.exp(-(x-mu)**2/2/sigma**2)
 
+def zerolistmaker(n):
+    listofzeros = [0] * n
+    return listofzeros
+
 
 def multi_bimodal(x, *params):
-    print("*params", params)
-    print("type(*params)", type(params))
     gausses = 0
-    paramssss = params
-    print("[0][0:3]", *params[0])
-    index = 0
     gauss_index = int(len(*params)/3)
     for i in range(gauss_index):
-        # print("i::",i)
-        gausses += gauss(x, *params[0][0+index*3:3+index*3])
-        index += 1
-
+        gausses += weights_array[i]*gauss(x, *params[0][0+i*3:3+i*3])
     return gausses
 
 
 def integrand(x, a, b):
     return a*x**2 + b
 
-
+# weights_array = []
 def main():
     args = sys.argv[1:]
     gauss_users_dir = args[0]
@@ -56,25 +52,28 @@ def main():
     for user_str in data.keys():
         print("user_key",user_str)
         users_individual_gauss_entropy = []
-        this_d_data = data[user_str][list(
-            data[user_str].keys())[0]]
-        print("F35555",user_str, this_d_data)
+        this_d_data = data[user_str]["gauss"]
+        print("F35555",this_d_data)
         d_min = data[user_str]["min"]
         d_max = data[user_str]["max"]
         print(d_max)
-        I = quad(multi_bimodal, d_min, d_max,  args=(list(this_d_data)))
-        users_individual_gauss_entropy.append(I[0])
-        print("users_individual_gauss_entropy", users_individual_gauss_entropy)
-        user_entropies_dict[user_str] = users_individual_gauss_entropy
-        user_entrosum_dict[user_str] = sum(users_individual_gauss_entropy)
-        total_entrosum += sum(users_individual_gauss_entropy)
-    print("user_entropies_dict", user_entropies_dict)
-    percent_dict = {}
-    for key in user_entrosum_dict.keys():
-        new_value = float(user_entrosum_dict[key]) / total_entrosum
-        percent_dict[key] = new_value
-    print("percent_dict", percent_dict)
-    write_dict_to_json(percent_dict, w_consolidated_percent_json)
+        # print("ISraelk",data[user_str]["weights"])
+        global weights_array
+        weights_array = data[user_str]["weights"]
+        I = quad(multi_bimodal, d_min, d_max, args=(list(this_d_data)))
+        print("I",I)
+        # users_individual_gauss_entropy.append(I[0])
+        # print("users_individual_gauss_entropy", users_individual_gauss_entropy)
+        # user_entropies_dict[user_str] = users_individual_gauss_entropy
+        # user_entrosum_dict[user_str] = sum(users_individual_gauss_entropy)
+        # total_entrosum += sum(users_individual_gauss_entropy)
+    # print("user_entropies_dict", user_entropies_dict)
+    # percent_dict = {}
+    # for key in user_entrosum_dict.keys():
+    #     new_value = float(user_entrosum_dict[key]) / total_entrosum
+    #     percent_dict[key] = new_value
+    # print("percent_dict", percent_dict)
+    # write_dict_to_json(percent_dict, w_consolidated_percent_json)
 
 
 if __name__ == "__main__":
