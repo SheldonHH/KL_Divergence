@@ -147,72 +147,24 @@ def write_to_json(df, before_extension_half, first_half):
     #     freq_dict = json.load(f)
 
 
-def plot_results(X, Y, means, covariances, index, title):
-    splot = plt.subplot(5, 1, 1 + index)
-    for i, (mean, covar, color) in enumerate(zip(means, covariances, color_iter)):
-        v, w = linalg.eigh(covar)
-        v = 2.0 * np.sqrt(2.0) * np.sqrt(v)
-        u = w[0] / linalg.norm(w[0])
-        # as the DP will not use every component it has access to
-        # unless it needs it, we shouldn't plot the redundant
-        # components.
-        if not np.any(Y == i):
-            continue
-        plt.scatter(X[Y == i, 0], X[Y == i, 1], 0.8, color=color)
-
-        # Plot an ellipse to show the Gaussian component
-        angle = np.arctan(u[1] / u[0])
-        angle = 180.0 * angle / np.pi  # convert to degrees
-        ell = mpl.patches.Ellipse(mean, v[0], v[1], 180.0 + angle, color=color)
-        ell.set_clip_box(splot.bbox)
-        ell.set_alpha(0.5)
-        splot.add_artist(ell)
-
-    plt.xlim(-6.0, 4.0 * np.pi - 6.0)
-    plt.ylim(-5.0, 5.0)
-    plt.title(title)
-    plt.xticks(())
-    plt.yticks(())
-
-#  The four initializations are
-#  kmeans (default), random, random_from_data and k-means++.
-#  eventual associated classification after GMM has finished
 
 
 def zerolistmaker(n):
     listofzeros = [0] * n
     return listofzeros
 
-def read_from_csv_1(r_dense_trimmed_data_path1):
-    df = pd.read_csv(r_dense_trimmed_data_path1,header=1)
-    return df
-
-def image_to_vector(length_size,image: np.ndarray) -> np.ndarray:
-    """
-    Args:
-    image: numpy array of shape (length, height, depth)
-
-    Returns:
-     v: a vector of shape (length x height x depth, 1)
-    """
-    # length, height, depth = image.shape
-    # 14999 user1
-    # user2 9999
-    # user3 11999
-    return image.reshape((length_size * 28 * 28, 1))
-def numpy_savetxt(data):
-    np.savetxt("test.txt", data)
 
 def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
 def main():
-    uneven_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uneven/features/freq/"
-    uniform_freq_dir = "/root/KL_Divergence/user_gauss_params/data/uniform/features/freq/"
-    dir_str = uniform_freq_dir
-    gauss_filetype = "uniform"
-    directory = os.path.join(dir_str)
-    os.chdir(dir_str)   
+    args = sys.argv[1:]
+    raw_csv_path1 = args[0]
+    dir_str = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
+    freq_dir = dir_str+"/features/freq/"
+    gauss_filetype = "dynamic"
+    directory = os.path.join(freq_dir)
+    os.chdir(freq_dir)   
     num_with_params = {} # (num_of_gauss, [params])
     num_with_weights = {}
     all_files_dimension_with_params = {}

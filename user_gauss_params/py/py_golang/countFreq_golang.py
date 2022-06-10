@@ -10,10 +10,10 @@ def main():
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     # pd.DataFrame(features).to_csv(path+username+"_features.csv", header=False)
-    df = pd.read_csv(path+username+'_features.csv', names=['col1'])
+    df = pd.read_csv(path+"/features/rounded_"+username+'_features.csv', names=['col1'])
     print("df",df)
     print(df.value_counts())
-    df.value_counts(normalize=True).to_csv(path+username+"_freq.csv", header=False)
+    df.value_counts(normalize=True).to_csv(path+"/features/freq/"+username+"_freq.csv", header=False)
 
 if __name__ == "__main__":
     main()
