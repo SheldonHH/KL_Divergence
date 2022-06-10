@@ -16,10 +16,10 @@ func GenerateEntropy(gauss_users_dir string) string {
 	cmd1 := exec.Command("python3", consolidate_gauss_path, gauss_users_dir)
 	executeCmd(cmd1)
 
-	generate_entropy_path := "server_entropy_percent/py/calculate_entropy_golang.py"
-	cmd2 := exec.Command("python3", generate_entropy_path, gauss_users_dir)
-	executeCmd(cmd2)
-	// entropysum_percent_map := obtainMapfromJson("server_entropy_percent/data/server_gauss_joint/consolidated/consolidated_entropysum_percent.json")
+	// generate_entropy_path := "server_entropy_percent/py/calculate_entropy_golang.py"
+	// cmd2 := exec.Command("python3", generate_entropy_path, gauss_users_dir)
+	// executeCmd(cmd2)
+	// entropysum_percent_map := obtainMapfromJson("server_entropy_percent/data/users_individual_gauss/consolidated/consolidated_entropysum_percent.json")
 	// for _, m := range entropysum_percent_map {
 	// 	// m is a map[string]interface.
 	// 	// loop over keys and values in the map.
@@ -44,7 +44,6 @@ func executeCmd(cmd *exec.Cmd) string {
 	fmt.Println("Result: " + out.String())
 	return "executeCmd done!"
 }
-
 
 func obtainMapfromJson(user_data_params_path string) (sg dict) {
 

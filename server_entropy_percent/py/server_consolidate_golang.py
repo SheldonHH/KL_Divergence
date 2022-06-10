@@ -31,11 +31,12 @@ def main():
     users_list = user_list_from_dir(gauss_users_dir)
     print("users_list",users_list)
     for user_gauss_file in users_list:
+
+        # username = user_gauss_file[0: user_gauss_file.rindex('.')]
         with open(gauss_users_dir+"/"+user_gauss_file) as json_file:
             data_dict = json.load(json_file)
-            print(data_dict)
-            print("user_gauss_file[0:5]",user_gauss_file[0:5])
-            consolidated_params[user_gauss_file[0:5]] = data_dict[user_gauss_file[0:5]]
+            pk = list(data_dict.keys())[0]
+            consolidated_params[pk] = data_dict[pk]
     w_consolidated_gauss_params_json = gauss_users_dir + "/consolidated/consolidated_gauss_params.json"
     write_dict_to_json(consolidated_params, w_consolidated_gauss_params_json)
 
