@@ -7,6 +7,7 @@ from os import listdir
 from os.path import isfile, join
 from cv2 import cv2
 import pandas as pd
+import sys
 
 model = models.vgg16(pretrained=True)
 
@@ -32,53 +33,46 @@ class FeatureExtractor(nn.Module):
     out = self.fc(out) 
     return out 
 
-# Initialize the model
-model = models.vgg16(pretrained=True)
-new_model = FeatureExtractor(model)
 
-# Change the device to GPU
-device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
-new_model = new_model.to(device)
+def main():
+    args = sys.argv[1:]
+    raw_csv_path1 = args[0]
+    print(args)
+    jpeg_data_path1 = args[0][0:args[0].rindex('.')]+".jpeg"
+    model = models.vgg16(pretrained=True)
+    new_model = FeatureExtractor(model)
+    device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
+    new_model = new_model.to(device)
+    transform = transforms.Compose([
+      transforms.ToPILImage(),
+      transforms.CenterCrop(512),
+      transforms.Resize(448),
+      transforms.ToTensor()                              
+    ])
+    # Will contain the feature
+    features = []
+    img = cv2.imread(jpeg_data_path1)
+    # Transform the image
+    img = transform(img)
+    # Reshape the image. PyTorch model reads 4-dimensional tensor
+    # [batch_size, channels, width, height]
+    img = img.reshape(1, 3, 448, 448)
+    img = img.to(device)
+    # We only extract features, so we don't need gradient
+    with torch.no_grad():
+      # Extract the feature from the image
+      feature = new_model(img)
+    # Convert to NumPy Array, Reshape it, and save it to features variable
+    features.append(feature.cpu().detach().numpy().reshape(-1))
 
+    # Convert to NumPy Array
+    features = np.array(features)
+    print("features", len(features[0]))
 
+    path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
+    username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
+    pd.DataFrame(features).to_csv(path+username+"_features.csv", header=False)
+    # np.savetxt("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.txt",features)
 
-
-
-# Transform the image, so it becomes readable with the model
-transform = transforms.Compose([
-  transforms.ToPILImage(),
-  transforms.CenterCrop(512),
-  transforms.Resize(448),
-  transforms.ToTensor()                              
-])
-# Will contain the feature
-features = []
-
-# Iterate each image
-
-# onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-# for i in tqdm(sample_submission.ImageID):
-#     # Set the image path
-#     path = os.path.join('data', 'test', str(i) + '.jpg')
-    # Read the file
-path = r"/root/KL_Divergence/user_gauss_params/data/uniform/user_1.jpeg"
-img = cv2.imread(path)
-# Transform the image
-img = transform(img)
-# Reshape the image. PyTorch model reads 4-dimensional tensor
-# [batch_size, channels, width, height]
-img = img.reshape(1, 3, 448, 448)
-img = img.to(device)
-# We only extract features, so we don't need gradient
-with torch.no_grad():
-  # Extract the feature from the image
-  feature = new_model(img)
-# Convert to NumPy Array, Reshape it, and save it to features variable
-features.append(feature.cpu().detach().numpy().reshape(-1))
-
-# Convert to NumPy Array
-features = np.array(features)
-print("features", len(features[0]))
-
-pd.DataFrame(features).to_csv("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.csv", header=False)
-np.savetxt("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.txt",features)
+if __name__ == "__main__":
+    main()

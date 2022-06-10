@@ -33,19 +33,13 @@ def read_from_csv(raw_data_path, trimmed_data_path):
       oned_rows = []
       alld_rows = []
       csvreader = csv.reader(file)
-      # header = next(csvreader)
-      # header_to_write = header
-      # writer.writerow(header_to_write)
       for row in csvreader:
-        # print("row:::",row)
         oned_rows.append(row)
       alld_rows.append(oned_rows)
-    # print("alld_rows",alld_rows)
     trimmed_row = dense_trim_row(alld_rows[0])
     print(trimmed_row)
     with open(trimmed_data_path, 'w') as file_to_write:
         writer = csv.writer(file_to_write)
-        # writer.writerow(trimmed_row)
         for final_row in trimmed_row:
             print("final_row", final_row)
             writer.writerow([final_row])
