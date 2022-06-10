@@ -7,9 +7,17 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
 )
 
 type dict map[string]map[string]interface{}
+
+var (
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
+)
 
 func GenerateEntropy(gauss_users_dir string) string {
 	consolidate_gauss_path := "server_entropy_percent/py/server_consolidate_golang.py"
@@ -31,7 +39,9 @@ func GenerateEntropy(gauss_users_dir string) string {
 }
 
 func executeCmd(cmd *exec.Cmd) string {
-	cmd.Dir = "/root/KL_Divergence"
+	exclude_last := basepath[0:strings.LastIndex(basepath, "/")]
+	exclude_second_last := exclude_last[0:strings.LastIndex(exclude_last, "/")]
+	cmd.Dir = exclude_second_last
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &out
