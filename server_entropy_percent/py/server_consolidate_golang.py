@@ -31,7 +31,6 @@ def main():
     users_list = user_list_from_dir(gauss_users_dir)
     print("users_list",users_list)
     for user_gauss_file in users_list:
-
         # username = user_gauss_file[0: user_gauss_file.rindex('.')]
         with open(gauss_users_dir+"/"+user_gauss_file) as json_file:
             data_dict = json.load(json_file)
