@@ -8,7 +8,7 @@ from os.path import isfile, join
 from cv2 import cv2
 import pandas as pd
 import sys
-
+import os
 model = models.vgg16(pretrained=True)
 
 
@@ -72,6 +72,7 @@ def main():
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     pd.DataFrame(features).T.to_csv(path+username+"_features.csv", header=False, index=False)
+    os.remove(jpeg_data_path1)
     # np.savetxt("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.txt",features)
 
 if __name__ == "__main__":
