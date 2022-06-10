@@ -55,7 +55,6 @@ def main():
         d_min = data[user_str]["min"]
         d_max = data[user_str]["max"]
         print(d_max)
-        # print("ISraelk",data[user_str]["weights"])
         global weights_array
         weights_array = data[user_str]["weights"]
         I = quad(multi_bimodal, d_min, d_max, args=(list(this_d_data)))
