@@ -13,20 +13,20 @@ import (
 type dict map[string]map[string]interface{}
 
 func GenerateGauss(raw_data_path string) string {
-	csv_to_jpeg_path := "user_gauss_params/py/py_golang/csv_to_jpeg.py"
+	// csv_to_jpeg_path := "user_gauss_params/py/py_golang/csv_to_jpeg.py"
 	jpeg_to_features_path := "user_gauss_params/py/py_torch/pytorch-extractor.py"
-	// rounded_py_path := "user_gauss_params/py/golang/round_data_golang.py"
-	// countFreq_path := "user_gauss_params/py/golang/countFreq_golang.py"
+	rounded_py_path := "user_gauss_params/py/py_golang/round_data_golang.py"
+	// countFreq_path := "user_gauss_params/py/py_golang/countFreq_golang.py"
 	// freq_to_gauss_path := "user_gauss_params/py/freq_to_gauss_golang.py"
-	cmd1 := exec.Command("python3", csv_to_jpeg_path, raw_data_path)
-	fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
+	// cmd1 := exec.Command("python3", csv_to_jpeg_path, raw_data_path)
+	// fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
 	cmd2 := exec.Command("python3", jpeg_to_features_path, raw_data_path)
-	// cmd3 := exec.Command("python3", rounded_py_path, raw_data_path)
+	cmd3 := exec.Command("python3", rounded_py_path, raw_data_path)
 	// cmd4 := exec.Command("python3", countFreq_path, raw_data_path)
 	// cmd5 := exec.Command("python3", freq_to_gauss_path, raw_data_path)
-	executeCmd(cmd1)
+	// executeCmd(cmd1)
 	executeCmd(cmd2)
-	// executeCmd(cmd3)
+	executeCmd(cmd3)
 	// executeCmd(cmd4)
 
 	// forward_slash := strings.LastIndex(raw_data_path, "/")
