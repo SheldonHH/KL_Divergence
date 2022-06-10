@@ -132,6 +132,7 @@ def findNth(a, b, n):
 def main():
     args = sys.argv[1:]
     raw_csv_path1 = args[0]
+    username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     dir_str = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     freq_dir = dir_str+"/features/freq/"
     gauss_filetype = "dynamic"
@@ -285,7 +286,7 @@ def main():
                 # fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
                 all_files_dimension_with_params[file[0:findNth(file,"_",2)]] = dimension_min_with_params
               
-            
+    os.remove(freq_dir+username+"_freq.csv")    
     with open(gauss_filetype+"_features_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params,outfile)
 

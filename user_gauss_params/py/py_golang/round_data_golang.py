@@ -1,6 +1,7 @@
 import csv
 import sys
 import json
+import os
 # raw_data_path1 = 'data/user_1_data.csv'
 
 first_layer_dict = {}
@@ -56,6 +57,7 @@ def main():
     w_rounded_data_path1 = path+"features/rounded_"+username+"_features.csv"
     # print("w_dense_rounded_data_path1", w_rounded_data_path1)
     read_from_csv(r_features_csv, w_rounded_data_path1)
+    os.remove(r_features_csv)
     # read_from_csv(raw_data_path2, w_dense_rounded_data_path1)
 
 
