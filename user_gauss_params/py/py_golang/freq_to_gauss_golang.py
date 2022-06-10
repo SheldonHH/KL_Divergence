@@ -135,7 +135,7 @@ def main():
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     dir_str = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     freq_dir = dir_str+"/features/freq/"
-    gauss_filetype = "dynamic"
+    gauss_filetype = username
     directory = os.path.join(freq_dir)
     os.chdir(freq_dir)   
     num_with_params = {} # (num_of_gauss, [params])

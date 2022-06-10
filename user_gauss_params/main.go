@@ -23,7 +23,7 @@ func main() {
 	raw_data_path := basepath + "/data/" + username + ".csv"
 	individual_Gauss := ugg.GenerateGauss(raw_data_path)
 	fmt.Println("individual_Gauss", individual_Gauss)
-	plan, _ := ioutil.ReadFile(basepath + "/data/features/freq/dynamic_features_gauss.json")
+	plan, _ := ioutil.ReadFile(basepath + "/data/features/freq/" + username + "_features_gauss.json")
 	var data interface{}
 	err := json.Unmarshal(plan, &data)
 	if err != nil {
