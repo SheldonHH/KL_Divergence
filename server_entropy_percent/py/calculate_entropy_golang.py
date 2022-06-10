@@ -4,8 +4,6 @@ from scipy.integrate import quad
 import numpy as np
 import sys
 
-# r_consolidated_params_json = '../data/users_individual_gauss/consolidated/consolidated_gauss_params.json'
-w_consolidated_percent_json = '../data/consolidated/consolidated_entropysum_percent.json'
 
 
 def write_dict_to_json(dict, json_to_write):
@@ -46,7 +44,7 @@ def main():
     user_entrosum_dict = {}
     total_entrosum = 0
     r_consolidated_params_json = gauss_users_dir+"/consolidated/consolidated_gauss_params.json"
-    w_consolidated_percent_json = gauss_users_dir+"/consolidated_entropysum_percent.json"
+    w_consolidated_percent_json = gauss_users_dir+"/consolidated/entropysum_percent.json"
     f = open(r_consolidated_params_json)
     data = json.load(f)
     for user_str in data.keys():
@@ -62,18 +60,18 @@ def main():
         weights_array = data[user_str]["weights"]
         I = quad(multi_bimodal, d_min, d_max, args=(list(this_d_data)))
         print("I",I)
-        # users_individual_gauss_entropy.append(I[0])
-        # print("users_individual_gauss_entropy", users_individual_gauss_entropy)
-        # user_entropies_dict[user_str] = users_individual_gauss_entropy
-        # user_entrosum_dict[user_str] = sum(users_individual_gauss_entropy)
-        # total_entrosum += sum(users_individual_gauss_entropy)
-    # print("user_entropies_dict", user_entropies_dict)
-    # percent_dict = {}
-    # for key in user_entrosum_dict.keys():
-    #     new_value = float(user_entrosum_dict[key]) / total_entrosum
-    #     percent_dict[key] = new_value
-    # print("percent_dict", percent_dict)
-    # write_dict_to_json(percent_dict, w_consolidated_percent_json)
+        users_individual_gauss_entropy.append(I[0])
+        print("users_individual_gauss_entropy", users_individual_gauss_entropy)
+        user_entropies_dict[user_str] = users_individual_gauss_entropy
+        user_entrosum_dict[user_str] = sum(users_individual_gauss_entropy)
+        total_entrosum += sum(users_individual_gauss_entropy)
+    print("user_entropies_dict", user_entropies_dict)
+    percent_dict = {}
+    for key in user_entrosum_dict.keys():
+        new_value = float(user_entrosum_dict[key]) / total_entrosum
+        percent_dict[key] = new_value
+    print("percent_dict", percent_dict)
+    write_dict_to_json(percent_dict, w_consolidated_percent_json)
 
 
 if __name__ == "__main__":
