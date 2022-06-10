@@ -30,35 +30,12 @@ from expects import (
 )
 
 
-def create_fig(x, y, title, *params):
-    plt.clf()
-    plt.plot(x, y, 'b+:', label='data')
-    plt.plot(x, gauss(x, *params), 'ro:', label='fit')
-    plt.legend()
-    plt.title("Dimension distribution for "+title)
-    plt.xlabel('Frequency')
-    plt.ylabel('data')
-    fig = plt.gcf()
-    plt.show()
-    str_params = [(str(tup)) for tup in params]
-    print("str_params", str_params)
-    plt.text(5, 8, ''.join(str_params), fontsize=10)
-    fig.savefig("fig/figs"+title+'.pdf')
-
-
 # Creating a Function.
 def simulated_height_normal_dist(x, mean, sd):
     # prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
     # return prob_density
     # print(norm.cdf(x, mean, sd))
     return norm.cdf(x, mean, sd)
-
-def write_dict_to_json(dict, json_to_write):
-    df_params = pd.DataFrame.from_dict(dict)
-    result = df_params.to_json(orient="columns")
-    parsed = json.loads(result)
-    with open(json_to_write, 'w') as convert_file:
-        convert_file.write(json.dumps(parsed))
 
 def calculate_MSE(z_list, ys_for_sim):
     y = z_list
@@ -102,11 +79,6 @@ def multi_bimodal(x, weights_array, *params):
     for i in range(gauss_index):
         gausses += weights_array[i]*gauss(x, *params[0+i*3:3+i*3])
     return gausses
-
-
-def read_from_csv(r_dense_trimmed_data_path1, before_extension_half, first_half):
-    df = pd.read_csv(r_dense_trimmed_data_path1)
-    return write_to_json(df, before_extension_half, first_half)
 
 
 def write_to_json(df, before_extension_half, first_half):
@@ -299,18 +271,18 @@ def main():
                 dimension_min_with_params["max"] = max(X[:,0])
                 dimension_min_with_params["min"] = min(X[:,0])
                 print("type(X[:,0])", type(X[:,0]))
-                plt.clf()
-                sorted_X = np.sort(X, axis=0)
-                plt.plot(sorted_X[:,0].tolist(), sorted_X[:,1].tolist(), 'b+:', label='data')
-                plt.plot(sorted_X[:,0].tolist(), multi_bimodal(
-                    sorted_X[:,0].tolist(), gmm.weights_, *tuple(num_with_params[min_index])), 'ro:', label='fit')
-                plt.legend()
-                plt.title("Dimension distribution for "+file)
-                plt.xlabel('Data')
-                plt.ylabel('Frequency')
-                fig = plt.gcf()
-                plt.show()
-                fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
+                # plt.clf()
+                # sorted_X = np.sort(X, axis=0)
+                # plt.plot(sorted_X[:,0].tolist(), sorted_X[:,1].tolist(), 'b+:', label='data')
+                # plt.plot(sorted_X[:,0].tolist(), multi_bimodal(
+                #     sorted_X[:,0].tolist(), gmm.weights_, *tuple(num_with_params[min_index])), 'ro:', label='fit')
+                # plt.legend()
+                # plt.title("Dimension distribution for "+file)
+                # plt.xlabel('Data')
+                # plt.ylabel('Frequency')
+                # fig = plt.gcf()
+                # plt.show()
+                # fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
                 all_files_dimension_with_params[file[0:findNth(file,"_",2)]] = dimension_min_with_params
               
             
