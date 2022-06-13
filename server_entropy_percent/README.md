@@ -1,7 +1,7 @@
-# To Run the ServerGenerateEntropy
+# ServerGenerateEntropy
 
-Input: consolidated gauss params file address
-Output: entropy percentage for each user
+- Input: consolidated gauss params file address
+- Output: entropy percentage for each user
 
 ## 1. Required Directory Structure
 
