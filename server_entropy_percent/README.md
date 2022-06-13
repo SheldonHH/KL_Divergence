@@ -8,11 +8,11 @@ Output: entropy percentage for each user
 ```bash
 data 
 │   └───users_individual_gauss 
-│   │     user_1_features_gauss.json
-│   │     user_2_features_gauss.json
-│   │     user_3_features_gauss.json
-|   |     └───consolidated  
-|   |                     |   entropysum_percent.json  
+    │     user_1_features_gauss.json
+    │     user_2_features_gauss.json
+    │     user_3_features_gauss.json
+          └───consolidated  
+                         |   entropysum_percent.json  
 ```
 
 ## Installation

@@ -13,7 +13,6 @@ data
 │   user_x.csv (raw data)
 └───features
 │   └───freq 
-│       │ 
 ```
 
 ## 2. Installation
@@ -56,10 +55,10 @@ data
 │   user_x.csv (raw data)
 |   user_x.jpeg 
 └───features
-│   │   user_x_feature.csv
-│   └───freq
-│       │   user_x_freq.csv
-│       │   user_x_features_gauss.json (final result)
+    │   user_x_feature.csv
+    └───freq
+        │   user_x_freq.csv
+        │   user_x_features_gauss.json (final result)
 ```
 
 1. preprocess each dimension of user's data to dense_trimmed_user_x_data.csv

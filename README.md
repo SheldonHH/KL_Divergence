@@ -66,12 +66,12 @@ References:
 
 ## 2. Generate Gauss(Training Device) and Entropy Percentage(server)
 
-1. Contribution Calculation:
+1.Contribution Calculation:
 
 - Input: Individual users' Gaussian
 - Output: Percentage of each user's entropy
 
-2. Voting Device Server generate Entropy weight percentage based on all Training Devices’ Gauss parameters
+2.Voting Device Server generate Entropy weight percentage based on all Training Devices’ Gauss parameters
 
     1. Consolidate all users params to one consolidated Gauss Params
     2. Generate Entropy from by integrating max and min to wit Gauss Params
