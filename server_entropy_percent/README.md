@@ -8,11 +8,11 @@
 ```bash
 data 
 │   └───users_individual_gauss 
-    │     user_1_features_gauss.json
-    │     user_2_features_gauss.json
-    │     user_3_features_gauss.json
-          └───consolidated  
-                         |   entropysum_percent.json  
+|          └───consolidated  
+│   │                    |   (to generate entropysum_percent.json and consolidated.json)  
+│   │     user_1_features_gauss.json
+│   │     user_2_features_gauss.json
+│   │     user_3_features_gauss.json 
 ```
 
 ## 2. Installation
