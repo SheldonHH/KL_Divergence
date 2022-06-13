@@ -38,10 +38,7 @@ go run main.go
 
 1. `server_consolidated_golang.py` to consolidate all users' features gausses together 
 
-- input: 
--- `user_1_features_gauss.json`
--- `user_2_features_gauss.json`
--- `user_3_features_gauss.json`
+- input:  `user_1_features_gauss.json`，`user_2_features_gauss.json`，`user_3_features_gauss.json`
 - Output: `consolidated/consolidated_gauss_params.json`
 
 2. `calculate_entropy_golang.py`: calculate the entropy percent based on consolidated users' gauss results 
