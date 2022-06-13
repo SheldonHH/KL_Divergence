@@ -23,9 +23,11 @@ Output: Gaussian Mixture after CNN processing
             2. then keep increasing the gauss numbers and perform curve_fit, record the MSE with corresponding number of gauss functions in list.
                 1. stop on which the first order derivative of MSE become negative or the the second order derivatives of MSE less than 10%
             3. Choose the number of Gauss with smallest MSE, and save the corresponding params to JSON
-References
-[1] Simonyan, K., & Zisserman, A. (2015). Very Deep Convolutional Networks for Large-Scale Image Recognition. ArXiv:1409.1556 [Cs]. <http://arxiv.org/abs/1409.1556>
-[2] VGG16 — Convolutional Network for Classification and Detection. (2018, November 20). <https://neurohive.io/en/popular-networks/vgg16/>
+
+References: 
+[1] [Simonyan, K., & Zisserman, A. (2015). Very Deep Convolutional Networks for Large-Scale Image Recognition. ArXiv:1409.1556](http://arxiv.org/abs/1409.1556).
+
+[2] [VGG16 — Convolutional Network for Classification and Detection. (2018, November 20)](https://neurohive.io/en/popular-networks/vgg16/)
 
 ## 2. Generate Gauss(Training Device) and Entropy Percentage(server)
 
