@@ -9,7 +9,7 @@
 data 
 │   └───users_individual_gauss 
 |   │      └───consolidated  
-│   │                    |   (to generate entropysum_percent.json and consolidated.json)  
+│   │                    |   (to generate entropysum_percent.json and consolidated_gauss_params.json)  
 │   │     user_1_features_gauss.json
 │   │     user_2_features_gauss.json
 │   │     user_3_features_gauss.json 
