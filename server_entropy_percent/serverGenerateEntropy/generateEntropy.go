@@ -24,7 +24,7 @@ func GenerateEntropy(gauss_users_dir string) string {
 	cmd1 := exec.Command("python3", consolidate_gauss_path, gauss_users_dir)
 	executeCmd(cmd1)
 
-	generate_entropy_path := "server_entropy_percent/py/calculate_entropy_golang.py"
+	generate_entropy_path := "server_entropy_percent/py/calculate_entrotally.py"
 	cmd2 := exec.Command("python3", generate_entropy_path, gauss_users_dir)
 	executeCmd(cmd2)
 	// entropysum_percent_map := obtainMapfromJson("server_entropy_percent/data/users_individual_gauss/consolidated/consolidated_entropysum_percent.json")

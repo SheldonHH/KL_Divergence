@@ -30,10 +30,7 @@ func main() {
 		fmt.Print("err:", err)
 	}
 	fmt.Println("data", data)
-	// e := os.Remove(basepath + "/data/features/freq/dynamic_features_gauss.json")
-	// if e != nil {
-	// 	log.Fatal(e)
-	// }
+
 	elapsed := time.Since(start)
 	log.Printf(username+"'s Gauss generation took %s", elapsed)
 	// singapore_Gauss := ugg.GenerateGauss(raw_data_path)

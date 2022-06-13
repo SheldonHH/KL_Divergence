@@ -21,11 +21,11 @@ var (
 )
 
 func GenerateGauss(raw_data_path string) string {
-	csv_to_jpeg_path := "user_gauss_params/py/py_golang/csv_to_jpeg.py"
+	csv_to_jpeg_path := "user_gauss_params/py/tally/csv_to_jpeg.py"
 	jpeg_to_features_path := "user_gauss_params/py/py_torch/pytorch-extractor.py"
-	rounded_py_path := "user_gauss_params/py/py_golang/round_data_golang.py"
-	countFreq_path := "user_gauss_params/py/py_golang/countFreq_golang.py"
-	freq_to_gauss_path := "user_gauss_params/py/py_golang/freq_to_gauss_golang.py"
+	rounded_py_path := "user_gauss_params/py/tally/round_data_golang.py"
+	countFreq_path := "user_gauss_params/py/tally/countFreq_golang.py"
+	freq_to_gauss_path := "user_gauss_params/py/tally/freq_to_gauss_golang.py"
 	cmd1 := exec.Command("python3", csv_to_jpeg_path, raw_data_path)
 	// fmt.Println("cmd1 = ", reflect.TypeOf(cmd1))
 	cmd2 := exec.Command("python3", jpeg_to_features_path, raw_data_path)
