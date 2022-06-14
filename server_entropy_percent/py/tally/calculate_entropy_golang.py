@@ -4,8 +4,6 @@ from scipy.integrate import quad
 import numpy as np
 import sys
 
-
-
 def write_dict_to_json(dict, json_to_write):
     df_params = pd.DataFrame.from_dict({k: [v] for k, v in dict.items(
     )}, orient="index", columns=["user profit percentage"])
@@ -35,8 +33,8 @@ def integrand(x, a, b):
     return a*x**2 + b
 
 # weights_array = []
-def main():
-    args = sys.argv[1:]
+def calculate_entropy(individual_gauss):
+    args = individual_gauss
     gauss_users_dir = args[0]
     print("before_extension_half",)
     users_list = ["user1","user2"]
@@ -71,7 +69,3 @@ def main():
         percent_dict[key] = new_value
     print("percent_dict", percent_dict)
     write_dict_to_json(percent_dict, w_consolidated_percent_json)
-
-
-if __name__ == "__main__":
-    main()
