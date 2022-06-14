@@ -23,8 +23,8 @@ def user_list_from_dir(dir_in_str):
             continue
     return usergauss_list
 
-def main():
-    args = sys.argv[1:]
+def server_consolidate(individual_gauss):
+    args = individual_gauss
     gauss_users_dir = args[0]
     consolidated_params = {}
     print("gauss_users_dir",gauss_users_dir)
@@ -48,6 +48,3 @@ def write_profit_weight_to_json(list, json_to_write):
     with open(json_to_write, 'w') as convert_file:
         convert_file.write(json.dumps(parsed))
 
-
-if __name__ == "__main__":
-    main()

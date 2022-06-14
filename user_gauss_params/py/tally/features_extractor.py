@@ -34,8 +34,8 @@ class FeatureExtractor(nn.Module):
     return out 
 
 
-def main():
-    args = sys.argv[1:]
+def extract_features(raw_csv_argv):
+    args = raw_csv_argv
     raw_csv_path1 = args[0]
     print(args)
     jpeg_data_path1 = args[0][0:args[0].rindex('.')]+".jpeg"
@@ -75,5 +75,3 @@ def main():
     os.remove(jpeg_data_path1)
     # np.savetxt("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.txt",features)
 
-if __name__ == "__main__":
-    main()

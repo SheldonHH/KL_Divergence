@@ -1,9 +1,9 @@
 import pandas as pd
 import sys
 import os
-
-def main():
-    args = sys.argv[1:]
+# class count_freq:
+def count_freq(raw_csv_argv):
+    args = raw_csv_argv
     raw_csv_path1 = args[0]
     middle_index = args[0].rindex('/')
     last_index = len(args[0])-1
@@ -16,7 +16,4 @@ def main():
     print(df.value_counts())
     df.value_counts(normalize=True).to_csv(path+"/features/freq/"+username+"_freq.csv", header=False)
     os.remove(path+"/features/rounded_"+username+'_features.csv')
-
-if __name__ == "__main__":
-    main()
 

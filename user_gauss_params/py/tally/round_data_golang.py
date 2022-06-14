@@ -5,8 +5,6 @@ import os
 # raw_data_path1 = 'data/user_1_data.csv'
 
 first_layer_dict = {}
-
-
 def trim_row(row):
     return [int(float(row[0])), int(float(row[1]))]
     # round(float(row[1]), 1)
@@ -28,7 +26,7 @@ def read_from_csv(features_path, rounded_data_path):
         for row in csvreader:
             oned_rows.append(row)
         print("len(csvreader)",len(oned_rows))
-       
+    
     #   alld_rows.append(oned_rows)
     trimmed_row = rounding_row(oned_rows)
     print("trimmed_row",trimmed_row)
@@ -38,8 +36,8 @@ def read_from_csv(features_path, rounded_data_path):
             writer.writerow([final_row])
 
 
-def main():
-    args = sys.argv[1:]
+def round_data(raw_csv_argv):
+    args = raw_csv_argv
     print(args)
     # user_1_data
     raw_csv_path1 = args[0]
@@ -59,7 +57,3 @@ def main():
     read_from_csv(r_features_csv, w_rounded_data_path1)
     os.remove(r_features_csv)
     # read_from_csv(raw_data_path2, w_dense_rounded_data_path1)
-
-
-if __name__ == "__main__":
-    main()

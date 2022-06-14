@@ -29,7 +29,6 @@ from expects import (
     expect,
 )
 
-
 # Creating a Function.
 def simulated_height_normal_dist(x, mean, sd):
     # prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
@@ -91,8 +90,8 @@ def zerolistmaker(n):
 def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
-def main():
-    args = sys.argv[1:]
+def freq_to_gauss(raw_csv_argv):
+    args = raw_csv_argv
     raw_csv_path1 = args[0]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     dir_str = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
@@ -247,12 +246,7 @@ def main():
                 # plt.show()
                 # fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
                 all_files_dimension_with_params[file[0:findNth(file,"_",2)]] = dimension_min_with_params
-              
+            
     os.remove(freq_dir+username+"_freq.csv")    
     with open(gauss_filetype+"_features_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params,outfile)
-
-
-if __name__ == "__main__":
-
-    main()
