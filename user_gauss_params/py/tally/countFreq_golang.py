@@ -14,6 +14,6 @@ def count_freq(raw_csv_argv):
     df = pd.read_csv(path+"/features/rounded_"+username+'_features.csv', names=['col1'])
     print("df",df)
     print(df.value_counts())
-    df.value_counts(normalize=True).to_csv(path+"/features/freq/"+username+"_freq.csv", header=False)
+    df.value_counts(normalize=False).to_csv(path+"/features/freq/"+username+"_freq.csv", header=False)
     os.remove(path+"/features/rounded_"+username+'_features.csv')
 
