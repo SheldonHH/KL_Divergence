@@ -17,3 +17,4 @@ def csv_to_jpeg(raw_csv_argv):
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     imageio.imwrite(path+username+".jpeg", my_data)
+    return len(my_data)
