@@ -57,7 +57,7 @@ def calculate_entropy(individual_gauss):
         weights_array = data[user_str]["weights"]
         I = quad(multi_bimodal, d_min, d_max, args=(list(this_d_data)))
         print("I",I)
-        users_individual_gauss_entropy.append(I[0])
+        users_individual_gauss_entropy.append(data[user_str]["raw_data_size"]*I[0])
         print("users_individual_gauss_entropy", users_individual_gauss_entropy)
         user_entropies_dict[user_str] = users_individual_gauss_entropy
         user_entrosum_dict[user_str] = sum(users_individual_gauss_entropy)
