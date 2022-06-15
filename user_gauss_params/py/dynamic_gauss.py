@@ -3,9 +3,9 @@ from py_torch.FeatureExtractor import extract_features
 from tally import round_data_golang 
 from tally import countFreq_golang
 from tally import freq_to_gauss_golang
-
+# from tally import features_extractor
 def main():
-  raw_csv_argv = ["/root/KL_Divergence/user_gauss_params/data/user_2.csv"]
+  raw_csv_argv = ["/root/KL_Divergence/user_gauss_params/data/user_4.csv"]
   raw_data_len = csv_to_jpeg.csv_to_jpeg(raw_csv_argv)
   extract_features(raw_csv_argv)
   round_data_golang.round_data(raw_csv_argv)

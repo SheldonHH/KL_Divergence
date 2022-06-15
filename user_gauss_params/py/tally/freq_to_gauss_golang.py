@@ -23,6 +23,7 @@ import csv
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from numpy import genfromtxt
+import shutil
 from expects import (
     be_true,
     equal,
