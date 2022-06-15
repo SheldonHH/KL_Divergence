@@ -128,9 +128,6 @@ def freq_to_gauss(raw_csv_argv):
                 n_samples = len(data)
                 final_weights = 0
                 for index in range(counter_initial):
-                    if n_samples < index+1:
-                        dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
-                        break
                     gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
                     list_params = []
                     list_params = zerolistmaker((index+1)*3)
@@ -174,9 +171,6 @@ def freq_to_gauss(raw_csv_argv):
                 incre_index = counter_initial
 
                 while(True):
-                    if n_samples < incre_index+1:
-                        dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
-                        break
                     gmm = mixture.GaussianMixture(n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
                     list_params = []
                     list_params = zerolistmaker((incre_index+1)*3)
