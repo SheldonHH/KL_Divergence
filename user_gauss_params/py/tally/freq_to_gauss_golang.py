@@ -63,7 +63,7 @@ def obtain_first_second(x, y, strtype):
     
     if(strtype == "second"):
         ysecond=dyfirst/dxfirst
-        xsecond=0.5*(xfirst[:-1]+xfirst[1:])
+        # xsecond=0.5*(xfirst[:-1]+xfirst[1:])
         return ysecond
     else:
         return yfirst
@@ -90,7 +90,7 @@ def zerolistmaker(n):
 def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
-def freq_to_gauss(raw_csv_argv):
+def freq_to_gauss(raw_csv_argv, raw_data_size):
     args = raw_csv_argv
     raw_csv_path1 = args[0]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
@@ -123,20 +123,14 @@ def freq_to_gauss(raw_csv_argv):
                 #  perform calculation
                 f.close()
                 MSE_list, ySp, xSp = [],[],[]
-                y_firsts, y_seconds = [],[]
                 counter_initial = 10
                 n_samples = len(data)
-                final_weights = 0
                 for index in range(counter_initial):
                     if n_samples < index+1:
                         dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
                         break
                     gmm = mixture.GaussianMixture(n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
-                    list_params = []
                     list_params = zerolistmaker((index+1)*3)
-                    params = tuple(list_params)
-                    # print("index", index)
-                    # print("gmm.means_", gmm.means_[index][0])
                     simulated_y_sum = 0
                     sort_mch = [[],[],[],[]] # means_cov_height
                     for sub_index in range(index+1):
@@ -178,9 +172,7 @@ def freq_to_gauss(raw_csv_argv):
                         dimension_min_with_params.append({key+"_gauss": num_with_params[min_index],"max":max(X[:,0]),"min":min(X[:,0])})
                         break
                     gmm = mixture.GaussianMixture(n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
-                    list_params = []
                     list_params = zerolistmaker((incre_index+1)*3)
-                    params = tuple(list_params)
                     simulated_y_sum = 0
                     for sub_index in range(incre_index+1):
                         list_params[sub_index*3] = gmm.means_[sub_index][0]
@@ -225,13 +217,13 @@ def freq_to_gauss(raw_csv_argv):
 
                         print("y_seconds",y_seconds)
                         print("y_firsts",y_firsts)
-                        super_global_params = params
                         break
                     incre_index += 1
                 dimension_min_with_params["gauss"] = num_with_params[min_index]
                 dimension_min_with_params["weights"] = num_with_weights[min_index]
                 dimension_min_with_params["max"] = max(X[:,0])
                 dimension_min_with_params["min"] = min(X[:,0])
+                dimension_min_with_params["raw_data_size"] = raw_data_size
                 print("type(X[:,0])", type(X[:,0]))
                 # plt.clf()
                 # sorted_X = np.sort(X, axis=0)

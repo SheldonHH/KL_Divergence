@@ -20,7 +20,6 @@ def rounding_row(rows):
 
 def read_from_csv(features_path, rounded_data_path):
     with open(features_path, 'r') as file:
-        header = []
         oned_rows = []
         csvreader = csv.reader(file)
         for row in csvreader:
@@ -42,9 +41,6 @@ def round_data(raw_csv_argv):
     # user_1_data
     raw_csv_path1 = args[0]
     middle_index = args[0].rindex('/')
-    last_index = len(args[0])-1
-    first_half = args[0][0:middle_index+1]
-    # print("first_half", first_half) # user_4
     second_half = args[0][middle_index+1: len(args[0])] 
     print(second_half)
     print(args[0].rindex('/'))

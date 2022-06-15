@@ -5,9 +5,6 @@ import os
 def count_freq(raw_csv_argv):
     args = raw_csv_argv
     raw_csv_path1 = args[0]
-    middle_index = args[0].rindex('/')
-    last_index = len(args[0])-1
-    lists = []
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
     # pd.DataFrame(features).to_csv(path+username+"_features.csv", header=False)
