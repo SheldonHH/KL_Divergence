@@ -242,3 +242,6 @@ def freq_to_gauss(raw_csv_argv, raw_data_size):
     os.remove(freq_dir+username+"_freq.csv")    
     with open(gauss_filetype+"_features_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params,outfile)
+    shutil.copyfile(gauss_filetype+"_features_gauss.json", dir_str+"users_individual_gauss/consolidated/"+gauss_filetype+"_features_gauss.json")
+    os.remove(freq_dir+gauss_filetype+"_features_gauss.json")
+
