@@ -146,7 +146,6 @@ def freq_to_gauss(raw_csv_argv):
                     # print(index,"simulated_y_sum",simulated_y_sum)
                     sort_mch = np.array(list(map(list, zip(*sort_mch))))
                     print(sort_mch)
-                    # sg = sorted(sort_mch, key=lambda a_entry: sort_mch[0]) 
                     sort_mch = sort_mch[sort_mch[:, 0].argsort(kind='mergesort')]  # sort by year
                     # print("sgggg",sg)
                     for sub_index in range(index+1):
