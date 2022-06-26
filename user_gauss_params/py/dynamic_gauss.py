@@ -10,13 +10,15 @@ import numpy as np
 def main():
     numpy_array = np.loadtxt(
         "/root/KL_Divergence/user_gauss_params/data/user_4.csv", delimiter=",")
-    user_name = "user_4.csv"
+    user_name = "user_4"
+    dynamic_gauss(numpy_array, user_name)
 
 
 def dynamic_gauss(numpy_array, user_name):
     real_raw_csv_argv = [
         "/root/KL_Divergence/user_gauss_params/data/"]
-    raw_csv_argv = [real_raw_csv_argv[0]+user_name]
+    raw_csv_argv = [real_raw_csv_argv[0]+user_name+".csv"]
+    print(raw_csv_argv)
     raw_data_len = csv_to_jpeg.csv_to_jpeg(numpy_array, raw_csv_argv)
     extract_features(raw_csv_argv)
     round_data_golang.round_data(raw_csv_argv)
@@ -25,5 +27,4 @@ def dynamic_gauss(numpy_array, user_name):
 
 
 if __name__ == "__main__":
-
     main()
