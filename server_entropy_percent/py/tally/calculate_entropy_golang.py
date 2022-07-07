@@ -4,6 +4,7 @@ from scipy.integrate import quad
 import numpy as np
 import sys
 
+
 def write_dict_to_json(dict, json_to_write):
     df_params = pd.DataFrame.from_dict({k: [v] for k, v in dict.items(
     )}, orient="index", columns=["user profit percentage"])
@@ -15,6 +16,7 @@ def write_dict_to_json(dict, json_to_write):
 
 def gauss(x, mu, sigma, A):
     return A*np.exp(-(x-mu)**2/2/sigma**2)
+
 
 def zerolistmaker(n):
     listofzeros = [0] * n
@@ -33,31 +35,36 @@ def integrand(x, a, b):
     return a*x**2 + b
 
 # weights_array = []
+
+
 def calculate_entropy(individual_gauss):
     args = individual_gauss
     gauss_users_dir = args[0]
     print("before_extension_half",)
-    users_list = ["user1","user2"]
+    users_list = ["user1", "user2"]
     user_entropies_dict = {}
     user_entrosum_dict = {}
     total_entrosum = 0
-    r_consolidated_params_json = gauss_users_dir+"/consolidated/consolidated_gauss_params.json"
-    w_consolidated_percent_json = gauss_users_dir+"/consolidated/entropysum_percent.json"
+    r_consolidated_params_json = gauss_users_dir + \
+        "/consolidated/consolidated_gauss_params.json"
+    w_consolidated_percent_json = gauss_users_dir + \
+        "/consolidated/entropysum_percent.json"
     f = open(r_consolidated_params_json)
     data = json.load(f)
     for user_str in data.keys():
-        print("user_key",user_str)
+        print("user_key", user_str)
         users_individual_gauss_entropy = []
         this_d_data = data[user_str]["gauss"]
-        print("F35555",this_d_data)
+        print("F35555", this_d_data)
         d_min = data[user_str]["min"]
         d_max = data[user_str]["max"]
         print(d_max)
         global weights_array
         weights_array = data[user_str]["weights"]
         I = quad(multi_bimodal, d_min, d_max, args=(list(this_d_data)))
-        print("I",I)
-        users_individual_gauss_entropy.append(data[user_str]["raw_data_size"]*I[0])
+        print("I", I)
+        users_individual_gauss_entropy.append(
+            data[user_str]["raw_data_size"]*I[0])
         print("users_individual_gauss_entropy", users_individual_gauss_entropy)
         user_entropies_dict[user_str] = users_individual_gauss_entropy
         user_entrosum_dict[user_str] = sum(users_individual_gauss_entropy)
@@ -69,3 +76,4 @@ def calculate_entropy(individual_gauss):
         percent_dict[key] = new_value
     print("percent_dict", percent_dict)
     write_dict_to_json(percent_dict, w_consolidated_percent_json)
+    return percent_dict
