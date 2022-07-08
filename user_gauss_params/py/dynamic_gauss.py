@@ -11,7 +11,9 @@ def main():
     numpy_array = np.loadtxt(
         "/root/KL_Divergence/user_gauss_params/data/user_4.csv", delimiter=",")
     user_name = "user_4"
-    dynamic_gauss(numpy_array, user_name)
+    for i in range(len(numpy_array)):
+        numpy_array[i]
+        dynamic_gauss([numpy_array[i]], user_name)
 
 
 def dynamic_gauss(numpy_array, user_name):

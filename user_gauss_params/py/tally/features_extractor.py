@@ -67,6 +67,10 @@ def extract_features(raw_csv_argv):
 
     # Convert to NumPy Array
     features = np.array(features)
+    print("SS:",features)
+    # pd.DataFrame(features).T.to_csv(path+username+"_sss.csv", header=False, index=False)
+
+
     print("features", len(features[0]))
 
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
