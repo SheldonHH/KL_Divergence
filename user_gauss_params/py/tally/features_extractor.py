@@ -34,7 +34,7 @@ class FeatureExtractor(nn.Module):
     return out 
 
 
-def extract_features(raw_csv_argv):
+def extract_features(raw_csv_argv, index_of_image):
     args = raw_csv_argv
     raw_csv_path1 = args[0]
     print(args)
@@ -75,7 +75,7 @@ def extract_features(raw_csv_argv):
 
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
-    pd.DataFrame(features).T.to_csv(path+username+"_features.csv", header=False, index=False)
+    pd.DataFrame(features).T.to_csv(path+username+"_features_"+str(index_of_image)+".csv", header=False, index=False)
     os.remove(jpeg_data_path1)
     # np.savetxt("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.txt",features)
 
