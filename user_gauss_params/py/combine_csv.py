@@ -28,16 +28,16 @@ def transpose_csv(Dir):
 
 def main():
   Dir = "/root/KL_Divergence/user_gauss_params/data/"
-  transpose_csv(Dir)
-  # csv_file_list = glob.glob(Dir + 'features/*.csv')
-  # with open(Dir+"combine/" + 'combined_features.csv','w') as wf:
-  #     for file in csv_file_list:
-  #         with open(file) as rf:
-  #             for line in rf:
-  #                 if line.strip(): # if line is not empty
-  #                     if not line.endswith("\n"):
-  #                         line+="\n"
-  #                     wf.write(line)
+  # transpose_csv(Dir)
+  csv_file_list = glob.glob(Dir + 'transposed_features/*.csv')
+  with open(Dir+"combine/" + 'combined_features.csv','w') as wf:
+      for file in csv_file_list:
+          with open(file) as rf:
+              for line in rf:
+                  if line.strip(): # if line is not empty
+                      if not line.endswith("\n"):
+                          line+="\n"
+                      wf.write(line)
 
 if __name__ == "__main__":
     main()
