@@ -91,7 +91,7 @@ def zerolistmaker(n):
 def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
-def freq_to_gauss(raw_csv_argv, raw_data_size):
+def freq_to_gauss(raw_csv_argv, raw_data_size, col, col_counter):
     args = raw_csv_argv
     raw_csv_path1 = args[0]
     username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
@@ -240,9 +240,9 @@ def freq_to_gauss(raw_csv_argv, raw_data_size):
                 # fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
                 all_files_dimension_with_params[file[0:findNth(file,"_",2)]] = dimension_min_with_params
             
-    os.remove(freq_dir+username+"_freq.csv")    
+    # os.remove(freq_dir+username+"_freq.csv")    
     with open(gauss_filetype+"_features_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params,outfile)
-    shutil.copyfile(gauss_filetype+"_features_gauss.json", dir_str+"users_individual_gauss/"+gauss_filetype+"_features_gauss.json")
-    os.remove(freq_dir+gauss_filetype+"_features_gauss.json")
+    shutil.copyfile(gauss_filetype+"_features_gauss.json", dir_str+"users_individual_gauss/"+gauss_filetype+"_features_gauss_"+col_counter+".json")
+    # os.remove(freq_dir+gauss_filetype+"_features_gauss".json")
 

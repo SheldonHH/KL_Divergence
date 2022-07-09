@@ -34,11 +34,11 @@ class FeatureExtractor(nn.Module):
     return out 
 
 
-def extract_features(raw_csv_argv):
+def extract_features(raw_csv_argv,index_of_image):
     args = raw_csv_argv
     raw_csv_path1 = args[0]
-    print(args)
-    jpeg_data_path1 = args[0][0:args[0].rindex('.')]+".jpeg"
+    # print(args)
+    jpeg_data_path1 = args[0][0:args[0].rindex('.')]+"_"+index_of_image+".jpeg"
     model = models.vgg16(pretrained=True)
     new_model = FeatureExtractor(model)
     device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
@@ -64,13 +64,13 @@ def extract_features(raw_csv_argv):
       feature = new_model(img)
     # Convert to NumPy Array, Reshape it, and save it to features variable
     features.append(feature.cpu().detach().numpy().reshape(-1))
-
+    print(type(features))
     # Convert to NumPy Array
-    features = np.array(features)
-    print("features", len(features[0]))
-
-    path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
-    username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
-    pd.DataFrame(features).T.to_csv(path+username+"_features.csv", header=False, index=False)
-    os.remove(jpeg_data_path1)
+    # features = np.array(features)
+    # print("features", len(features[0]))
+    return features[0]
+    # path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
+    # username = raw_csv_path1[raw_csv_path1.rindex('/')+1: raw_csv_path1.rindex('.')]
+    # pd.DataFrame(features).T.to_csv(path+username+"_features_"+str(index_of_image)+".csv", header=False, index=False)
+    # os.remove(jpeg_data_pat h1)
     # np.savetxt("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.txt",features)
