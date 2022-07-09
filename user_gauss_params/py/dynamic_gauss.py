@@ -4,6 +4,7 @@ from tally import round_data_golang
 from tally import countFreq_golang
 from tally import freq_to_gauss_golang
 import numpy as np
+import os.path
 
 import pandas as pd
 # from tally import features_extractor
@@ -29,10 +30,11 @@ def main():
     for i in range(len(numpy_array)):
         # numpy_array[i]
         # if i <= 2:
-        single_file_feature = dynamic_gauss([numpy_array[i]], user_name, str(i))
-        np.savetxt(real_raw_csv_argv[0]+user_name+"_features_"+str(i)+".csv", single_file_feature)
-        nested_features.append(single_file_feature)
-        print(i)
+        if os.path.exists(real_raw_csv_argv[0]+user_name+"_features_"+str(i)+".csv") == False:
+            single_file_feature = dynamic_gauss([numpy_array[i]], user_name, str(i))
+            np.savetxt(real_raw_csv_argv[0]+user_name+"_features_"+str(i)+".csv", single_file_feature)
+            nested_features.append(single_file_feature)
+            print(i)
         # else:
         #     break
 
