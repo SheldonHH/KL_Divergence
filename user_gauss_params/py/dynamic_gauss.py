@@ -18,11 +18,19 @@ def main():
     #     dynamic_gauss([numpy_array[i]], user_name, str(i))
 
 
+    real_raw_csv_argv = [
+        "/root/KL_Divergence/user_gauss_params/data/"]
+    raw_csv_argv = [real_raw_csv_argv[0]+user_name+".csv"]
+    raw_csv_path1 = raw_csv_argv[0]
+
+    ########################################################################
+    
     nested_features = []
     for i in range(len(numpy_array)):
         # numpy_array[i]
         # if i <= 2:
         single_file_feature = dynamic_gauss([numpy_array[i]], user_name, str(i))
+        np.savetxt(real_raw_csv_argv[0]+user_name+"_features_"+str(i)+".csv", single_file_feature)
         nested_features.append(single_file_feature)
         print(i)
         # else:
