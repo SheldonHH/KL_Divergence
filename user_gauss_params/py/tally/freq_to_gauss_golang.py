@@ -241,8 +241,8 @@ def freq_to_gauss(raw_csv_argv, raw_data_size, col, col_counter):
                 all_files_dimension_with_params[file[0:findNth(file,"_",2)]] = dimension_min_with_params
             
     # os.remove(freq_dir+username+"_freq.csv")    
-    with open(gauss_filetype+"_features_gauss.json", "w") as outfile:
+    with open(gauss_filetype+"_features_gauss_"+col_counter+".json", "w") as outfile:
         json.dump(all_files_dimension_with_params,outfile)
-    shutil.copyfile(gauss_filetype+"_features_gauss.json", dir_str+"users_individual_gauss/"+gauss_filetype+"_features_gauss_"+col_counter+".json")
+    shutil.copyfile(gauss_filetype+"_features_gauss_"+col_counter+".json", dir_str+"users_individual_gauss/"+gauss_filetype+"_features_gauss_"+col_counter+".json")
     # os.remove(freq_dir+gauss_filetype+"_features_gauss".json")
 
