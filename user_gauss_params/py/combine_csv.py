@@ -33,6 +33,34 @@ from tally import countFreq
 #                    str(counter)+".csv", "wt")).writerows(a)
 #         counter += 1
 
+
+# def t_and_freq(Dir):
+#     inputfile = Dir + 'combine/combined_features.csv'
+#     df = pd.read_csv(inputfile, header=None).T
+#     for index, row in df.iterrows():
+#         print("row", row)
+#         count_freq(raw_csv_argv, row)
+
+# for each id_feature
+# generate one gauss
+def i_and_freq(Dir):
+    for feat_counter in range(4096):
+        inputfile =  Dir+"/nofeatures/"+str(feat_counter)+"_feature.csv"
+        countFreq(Dir, feat_counter)
+
+
+
+def create_nofeature(transposed_eachuser,Dir):
+    for feat_counter in range(4096):
+        if os.path.exists(Dir+"nofeatures/"+str(feat_counter)+"_feature.csv") == False:
+            with open(Dir+"nofeatures/"+str(feat_counter)+"_feature.csv","w") as wf:
+                for file in transposed_eachuser:
+                    with open(file) as rf:
+                        for line in rf:
+                            li = list(line.split(","))
+                            wf.write(li[feat_counter]+"\n")
+
+        
 def transpose_csv(Dir):
     input_file_list = glob.glob(Dir + 'features/*.csv')
     # input_file_list.sort(key=lambda f: int(re.sub('\D', '', f)))
@@ -59,23 +87,8 @@ def transpose_combine(Dir):
         outputfile, header=False, index=False)
     # return 
 
-# def calculate_gauss():
-
-# numbers = re.compile(r'(\d+)')
-# def numericalSort(value):
-#     parts = numbers.split(value)
-#     parts[1::2] = map(int, parts[1::2])
-#     return parts
-
-def main():
-    Dir = "/root/KL_Divergence/user_gauss_params/data/"
-    psedo_user_dir = "/root/KL_Divergence/user_gauss_params/data/user_4.csv"
-    # transpose individual csv
-    # transpose_csv(Dir)
-    
-    # #
-    transposed_eachuser = glob.glob(Dir + 'transposed_features/*.csv')
-    # print(transposed_eachuser)
+# def perform_combine(Dir):
+ # print(transposed_eachuser)
     # print(csv_file_list)
     # csv_file_list.sort()
     # print(sorted(csv_file_list))
@@ -98,6 +111,17 @@ def main():
     #                     print(type(line))
 
 
+def main():
+    Dir = "/root/KL_Divergence/user_gauss_params/data/"
+    psedo_user_dir = "/root/KL_Divergence/user_gauss_params/data/user_4.csv"
+    # transpose individual csv
+    # transpose_csv(Dir)
+    
+    # #
+    transposed_eachuser = glob.glob(Dir + 'transposed_features/*.csv')
+    # create_nofeature(transposed_eachuser,Dir)
+    i_and_freq(Dir)
+
 
  
     # for tfile in transposed_eachuser:
@@ -107,13 +131,7 @@ def main():
 
     # Write one feature file, total feature: 4096
     # read all user file
-    for feat_counter in range(4096):
-        with open(Dir+"nofeatures/"+str(feat_counter)+"_feature.csv","w") as wf:
-            for file in transposed_eachuser:
-                with open(file) as rf:
-                    for line in rf:
-                        li = list(line.split(","))
-                        wf.write(li[feat_counter]+"\n")
+ 
 
     # afters = zip(*befores)    
     # # for row in afters:
@@ -127,12 +145,8 @@ def main():
     #         break
 
     # transpose_combine(Dir)
-    # inputfile = Dir + 'combine/combined_features.csv'
-    # df = pd.read_csv(inputfile, header=None).T
-    # for index, row in df.iterrows():
-    #     print("row", row)
-    #     count_freq(raw_csv_argv, row)
 
+    # t_and_freq(Dir)
 
 if __name__ == "__main__":
     main()
