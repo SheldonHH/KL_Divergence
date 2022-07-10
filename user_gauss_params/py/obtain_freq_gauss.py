@@ -281,13 +281,19 @@ def raw_data_size():
     return csv_to_jpeg.csv_to_jpeg(numpy_array, raw_csv_argv,index_of_image)
 
 def f_to_g(Dir,psedo_user_dir, username):
+    this_user_dir = Dir+"/q_freq/"+username+"/"
+    if os.path.isdir(dir_str) == False:
+        os.mkdir(dir_str) # make dir for that user
     for feat_counter in range(4096):
         inputfile = Dir+"q_freq/"+username+"_"+str(feat_counter)+"_freq.csv"
         freq_to_gauss([psedo_user_dir], inputfile, str(feat_counter),str(raw_data_size))
 
 def i_and_freq(Dir,psedo_user_dir, username):
+    this_user_dir = Dir+"/nofeatures/"+username+"/"
+    if os.path.isdir(this_user_dir) == False:
+        os.mkdir(this_user_dir) # make dir for that user
     for feat_counter in range(4096):
-        inputfile =  Dir+"/nofeatures/"+str(feat_counter)+"_feature.csv"
+        inputfile =  this_user_dir+str(feat_counter)+"_feature.csv"
         count_freq([psedo_user_dir], inputfile, str(feat_counter),username)
 
 
