@@ -74,3 +74,53 @@ def extract_features(raw_csv_argv,index_of_image):
     # pd.DataFrame(features).T.to_csv(path+username+"_features_"+str(index_of_image)+".csv", header=False, index=False)
     # os.remove(jpeg_data_pat h1)
     # np.savetxt("/root/KL_Divergence/user_gauss_params/data/uniform/features/user_1_features.txt",features)
+
+
+
+
+def extract_features_fast(true_datapath, user_name, rawlens):
+    # args = raw_csv_argv
+    # raw_csv_path1 = args[0]
+    # print(args)
+    model = models.vgg16(pretrained=True)
+    new_model = FeatureExtractor(model)
+    device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
+    new_model = new_model.to(device)
+    transform = transforms.Compose([
+      transforms.ToPILImage(),
+      transforms.CenterCrop(512),
+      transforms.Resize(448),
+      transforms.ToTensor()                              
+    ])
+
+
+    new_fea_path = true_datapath+"features/"+user_name+"/"
+    if os.path.isdir(new_fea_path) == False:
+        os.mkdir(new_fea_path) # make dir for that user
+    for i in range(rawlens):
+        if os.path.exists(new_fea_path+user_name+"_features_"+str(i)+".csv") == False:
+            print(i)
+            jpeg_data_path1 = true_datapath+"image/"+user_name+"/"+user_name+"_"+str(i)+".jpeg"
+            # Will contain the feature
+            features = []
+            img = cv2.imread(jpeg_data_path1)
+            # Transform the image
+            img = transform(img)
+            # Reshape the image. PyTorch model reads 4-dimensional tensor
+            # [batch_size, channels, width, height]
+            img = img.reshape(1, 3, 448, 448)
+            img = img.to(device)
+            # We only extract features, so we don't need gradient
+            with torch.no_grad():
+              # Extract the feature from the image
+              feature = new_model(img)
+            # Convert to NumPy Array, Reshape it, and save it to features variable
+            features.append(feature.cpu().detach().numpy().reshape(-1))
+            # print(type(features))
+            np.savetxt(new_fea_path+user_name+"_features_"+str(i)+".csv", features)
+
+
+    # Convert to NumPy Array
+    # features = np.array(features)
+    # print("features", len(features[0]))
+    return features[0]
