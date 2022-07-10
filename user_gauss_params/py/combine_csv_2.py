@@ -6,6 +6,7 @@ import os
 import csv
 import re
 import natsort
+import time
 # from tally import countFreq
 # from itertools import izip
 
@@ -87,15 +88,7 @@ def transpose_combine(Dir):
     #                     li = list(line.split(" ")) 
     #                     befores.append(li)
     #                     print(type(line))
-def create_nofeature(transposed_eachuser,Dir,username):
-    for feat_counter in range(4096):
-        if os.path.exists(Dir+"nofeatures/"+username+"/"+username+str(feat_counter)+"_feature.csv") == False:
-            with open(Dir+"nofeatures/"+username+"/"+username+str(feat_counter)+"_feature.csv","w") as wf:
-                for file in transposed_eachuser:
-                    with open(file) as rf:
-                        for line in rf:
-                            li = list(line.split(","))
-                            wf.write(li[feat_counter]+"\n")
+
 
 
 def transpose_csv(Dir, username):
@@ -110,24 +103,36 @@ def transpose_csv(Dir, username):
         # pd.read_csv(inputfile, header=None).T.to_csv(outputfile, header=False, index=False)
         counter += 1
 
-
+def create_nofeature(transposed_eachuser,Dir,username):
+    for feat_counter in range(4096):
+        if os.path.exists(Dir+"nofeatures/"+username+"/"+username+"_"+str(feat_counter)+"_feature.csv") == False:
+            with open(Dir+"nofeatures/"+username+"/"+username+"_"+str(feat_counter)+"_feature.csv","w") as wf:
+                for file in transposed_eachuser:
+                    with open(file) as rf:
+                        for line in rf:
+                            li = list(line.split(" "))
+                            if feat_counter < len(li):
+                                wf.write(li[feat_counter]+"\n")
 
 def main():
+    t0 = time.time()
     Dir = "/root/KL_Divergence/user_gauss_params/data/"
     username = "user_1"
     psedo_user_dir = "/root/KL_Divergence/user_gauss_params/data/"+username+".csv"
-    # transpose individual csv
-    output_specified_dir = Dir + 'transposed_features/'+username
-    if os.path.isdir(output_specified_dir) == False:
-        os.mkdir(output_specified_dir)
-    transpose_csv(Dir,username)
-
-    # from transposed_csv to freq
-    # output_specified_dir = Dir + 'nofeatures/'+username
+    ## transpose individual csv
+    # output_specified_dir = Dir + 'transposed_features/'+username
     # if os.path.isdir(output_specified_dir) == False:
     #     os.mkdir(output_specified_dir)
-    # transposed_eachuser = glob.glob(Dir + 'features/'+username+'/*.csv')
-    # create_nofeature(transposed_eachuser,Dir,username)
+    # transpose_csv(Dir,username)
+
+    ## from transposed_csv to freq
+    output_specified_dir = Dir + 'nofeatures/'+username
+    if os.path.isdir(output_specified_dir) == False:
+        os.mkdir(output_specified_dir)
+    transposed_eachuser = glob.glob(Dir + 'transposed_features/'+username+'/*.csv')
+    create_nofeature(transposed_eachuser,Dir,username)
+    t1 = time.time()
+    print(t1-t0)
     # i_and_freq(Dir)
 
 
