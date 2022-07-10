@@ -1,5 +1,6 @@
 from tally import csv_to_jpeg
 from py_torch.FeatureExtractor import extract_features
+from py_torch.FeatureExtractor import extract_features_fast
 from tally import round_data_golang
 from tally import countFreq_golang
 from tally import freq_to_gauss_golang
@@ -32,8 +33,8 @@ def main():
     # raw to image
     # for i in range(len(numpy_array)):
     #     raw_to_img([numpy_array[i]], user_name, str(i))
-
-    img_to_fea(numpy_array, true_arg_datapath,user_name)
+    # img_to_fea(numpy_array, true_arg_datapath, )
+    img_to_fea_fast(numpy_array, true_arg_datapath, user_name, len(numpy_array))
 
     t1 = time.time()
     print(t1-t0)
@@ -100,6 +101,13 @@ def img_to_fea(numpy_array, true_argv, user_name):
             single_file_feature = extract_features(psedo_csv_path_img,  str(i))
             np.savetxt(new_fea_path+user_name+"_features_"+str(i)+".csv", single_file_feature)
             nested_features.append(single_file_feature)
+            # print(i)
+
+
+def img_to_fea_fast(numpy_array, true_argv, user_name, lens):
+    true_datapath = "/root/KL_Divergence/user_gauss_params/data/"
+    extract_features_fast(true_datapath, user_name, lens)
+ 
             # print(i)
 
 if __name__ == "__main__":
