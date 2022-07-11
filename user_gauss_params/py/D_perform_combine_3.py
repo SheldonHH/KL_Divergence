@@ -68,7 +68,9 @@ import time
 
 def newline_combine(transposed_inputs_dir, target_fullPath, username):
     extension = 'csv'
-    all_filenames = [i for i in glob.glob(transposed_inputs_dir+'*.{}'.format(extension))]
+    transposed_inputs_list = glob.glob(transposed_inputs_dir+'*.{}'.format(extension))
+    sorted_files = natsort.natsorted(transposed_inputs_list)
+    all_filenames = [i for i in sorted_files]
     print(len(all_filenames))
     csv_list = []
     counterrr = 0
