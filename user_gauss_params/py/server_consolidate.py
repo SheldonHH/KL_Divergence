@@ -36,6 +36,17 @@ def server_consolidate(individual_gauss, required_userlist):
     print("gauss_users_dir",gauss_users_dir)
     users_list = user_list_from_dir(gauss_users_dir)
     print("users_list",users_list)
+
+
+def main():
+    username = "user_1"
+    Dir = "/root/KL_Divergence/user_gauss_params/data/"
+    psedo_user_dir = "/root/KL_Divergence/user_gauss_params/data/"+username+".csv"
+    i_and_freq(Dir,psedo_user_dir,username)
+
+if __name__ == "__main__":
+    main()
+
 #     for user_gauss_file in users_list:
 #         if user_gauss_file[0:findNth(user_gauss_file, "_",2)] in required_userlist:
 #             # if 'time' in required_userlist :
