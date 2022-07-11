@@ -107,15 +107,10 @@ def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
 
-def freq_to_gauss(raw_csv_argv, inputfile,  col_counter, raw_data_size):
-    args = raw_csv_argv
-    raw_csv_path1 = args[0]
-    username = raw_csv_path1[raw_csv_path1.rindex(
-        '/')+1: raw_csv_path1.rindex('.')]
-    dir_str = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
-    freq_dir = dir_str+"/q_freq/"
+def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, username):
+    freq_dir = true_datapath+"/q_freq/"+username+"/"
     gauss_filetype = username
-    directory = os.path.join(freq_dir)
+    # directory = os.path.join(freq_dir)
     os.chdir(freq_dir)
     num_with_params = {}  # (num_of_gauss, [params])
     num_with_weights = {}
@@ -249,13 +244,16 @@ def freq_to_gauss(raw_csv_argv, inputfile,  col_counter, raw_data_size):
                 break
             incre_index += 1
         dimension_min_with_params["gauss"] = num_with_params[min_index]
+        minList, maxList = calculate_max_min(num_with_params[min_index])
         print("num_with_weights", num_with_weights)
         if min_index in num_with_weights:
             dimension_min_with_params["weights"] = num_with_weights[min_index]
         else:
             dimension_min_with_params["weights"] = 0
-        dimension_min_with_params["max"] = max(X[:, 0])
-        dimension_min_with_params["min"] = min(X[:, 0])
+        
+
+        dimension_min_with_params["max"] = maxList
+        dimension_min_with_params["min"] = minList
         dimension_min_with_params["raw_data_size"] = raw_data_size
         print("type(X[:,0])", type(X[:, 0]))
         # plt.clf()
@@ -274,13 +272,26 @@ def freq_to_gauss(raw_csv_argv, inputfile,  col_counter, raw_data_size):
                                         "_"+col_counter] = dimension_min_with_params
 # path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     # os.remove(freq_dir+username+"_freq.csv")
-    with open(dir_str+"users_individual_gauss/"+gauss_filetype+"/"+gauss_filetype+"_features_gauss_"+col_counter+".json", "w") as outfile:
+    with open(true_datapath+"users_individual_gauss/"+gauss_filetype+"/"+gauss_filetype+"_features_gauss_"+col_counter+".json", "w") as outfile:
         json.dump(all_files_dimension_with_params, outfile)
     # shutil.copyfile(gauss_filetype+"_features_gauss_"+col_counter+".json", dir_str +
     #                 "users_individual_gauss/"+gauss_filetype+"_features_gauss_"+col_counter+".json")
     # os.remove(freq_dir+gauss_filetype+"_features_gauss".json")
 
 
+# calculate max and min
+def calculate_max_min(gaussList):
+    minList = []
+    maxList = []
+    for sub_index in range(int(len(gaussList)/3)):
+        mean = gaussList[sub_index*3] 
+        sigma = gaussList[sub_index*3+1]
+        ci = norm.interval(0.99, loc=mean, scale=sigma)
+        print("ci")
+        minList.append(ci[0])
+        maxList.append(ci[1])
+    return minList, maxList
+    
 # from tally import countFreq
 def count_freq(raw_csv_argv, inputfile, idx, username):
     args = raw_csv_argv
@@ -308,8 +319,8 @@ def f_to_g(Dir, psedo_user_dir, username):
         os.mkdir(this_user_dir)  # make dir for that user
     for feat_counter in range(4096):
         inputfile = Dir+"q_freq/"+username+"_"+str(feat_counter)+"_freq.csv"
-        freq_to_gauss([psedo_user_dir], inputfile, str(
-            feat_counter), str(rds))
+        freq_to_gauss(Dir, inputfile, str(
+            feat_counter), str(rds), username)
 
 
 def i_and_freq(Dir, psedo_user_dir, username):
@@ -322,15 +333,20 @@ def i_and_freq(Dir, psedo_user_dir, username):
 
 
 def main():
-    username = "user_1"
+    username = "user_4"
     Dir = "/root/KL_Divergence/user_gauss_params/data/"
     psedo_user_dir = "/root/KL_Divergence/user_gauss_params/data/"+username+".csv"
-    i_and_freq(Dir,psedo_user_dir,username)
-    # raw_csv_path1 = psedo_user_dir
-    # username = raw_csv_path1[raw_csv_path1.rindex(
-    #     '/')+1: raw_csv_path1.rindex('.')]
-    # # i_and_freq(Dir, psedo_user_dir, username)
-    # f_to_g(Dir, psedo_user_dir, username)
+
+    ####
+    # i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
+    ####
+
+
+    raw_csv_path1 = psedo_user_dir
+    username = raw_csv_path1[raw_csv_path1.rindex(
+        '/')+1: raw_csv_path1.rindex('.')]
+    # i_and_freq(Dir, psedo_user_dir, username)
+    f_to_g(Dir, psedo_user_dir, username)
     # inputfile = Dir + 'combine/combined_features.csv'
     # df = pd.read_csv(inputfile, header=None).T
     # for index, row in df.iterrows():
