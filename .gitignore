@@ -1,3 +1,4 @@
 .DS_Store
 .idea	
 !.gitignore
+user_gauss_params/data/combine/
