@@ -48,42 +48,35 @@ from expects import (
 
     
 # from tally import countFreq
-def count_freq(true_arg_datapath, df, idx, username):
+def count_freq(true_arg_datapath, output_q_file, df, idx, username):
     # pd.DataFrame(features).to_csv(path+username+"_features.csv", header=False)
     # df = pd.read_csv(inputfile, names=['col1'])
     # print("df",df)
     print(df.value_counts())
-    this_user_FreqDir = true_arg_datapath+"/q_freq/" + username + "/"
-    if os.path.isdir(this_user_FreqDir) == False:
-        os.mkdir(this_user_FreqDir)  # make dir for that user
-    df.value_counts(normalize=True).to_csv( this_user_FreqDir+
+    if os.path.isdir(output_q_file) == False:
+        os.mkdir(output_q_file)  # make dir for that user
+    df.value_counts(normalize=True).to_csv( output_q_file+
                                            username+"_"+idx+"_freq.csv", header=False)
     # os.remove(path+"/features/rounded_"+username+'_features.csv')
 
 
 
-def i_and_freq(Dir, input_combine_file, username):
+def i_and_freq(Dir, input_nf_file, output_q_file, username):
+    csv_file_list = glob.glob(input_nf_file+'/*.csv')
+    for file in csv_file_list:
+        df = pd.read_csv(file)
+        count_freq(Dir, output_q_file, df, str(idx), username)
     
-    df = pd.read_csv(input_combine_file)
-    # print(df)
-    print(len(df))
-    return
-    idx = 0
-    for column in df:
-        inputfile = input_combine_file+username+"_"+str(idx)+"_feature.csv"
-        count_freq(Dir, df[column], str(idx), username)
-        idx+=1
-    print(idx)
-
 
 def main():
     t0 = time.time()
-    username = "user_3"
+    username = "user_1"
     Dir = "/root/KL_Divergence/user_gauss_params/data/"
-    input_combine_file = "/root/KL_Divergence/user_gauss_params/data/combine/"+username+"_comnbined.csv"
-
+    # input_combine_file = "/root/KL_Divergence/user_gauss_params/data/combine/"+username+"_comnbined.csv"
+    input_nf_file = Dir+"nofeature/"+username + "/"
+    output_q_file =  Dir+"q_freq/"+username + "/"
     ####
-    i_and_freq(Dir,input_combine_file,username) # calculate Frequency
+    i_and_freq(Dir,input_nf_file, output_q_file, username) # calculate Frequency
     ####
     t1 = time.time()
     print(t1-t0)

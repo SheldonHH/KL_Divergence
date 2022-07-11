@@ -90,7 +90,7 @@ import time
     #                     print(type(line))
 
 
-
+### GOOD! Don't use df.T transpose!!
 def transpose_csv(Dir, username):
     input_file_list = glob.glob(Dir + 'features/'+username+"/*.csv")
     # print(input_file_list)
