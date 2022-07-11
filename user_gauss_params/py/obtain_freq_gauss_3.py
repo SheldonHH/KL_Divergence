@@ -139,10 +139,10 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         counter_initial = 10
         n_samples = len(data)
         for index in range(counter_initial):
-            if n_samples < index+1:
-                dimension_min_with_params.append(
-                    {key+"_gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
-                break
+            # if n_samples < index+1:
+            #     dimension_min_with_params.append(
+            #         {key+"_gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
+            #     break
             gmm = mixture.GaussianMixture(
                 n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
             list_params = zerolistmaker((index+1)*3)
@@ -328,25 +328,27 @@ def i_and_freq(Dir, psedo_user_dir, username):
     if os.path.isdir(this_user_dir) == False:
         os.mkdir(this_user_dir)  # make dir for that user
     for feat_counter in range(4096):
-        inputfile = this_user_dir+str(feat_counter)+"_feature.csv"
+        inputfile = this_user_dir+username+"_"+str(feat_counter)+"_feature.csv"
         count_freq([psedo_user_dir], inputfile, str(feat_counter), username)
 
 
 def main():
-    username = "user_4"
+    t0 = time.time()
+    username = "user_1"
     Dir = "/root/KL_Divergence/user_gauss_params/data/"
     psedo_user_dir = "/root/KL_Divergence/user_gauss_params/data/"+username+".csv"
 
     ####
-    # i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
+    i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
     ####
+    t1 = time.time()
+    print(t1-t0)
 
-
-    raw_csv_path1 = psedo_user_dir
-    username = raw_csv_path1[raw_csv_path1.rindex(
-        '/')+1: raw_csv_path1.rindex('.')]
-    # i_and_freq(Dir, psedo_user_dir, username)
-    f_to_g(Dir, psedo_user_dir, username)
+    # raw_csv_path1 = psedo_user_dir
+    # username = raw_csv_path1[raw_csv_path1.rindex(
+    #     '/')+1: raw_csv_path1.rindex('.')]
+    # # i_and_freq(Dir, psedo_user_dir, username)
+    # f_to_g(Dir, psedo_user_dir, username)
     # inputfile = Dir + 'combine/combined_features.csv'
     # df = pd.read_csv(inputfile, header=None).T
     # for index, row in df.iterrows():

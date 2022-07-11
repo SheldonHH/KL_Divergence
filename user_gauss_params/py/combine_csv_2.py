@@ -56,14 +56,14 @@ import time
         
 
 
-def transpose_combine(Dir):
-    inputfile = Dir + 'combine/combined_features.csv'
-    outputfile = Dir+'combine/transposed_combined_features.csv'
-    # a = zip(*csv.reader(open(file, "rt")))
-    # csv.writer(
-    #     open(Dir+'combine/transposed_combined_features.csv', "wt")).writerows(a)
-    pd.read_csv(inputfile, header=None).T.to_csv(
-        outputfile, header=False, index=False)
+# def transpose_combine(Dir):
+#     inputfile = Dir + 'combine/combined_features.csv'
+#     outputfile = Dir+'combine/transposed_combined_features.csv'
+#     # a = zip(*csv.reader(open(file, "rt")))
+#     # csv.writer(
+#     #     open(Dir+'combine/transposed_combined_features.csv', "wt")).writerows(a)
+#     pd.read_csv(inputfile, header=None).T.to_csv(
+#         outputfile, header=False, index=False)
     # return 
 
 # def perform_combine(Dir):
@@ -105,6 +105,7 @@ def transpose_csv(Dir, username):
 
 def create_nofeature(transposed_eachuser,Dir,username):
     for feat_counter in range(4096):
+        print(feature_counter)
         if os.path.exists(Dir+"nofeatures/"+username+"/"+username+"_"+str(feat_counter)+"_feature.csv") == False:
             with open(Dir+"nofeatures/"+username+"/"+username+"_"+str(feat_counter)+"_feature.csv","w") as wf:
                 for file in transposed_eachuser:
@@ -125,7 +126,7 @@ def main():
     #     os.mkdir(output_specified_dir)
     # transpose_csv(Dir,username)
 
-    ## from transposed_csv to freq
+    ## from transposed_csv to nofreq
     output_specified_dir = Dir + 'nofeatures/'+username
     if os.path.isdir(output_specified_dir) == False:
         os.mkdir(output_specified_dir)
