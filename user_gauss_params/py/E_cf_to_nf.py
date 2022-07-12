@@ -5,24 +5,27 @@ csv.field_size_limit(sys.maxsize)
 
 # write to dicts
 with open('/root/KL_Divergence/user_gauss_params/data/combine/user_1_comnbined.csv', newline='') as csvfile:
-  spamreader = csv.reader(csvfile, delimiter=',')
+  spamreader = csv.reader(csvfile, delimiter=' ')
   counter = 0
   dicts = {}
   for row in spamreader:
-    print(counter)
-    for i in range(len(row)):
-      if i in dicts:
-        existedList = list(dicts[i])
-        newList =existedList.append(row[i])
-        dicts[i] = existedList
-      else:
-        dicts[i]=[row[i]]
-    counter+=1
+    if len(row) != 1:
+      print(counter)
+      print("len(row)",len(row))
+      for i in range(len(row)):
+        if i in dicts:
+          existedList = list(dicts[i])
+          newList =existedList.append(row[i])
+          dicts[i] = existedList
+        else:
+          dicts[i]=[row[i]]
+      counter+=1
 
 
 # dicts{} to csv
 username = "user_1"
 for key, value in dicts.items():
+    print(len(dicts[i]))
     target_nf_path = '/root/KL_Divergence/user_gauss_params/data/nofeatures/'+username+"/"+username+"_"+str(key)+'_onerow.csv'
     with open(target_nf_path, 'w') as csvfile:
       print("nf_no:",key)
