@@ -108,8 +108,8 @@ def findNth(a, b, n):
 
 
 def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, username):
-    freq_dir = true_datapath+"/q_freq/"+username+"/"
-    gauss_filetype = username
+    freq_dir = true_datapath+"/q/"+username+"/"
+    uname = username
     # directory = os.path.join(freq_dir)
     os.chdir(freq_dir)
     num_with_params = {}  # (num_of_gauss, [params])
@@ -272,11 +272,16 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                                         "_"+col_counter] = dimension_min_with_params
 # path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     # os.remove(freq_dir+username+"_freq.csv")
-    with open(true_datapath+"users_individual_gauss/"+gauss_filetype+"/"+gauss_filetype+"_features_gauss_"+col_counter+".json", "w") as outfile:
+    counterFolder = true_datapath+"users_individual_gauss/"+ col_counter+"/"
+    if os.path.isdir():
+        os.mkdir(counterFolder)
+        for f in glob.glob(counterFolder):
+            os.remove(f)
+    with open(counterFolder + uname+"_features_gauss_.json", "w") as outfile:
         json.dump(all_files_dimension_with_params, outfile)
-    # shutil.copyfile(gauss_filetype+"_features_gauss_"+col_counter+".json", dir_str +
-    #                 "users_individual_gauss/"+gauss_filetype+"_features_gauss_"+col_counter+".json")
-    # os.remove(freq_dir+gauss_filetype+"_features_gauss".json")
+    # shutil.copyfile( uname+"_features_gauss_"+col_counter+".json", dir_str +
+    #                 "users_individual_gauss/"+ uname+"_features_gauss_"+col_counter+".json")
+    # os.remove(freq_dir+ uname+"_features_gauss".json")
 
 
 # calculate max and min
@@ -292,23 +297,10 @@ def calculate_max_min(gaussList):
         maxList.append(ci[1])
     return minList, maxList
     
-# from tally import countFreq
-def count_freq(raw_csv_argv, inputfile, idx, username):
-    args = raw_csv_argv
-    raw_csv_path1 = args[0]
-    path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
-    # pd.DataFrame(features).to_csv(path+username+"_features.csv", header=False)
-    df = pd.read_csv(inputfile, names=['col1'])
-    # print("df",df)
-    print(df.value_counts())
-    df.value_counts(normalize=True).to_csv(path+"/q_freq/" +
-                                           username+"_"+idx+"_freq.csv", header=False)
-    # os.remove(path+"/features/rounded_"+username+'_features.csv')
-
 
 def raw_data_size(username):
     numpy_array = np.loadtxt(
-        "/root/KL_Divergence/user_gauss_params/data/"+username+".csv", delimiter=",")
+        "/home/xphuang/entropy/user_gauss_params/data/combine/"+username+"_combine.csv", delimiter=",")
     return len(numpy_array)
 
 
@@ -318,27 +310,15 @@ def f_to_g(Dir, username):
     if os.path.isdir(this_user_dir) == False:
         os.mkdir(this_user_dir)  # make dir for that user
     for feat_counter in range(4096):
-        inputfile = Dir+"q_freq/"+username+"_"+str(feat_counter)+"_freq.csv"
+        inputfile = Dir+"q/"+username+"/"+username+"_"+str(feat_counter)+"_q.csv"
         freq_to_gauss(Dir, inputfile, str(
             feat_counter), str(rds), username)
-
-
-def i_and_freq(Dir, psedo_user_dir, username):
-    this_user_dir = Dir+"nofeatures/"+username+"/"
-    if os.path.isdir(this_user_dir) == False:
-        os.mkdir(this_user_dir)  # make dir for that user
-    for feat_counter in range(4096):
-        inputfile = this_user_dir+username+"_"+str(feat_counter)+"_feature.csv"
-        count_freq([psedo_user_dir], inputfile, str(feat_counter), username)
-
 
 def main():
     t0 = time.time()
     username = "user_1"
-    Dir = "/root/KL_Divergence/user_gauss_params/data/"
-    psedo_user_dir = "/root/KL_Divergence/user_gauss_params/data/"+username+".csv"
-
-    ####
+    Dir = "/home/xphuang/entropy/user_gauss_params/data/"
+     ####
     # i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
     # ####
     f_to_g(Dir, username)

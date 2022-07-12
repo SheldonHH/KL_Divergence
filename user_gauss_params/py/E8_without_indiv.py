@@ -22,11 +22,12 @@ for userkey, value in Inputdicts.items():
     for idx in range(4095): 
         print(idx)
         data4=df.iloc[value[0]:value[1],idx]
+        data4.to_csv("/home/xphuang/entropy/user_gauss_params/data/combine/"+userkey+"_combine.csv", header=False,index=False)
         # LDL = data4.to_numpy()
         # print(LDL)
         # print("data4", len(LDL))
         vcd4=(data4.value_counts(normalize=True))
-        vcd4.to_csv(uq_path+userkey+"_"+str(idx)+"_q.csv")
+        vcd4.to_csv(uq_path+userkey+"_"+str(idx)+"_q.csv", header=False)
         each_fea.append(vcd4)
 t1 = time.time()
 print("1-200 rows, 4096 Individual time:",t1-t0)
