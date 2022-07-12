@@ -7,3 +7,5 @@ user_gauss_params/data/nofeatures/user_1/user_1_0_onerow.csv
 **/*0_onerow*
 **/*0_nf*
 user_gauss_params/data/*.csv 
+user_gauss_params/data/q/* 
+user_gauss_params/data/gpp/* 

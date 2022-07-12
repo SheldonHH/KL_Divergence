@@ -312,7 +312,7 @@ def raw_data_size(username):
     return len(numpy_array)
 
 
-def f_to_g(Dir, psedo_user_dir, username):
+def f_to_g(Dir, username):
     rds = raw_data_size(username)
     this_user_dir = Dir+"users_individual_gauss/"+username+"/"
     if os.path.isdir(this_user_dir) == False:
@@ -341,7 +341,7 @@ def main():
     ####
     # i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
     # ####
-    f_to_g(Dir, psedo_user_dir, username)
+    f_to_g(Dir, username)
     t1 = time.time()
     print(t1-t0)
 
