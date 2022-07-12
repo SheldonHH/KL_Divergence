@@ -57,6 +57,7 @@ while left_point < max-step:
         vList = tuple(value)
         if vList[0] < sam_point and sam_point > vList[1]:
           user_Fea_g_dict.update({key:tuple([vList[0], vList[1], vList[2], 1+vList[3]])})
+# min, max, weight, counts
 
   left_point=right_point
   totalRange_List.append(rangeList)
