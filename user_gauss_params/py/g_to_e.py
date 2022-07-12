@@ -57,6 +57,19 @@ def server_consolidate(subfolders, required_userlist, featureID, target_outerfol
 
 
 
+
+def unit_gauss(users_list):
+    individual_gauss = ["/root/KL_Divergence/user_gauss_params/data/users_individual_gauss"] # location where stores individual gauss
+    directory = individual_gauss[0]
+    users_list = ["user_1", "user_4"]
+    subfolders = [x[0] for x in os.walk(directory)]
+    print(subfolders)
+    print(len(subfolders))
+    feature_to_united = ["0"]
+    target_outerfolder = "/root/KL_Divergence/user_gauss_params/data/united_gauss/"
+    for featureID in feature_to_united:
+        server_consolidate(subfolders, users_list, featureID, target_outerfolder)
+
 def main():
   individual_gauss = ["/root/KL_Divergence/user_gauss_params/data/users_individual_gauss"] # location where stores individual gauss
   directory = individual_gauss[0]

@@ -139,10 +139,10 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         counter_initial = 10
         n_samples = len(data)
         for index in range(counter_initial):
-            # if n_samples < index+1:
+            if n_samples < index+1:
             #     dimension_min_with_params.append(
             #         {key+"_gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
-            #     break
+                break
             gmm = mixture.GaussianMixture(
                 n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
             list_params = zerolistmaker((index+1)*3)
@@ -158,7 +158,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 simulated_y_sum += simulated_height
             # print(index,"simulated_y_sum",simulated_y_sum)
             sort_mch = np.array(list(map(list, zip(*sort_mch))))
-            print(sort_mch)
+            # print(sort_mch)
             # sg = sorted(sort_mch, key=lambda a_entry: sort_mch[0])
             sort_mch = sort_mch[sort_mch[:, 0].argsort(
                 kind='mergesort')]  # sort by year
@@ -185,9 +185,10 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         incre_index = counter_initial
 
         while(True):
+            min_index = 0
             if n_samples < incre_index+1:
-                dimension_min_with_params.append(
-                    {key+"_gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
+            #     dimension_min_with_params.append(
+            #         {key+"_gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
                 break
             gmm = mixture.GaussianMixture(
                 n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
@@ -201,7 +202,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
                 simulated_y_sum += list_params[sub_index *
                                                3+2]*gmm.weights_[sub_index]
-            print("TRUEsimulated_y_sum", simulated_y_sum)
+            # print("TRUEsimulated_y_sum", simulated_y_sum)
             params = tuple(list_params)
             num_with_params[incre_index] = list_params
             # print(str(index+1),params,len(params))
@@ -218,7 +219,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
             # print(MSE_list)
             # print("-----------------------------")
             ySp.append(MSE)
-            print("MSE", MSE)
+            # print("MSE", MSE)
             xSp.append(incre_index)
 
             y_firsts = obtain_first_second(
@@ -229,23 +230,23 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
 
                 print("incre_index", incre_index)
                 # print("global_params", params)
-                print("ySp", ySp)
-                print("ySp.index(min(ySp))", ySp.index(min(ySp)))
+                # print("ySp", ySp)
+                # print("ySp.index(min(ySp))", ySp.index(min(ySp)))
                 min_index = ySp.index(min(ySp))
-                print("xSp", xSp)
+                # print("xSp", xSp)
                 # print("x_range",x_range)
                 y_firsts = obtain_first_second(
                     np.array(ySp), np.array(xSp), "first")
                 y_seconds = obtain_first_second(
                     np.array(ySp), np.array(xSp), "second")
 
-                print("y_seconds", y_seconds)
-                print("y_firsts", y_firsts)
+                # print("y_seconds", y_seconds)
+                # print("y_firsts", y_firsts)
                 break
             incre_index += 1
         dimension_min_with_params["gauss"] = num_with_params[min_index]
         minList, maxList = calculate_max_min(num_with_params[min_index])
-        print("num_with_weights", num_with_weights)
+        # print("num_with_weights", num_with_weights)
         if min_index in num_with_weights:
             dimension_min_with_params["weights"] = num_with_weights[min_index]
         else:
@@ -255,7 +256,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         dimension_min_with_params["max"] = maxList
         dimension_min_with_params["min"] = minList
         dimension_min_with_params["raw_data_size"] = raw_data_size
-        print("type(X[:,0])", type(X[:, 0]))
+        # print("type(X[:,0])", type(X[:, 0]))
         # plt.clf()
         # sorted_X = np.sort(X, axis=0)
         # plt.plot(sorted_X[:,0].tolist(), sorted_X[:,1].tolist(), 'b+:', label='data')
@@ -273,11 +274,11 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
 # path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     # os.remove(freq_dir+username+"_freq.csv")
     counterFolder = true_datapath+"users_individual_gauss/"+ col_counter+"/"
-    if os.path.isdir():
+    if os.path.isdir(counterFolder) == False:
         os.mkdir(counterFolder)
-        for f in glob.glob(counterFolder):
+        for f in glob.glob(counterFolder+"*.csv"):
             os.remove(f)
-    with open(counterFolder + uname+"_features_gauss_.json", "w") as outfile:
+    with open(counterFolder + uname+"_"+col_counter+"_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params, outfile)
     # shutil.copyfile( uname+"_features_gauss_"+col_counter+".json", dir_str +
     #                 "users_individual_gauss/"+ uname+"_features_gauss_"+col_counter+".json")
@@ -310,6 +311,7 @@ def f_to_g(Dir, username):
     if os.path.isdir(this_user_dir) == False:
         os.mkdir(this_user_dir)  # make dir for that user
     for feat_counter in range(4096):
+        print(feat_counter)
         inputfile = Dir+"q/"+username+"/"+username+"_"+str(feat_counter)+"_q.csv"
         freq_to_gauss(Dir, inputfile, str(
             feat_counter), str(rds), username)
