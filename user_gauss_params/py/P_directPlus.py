@@ -1,6 +1,6 @@
 import pandas as pd
-
-dicts = {"user_1": [1, 3], "user_2": [3, 6], "user_3": [7, 9]}
+import random
+dicts = {"user_1": [1, 3], "user_2": [3, 6], "user_3": [7, 8]}
 df = pd.read_csv(
     "/root/KL_Divergence/user_gauss_params/data/combine/all_combined.csv", delimiter=" ")
 
@@ -9,10 +9,12 @@ df = pd.read_csv(
 # value:[]
 xi_dict = {}
 xi_list = []
+total_rows = 0
 for key, value in dicts.items():
     dfRange = df.iloc[value[0]:value[1]]
     print(len(dfRange))
     xi_dict[key] = (dfRange.agg([min, max]), len(dfRange))
+    total_rows+=len(dfRange)
     
     xi_list.append(dfRange.agg([min, max]))
     # print(dfRange.agg([min, max]))
@@ -25,8 +27,13 @@ for key, value in dicts.items():
 result = pd.concat(xi_list)
 # print("total size",len(result))
 # print(result.agg([min, max]))
-total_size = len(xi_list)
-this_fea_points_to_sample = total_size * 4096
+total_size = total_rows
+print(total_size)
+print("$$$$$$$$$$$$$$$$$$$$$")
+print(total_rows)
+
+
+this_fea_points_to_sample = total_size * 4096/100
 dfTotalXI = result.agg([min, max])
 dfTotalXI.to_csv("/root/KL_Divergence/user_gauss_params/data/combine/dfTotalXI.csv", header=False, index=False)
 #     max = max(Total_maxList)
@@ -35,25 +42,27 @@ dfTotalXI.to_csv("/root/KL_Divergence/user_gauss_params/data/combine/dfTotalXI.c
 #     step = sample_range/10
 #     left_point = min
 totalRange_List=[]
-featureID_counter = 0
+
 user_percent={} # for all features {user:[percent]}
 # 1. create slices     # for each feature/col access as featureID_counter
 
 
 # 等权重的features可以加
 user_Fea_xis_dict = {} 
-for name,values in dfTotalXI.iteritems():
-    print(values[0])
-    break
-    # bMin, bMax for each feature
-    bMin = values[0]
-    bMax = values[1]
+featureID_counter = 0
+for values in dfTotalXI.iteritems():
+    print(featureID_counter)
+    xiLIST = (values[1].tolist()) # Thanks to Dennis 
+    bMin = (xiLIST[0])
+    bMax = (xiLIST[1])
 
-    step = (bMax-bMin)/10
-    left_point = values[0]
-    while left_point < max-step:
-        right_point += left_point+step
+    step = (float(bMax-bMin))/10
+    left_point = bMin
+    slice_counter = 0
+    while left_point <= bMax-step:
+        right_point = left_point+step
          # total number
+        # print(slice_counter)
         for i in range(int(this_fea_points_to_sample/10)):
             sam_point = random.uniform(left_point, right_point)
             rangeList = []
@@ -63,19 +72,24 @@ for name,values in dfTotalXI.iteritems():
                 # print(type(xi_dict[key][0]))
                 # print(featureID_counter)
                 # print(xi_dict[key][0].columns[featureID_counter])
-                minn = xi_dict[key][0].columns[featureID_counter]
-                maxx = xi_dict[key][1].columns[featureID_counter]
+                subXILIST = xi_dict[key][0].iloc[:,[featureID_counter]].values.tolist()
+                # print(subXILIST[0])
+                # print(subXILIST[1])
+                minn = subXILIST[0][0]
+                maxx = subXILIST[1][0]
+                # print(type(minn))
+                # minn = xi_dict[0]
+                # maxx = xi_dict[key][1].columns[featureID_counter]
                 if sam_point >= minn and sam_point <= maxx:
-                    if key in user_Fea_xis_dict == False:
-                        user_Fea_xis_dict[key]=[1]
-                    elif len(user_Fea_xis_dict[key]) == featureID_counter:
-                        sg = list(user_Fea_xis_dict[key])
-                        sg[featureID_counter]+=1
-                        user_Fea_xis_dict[key] = sg
-                    elif len(user_Fea_xis_dict[key]) < featureID_counter:
-                        sg = list(user_Fea_xis_dict[key])
-                        sg.append(1)
-                        user_Fea_xis_dict[key] = sg
+                    if key in user_Fea_xis_dict:
+                      newValue = user_Fea_xis_dict[key]+1
+                      user_Fea_xis_dict.update({key: newValue})
+                    else:
+                      user_Fea_xis_dict[key]=1
+                       
+        left_point=right_point
+        slice_counter+=1
+        
 
 
     # for key, value in user_Fea_xis_dict.items():
