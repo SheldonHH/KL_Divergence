@@ -2,10 +2,11 @@ import csv
 import sys
 import pandas as pd
 import os
+import glob
 # csv.field_size_limit(sys.maxsize)
 
-username = "user_1"
-for key in range(4095):
+username = "user_2"
+for key in range(4096):
   print(key)
   input_nf_path = '/root/KL_Divergence/user_gauss_params/data/nofeatures/'+username+"/"+username+"_"+str(key)+'_onerow.csv'
 

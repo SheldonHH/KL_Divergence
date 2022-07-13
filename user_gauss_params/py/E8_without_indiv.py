@@ -7,7 +7,7 @@ from M_United import *
 
 def create_q(Inputdicts):
     t0 = time.time()
-    df = pd.read_csv("/home/xphuang/entropy/user_gauss_params/data/combine/space_small_q.csv", delimiter=" ")
+    df = pd.read_csv("/home/xphuang/entropy/user_gauss_params/data/combine/user_2_comnbined.csv", delimiter=" ")
     t1 = time.time()
     print("readcsv time:",t1-t0)
     # dfRange = df.iloc[start:end]
@@ -47,16 +47,15 @@ def create_q(Inputdicts):
 
 
 def main():
-    Inputdicts = {"user_1": [0, 30], "user_2": [3, 60], "user_3": [70, 140]}
-    # create_q(Inputdicts)
+    Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
+
+    create_q(Inputdicts)
 
     Dir = "/home/xphuang/entropy/user_gauss_params/data/"
-     ####
-    # i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
-    # ####
+
     t0 = time.time()
-    # for key in Inputdicts.keys():
-    #     f_to_g(Dir, key)
+    for key in Inputdicts.keys():
+        f_to_g(Dir, key)
     t1 = time.time()
     print("gauss process time:",t1-t0)
 

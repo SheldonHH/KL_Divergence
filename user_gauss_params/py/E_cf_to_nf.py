@@ -4,7 +4,7 @@ import pandas as pd
 csv.field_size_limit(sys.maxsize)
 
 # write to dicts
-with open('/root/KL_Divergence/user_gauss_params/data/combine/user_1_comnbined.csv', newline='') as csvfile:
+with open('/home/xphuang/entropy/user_gauss_params/data/combine/user_2_comnbined.csv', newline='') as csvfile:
   spamreader = csv.reader(csvfile, delimiter=' ')
   counter = 0
   dicts = {}
@@ -23,10 +23,10 @@ with open('/root/KL_Divergence/user_gauss_params/data/combine/user_1_comnbined.c
 
 
 # dicts{} to csv
-username = "user_1"
+username = "user_2"
 for key, value in dicts.items():
     print(len(dicts[i]))
-    target_nf_path = '/root/KL_Divergence/user_gauss_params/data/nofeatures/'+username+"/"+username+"_"+str(key)+'_onerow.csv'
+    target_nf_path = '/home/xphuang/entropy/user_gauss_params/data/nofeatures/'+username+"/"+username+"_"+str(key)+'_onerow.csv'
     with open(target_nf_path, 'w') as csvfile:
       print("nf_no:",key)
       writer = csv.writer(csvfile)

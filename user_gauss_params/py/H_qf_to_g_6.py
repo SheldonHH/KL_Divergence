@@ -136,7 +136,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         #  perform calculation
         f.close()
         MSE_list, ySp, xSp = [], [], []
-        counter_initial = 5
+        counter_initial = 1
         n_samples = len(data)
         for index in range(counter_initial):
             if n_samples < index+1:

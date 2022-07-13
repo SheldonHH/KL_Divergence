@@ -8,10 +8,14 @@
 
 import numpy as np
 import pandas as pd
-import random
-dicts = {"user_1": [0, 30], "user_2": [3, 60], "user_3": [70, 140]}
+# import random
+# dicts = {"user_1": [0, 30], "user_2": [3, 60], "user_3": [70, 140]}
+# df = pd.read_csv(
+#     "/home/xphuang/entropy/user_gauss_params/data/combine/space_small_q.csv", delimiter=" ")
+
+dicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
 df = pd.read_csv(
-    "/home/xphuang/entropy/user_gauss_params/data/combine/space_small_q.csv", delimiter=" ")
+    "/home/xphuang/entropy/user_gauss_params/data/combine/user_2_comnbined.csv", delimiter=" ")
 
 
 # dfRange = df.iloc[start:end]
@@ -22,7 +26,7 @@ xi_list = []
 
 
 total_rows = 0
-for key, value in dicts.items():
+for key, value in dict(sorted(dicts.items())).items():
     dfRange = df.iloc[value[0]:value[1]]
     print(len(dfRange))
     user_dict[key] = dfRange
@@ -83,12 +87,13 @@ for values in dfTotalXI.iteritems():  # for each feature
     
     v_feature_count = []
     # ready_vstack = 
-    for key,value in sorted(user_dict.items()):
+    for key,value in dict(sorted(user_dict.items())).items():
         print(key)
         v_count=[0,0,0,0,0,0,0,0,0,0]
         feat_col = value.iloc[:,[featureID_counter]]
         # print(feat_col.values.tolist()[0])
-
+        print("lennn",len(feat_col.values.tolist()))
+        # break
         for qq in feat_col.values.tolist():
             # print(qq[0])
             i = 0
@@ -99,6 +104,7 @@ for values in dfTotalXI.iteritems():  # for each feature
         user_vSum_dict.update({key:user_vSum_dict[key]+1})
         user_vCount_dict[key+"_"+str(featureID)]=v_count
         v_feature_count.append(v_count)
+        print(v_count)
         x = np.array(v_feature_count)
         x_normed = x / (x.max(axis=0) + 1e-6)
         # print(x_normed)
