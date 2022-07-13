@@ -75,11 +75,15 @@ for ifeaID in range(4096):
             # print(i)
             sam_point = random.uniform(left_point , right_point)
             rangeList.append(sam_point)
+            v_feature_count = []
             for key, value in user_Fea_g_dict.items():
+                v_count=[0,0,0,0,0,0,0,0,0,0] # each row
                 vList = tuple(value)
                 if vList[0] <= sam_point and sam_point >= vList[1]:
                   # print("here")
+                  v_count[i]+=1
                   user_Fea_g_dict.update({key:tuple([vList[0], vList[1], vList[2], 1+vList[3]])})
+                v_feature_count.append(v_count)
       # min, max, weight, counts
       # vList[2] weight of the sub gauss under this user_fea json object
           left_point=right_point
@@ -89,7 +93,6 @@ for ifeaID in range(4096):
       # multiple + plus
 
       for key, value in user_Fea_g_dict.items():
-      
         theUserK=key[0:findNth(key,"_",2)]
         print(theUserK)
         if theUserK in Udict:
