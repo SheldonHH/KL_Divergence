@@ -1,8 +1,8 @@
 import pandas as pd
 import random
-dicts = {"user_1": [1, 3], "user_2": [3, 6], "user_3": [7, 8]}
+dicts = {"user_1": [0, 30], "user_2": [3, 60], "user_3": [70, 140]}
 df = pd.read_csv(
-    "/root/KL_Divergence/user_gauss_params/data/combine/all_combined.csv", delimiter=" ")
+    "/home/xphuang/entropy/user_gauss_params/data/combine/space_small_q.csv", delimiter=" ")
 
 
 # dfRange = df.iloc[start:end]
@@ -17,16 +17,14 @@ for key, value in dicts.items():
     total_rows+=len(dfRange)
     
     xi_list.append(dfRange.agg([min, max]))
-    # print(dfRange.agg([min, max]))
-    # print("individual size",len(dfRange))
 
-    dfRange.to_csv("/root/KL_Divergence/user_gauss_params/data/combine/" +
+    dfRange.to_csv("/home/xphuang/KL_Divergence/user_gauss_params/data/combine/" +
                    key+"_combined.csv", header=False, index=False)
     # df.agg([min, max])
 
 result = pd.concat(xi_list)
-# print("total size",len(result))
-# print(result.agg([min, max]))
+
+
 total_size = total_rows
 print(total_size)
 print("$$$$$$$$$$$$$$$$$$$$$")
@@ -35,7 +33,7 @@ print(total_rows)
 
 this_fea_points_to_sample = total_size * 4096/100
 dfTotalXI = result.agg([min, max])
-dfTotalXI.to_csv("/root/KL_Divergence/user_gauss_params/data/combine/dfTotalXI.csv", header=False, index=False)
+dfTotalXI.to_csv("/home/xphuang/KL_Divergence/user_gauss_params/data/combine/dfTotalXI.csv", header=False, index=False)
 #     max = max(Total_maxList)
 #     min = min(Total_minList)
 #     sample_range = max-min
@@ -99,7 +97,7 @@ for values in dfTotalXI.iteritems():
             # print(eat)
     featureID_counter += 1
 
-
+print(user_percent)
 
 
     

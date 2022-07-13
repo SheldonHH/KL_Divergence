@@ -60,12 +60,12 @@ def server_consolidate(subfolders, target_outerfolder):
                 pk = list(data_dict.keys())[0]
                 print("pk",pk[pk.rfind("_")+1:len(pk)])
                 consolidated_params[pk] = data_dict[pk]
-    output_specified_dir = target_outerfolder+str(featureID)+"/"
-    if os.path.isdir(output_specified_dir) == False:
-        os.mkdir(output_specified_dir)
-    w_consolidated_gauss_params_json = output_specified_dir+str(featureID)+".json"
-    # print(w_consolidated_gauss_params_json)
-    write_dict_to_json(consolidated_params, w_consolidated_gauss_params_json)
+        output_specified_dir = target_outerfolder+str(featureID)+"/"
+        if os.path.isdir(output_specified_dir) == False:
+            os.mkdir(output_specified_dir)
+        w_consolidated_gauss_params_json = output_specified_dir+str(featureID)+".json"
+        # print(w_consolidated_gauss_params_json)
+        write_dict_to_json(consolidated_params, w_consolidated_gauss_params_json)
 
 
 

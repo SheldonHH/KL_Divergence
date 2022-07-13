@@ -140,8 +140,8 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         n_samples = len(data)
         for index in range(counter_initial):
             if n_samples < index+1:
-            #     dimension_min_with_params.append(
-            #         {key+"_gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
+                dimension_min_with_params.append(
+                    {"gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
                 break
             gmm = mixture.GaussianMixture(
                 n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
@@ -164,6 +164,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 kind='mergesort')]  # sort by year
             # print("sgggg",sg)
             for sub_index in range(index+1):
+                # print(sort_mch[sub_index])
                 list_params[sub_index*3] = sort_mch[sub_index][1]
                 list_params[sub_index*3+1] = sort_mch[sub_index][2]
                 list_params[sub_index*3+2] = sort_mch[sub_index][3]
@@ -187,8 +188,8 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         while(True):
             min_index = 0
             if n_samples < incre_index+1:
-            #     dimension_min_with_params.append(
-            #         {key+"_gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
+                dimension_min_with_params.append(
+                    {"gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
                 break
             gmm = mixture.GaussianMixture(
                 n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
@@ -244,13 +245,26 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 # print("y_firsts", y_firsts)
                 break
             incre_index += 1
-        dimension_min_with_params["gauss"] = num_with_params[min_index]
-        minList, maxList = calculate_max_min(num_with_params[min_index])
+      
         # print("num_with_weights", num_with_weights)
+        minList = []
+        maxList = []
+        print(min_index)
+        print(num_with_weights)
         if min_index in num_with_weights:
             dimension_min_with_params["weights"] = num_with_weights[min_index]
-        else:
-            dimension_min_with_params["weights"] = num_with_weights[len(num_with_weights)-1]
+            dimension_min_with_params["gauss"] = num_with_params[min_index]
+            minList, maxList = calculate_max_min(num_with_params[min_index])
+        else:    
+            dimension_min_with_params["weights"] = num_with_params[len(num_with_weights)-1]
+            dimension_min_with_params["gauss"] = num_with_params[len(num_with_weights)-1]
+            minList, maxList = calculate_max_min(num_with_params[len(num_with_weights)-1])
+  
+        # else:
+        #     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #     print(num_with_weights)
+        #     return
+        #     dimension_min_with_params["weights"] = num_with_weights[len(num_with_weights)-1]
         
 
         dimension_min_with_params["max"] = maxList

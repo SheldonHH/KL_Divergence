@@ -42,12 +42,12 @@ for ifeaID in range(4096):
           Total_maxList += d_maxs
           # Total_rawDataSize += int(data[user_str]["raw_data_size"])
           # print(no_gauss)
-          if feaID == "4":
-            print(d_mins)
-            print(d_mins)
-            print(d_weights)
-            print(data[user_str])
-            print(type(d_mins))
+          # if feaID == "4":
+          #   print(d_mins)
+          #   print(d_mins)
+          #   print(d_weights)
+          #   print(data[user_str])
+          #   print(type(d_mins))
             # break
           for gid in range(no_gauss):
             # print(type(gidq))
@@ -98,4 +98,18 @@ for ifeaID in range(4096):
           Udict[theUserK]=value[2]*value[3]
 
 print(Udict)
+f = open(true_datapath + \
+          "united_gauss/0/0.json")
+data = json.load(f)
+total_size = 0
+for key, value in data.items():
+  total_size += int(value["raw_data_size"])
+  
+result_dict = {}  
+for key, value in data.items():
+  result_dict[key] = int(value["raw_data_size"]) / total_size
+
+
+print(result_dict)
+
       # print(user_Fea_g_dict)

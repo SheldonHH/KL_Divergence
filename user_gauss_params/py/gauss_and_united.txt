@@ -1,0 +1,55 @@
+The Zen of Python, by Tim Peters
+
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!
+Traceback (most recent call last):
+  File "E8_without_indiv.py", line 5, in <module>
+    from H_qf_to_g_6 import *
+  File "/home/xphuang/entropy/user_gauss_params/py/H_qf_to_g_6.py", line 20, in <module>
+    from pylab import *
+  File "/usr/local/lib/python3.8/dist-packages/pylab.py", line 1, in <module>
+    from matplotlib.pylab import *
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/pylab.py", line 35, in <module>
+    from matplotlib import cbook, mlab, pyplot as plt
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/pyplot.py", line 57, in <module>
+    from matplotlib.figure import Figure, figaspect
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/figure.py", line 25, in <module>
+    from matplotlib import _blocking_input, docstring, projections
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/projections/__init__.py", line 58, in <module>
+    from mpl_toolkits.mplot3d import Axes3D
+  File "/usr/local/lib/python3.8/dist-packages/mpl_toolkits/mplot3d/__init__.py", line 1, in <module>
+    from .axes3d import Axes3D
+  File "/usr/local/lib/python3.8/dist-packages/mpl_toolkits/mplot3d/axes3d.py", line 47, in <module>
+    class Axes3D(Axes):
+  File "/usr/local/lib/python3.8/dist-packages/mpl_toolkits/mplot3d/axes3d.py", line 2630, in Axes3D
+    def quiver(self, *args,
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/__init__.py", line 1382, in _preprocess_data
+    sig = inspect.signature(func)
+  File "/usr/lib/python3.8/inspect.py", line 3105, in signature
+    return Signature.from_callable(obj, follow_wrapped=follow_wrapped)
+  File "/usr/lib/python3.8/inspect.py", line 2854, in from_callable
+    return _signature_from_callable(obj, sigcls=cls,
+  File "/usr/lib/python3.8/inspect.py", line 2304, in _signature_from_callable
+    return _signature_from_function(sigcls, obj,
+  File "/usr/lib/python3.8/inspect.py", line 2197, in _signature_from_function
+    parameters.append(Parameter(name, annotation=annotation,
+  File "/usr/lib/python3.8/inspect.py", line 2490, in __init__
+    try:
+KeyboardInterrupt
