@@ -2,7 +2,7 @@ import json
 import random
 # generate random samples
 
-true_datapath = "/root/KL_Divergence/user_gauss_params/data/"
+true_datapath = "/home/xphuang/entropy/user_gauss_params/data/"
 featureGauss_list = ["0"]
 for feaID in featureGauss_list:
   r_united_params_json = true_datapath + \
@@ -58,7 +58,7 @@ while left_point < max-step:
         if vList[0] < sam_point and sam_point > vList[1]:
           user_Fea_g_dict.update({key:tuple([vList[0], vList[1], vList[2], 1+vList[3]])})
 # min, max, weight, counts
-
+# vList[2] weight of the sub gauss under this user_fea json object
   left_point=right_point
   totalRange_List.append(rangeList)
 

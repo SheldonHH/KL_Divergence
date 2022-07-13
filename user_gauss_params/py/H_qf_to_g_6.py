@@ -136,7 +136,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         #  perform calculation
         f.close()
         MSE_list, ySp, xSp = [], [], []
-        counter_initial = 10
+        counter_initial = 5
         n_samples = len(data)
         for index in range(counter_initial):
             if n_samples < index+1:
@@ -250,7 +250,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         if min_index in num_with_weights:
             dimension_min_with_params["weights"] = num_with_weights[min_index]
         else:
-            dimension_min_with_params["weights"] = 0
+            dimension_min_with_params["weights"] = num_with_weights[len(num_with_weights)-1]
         
 
         dimension_min_with_params["max"] = maxList

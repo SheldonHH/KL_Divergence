@@ -55,13 +55,15 @@ def main():
     # i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
     # ####
     t0 = time.time()
-    # for key in Inputdicts.keys():
-    #     f_to_g(Dir, key)
+    for key in Inputdicts.keys():
+        f_to_g(Dir, key)
     t1 = time.time()
     print("gauss process time:",t1-t0)
 
-
+    t0 = time.time()
     unit_gauss(Inputdicts.keys())
+    t1 = time.time()
+    print("gauss united process time:",t1-t0)
 
 
 if __name__ == "__main__":

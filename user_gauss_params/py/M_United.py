@@ -38,6 +38,7 @@ def server_consolidate(subfolders, target_outerfolder):
     # fea_dirs = args[0]
     # print("subfolders",subfolders)
     feaCounter = 0
+    whole_p = {}
     for subf in subfolders:
         consolidated_params = {}
         print(feaCounter)
@@ -48,14 +49,7 @@ def server_consolidate(subfolders, target_outerfolder):
         print("featureID:",subf[subf.rfind("/")+1:len(subf)])
         featureID = subf[subf.rfind("/")+1:len(subf)]
         users_list = json_under_this_dir(fea_dirs)
-        # ["features" in a for a in users_list]
-        # os.chdir(subf)
-        # os.remove(users_list[])
         for user_gauss_file in users_list:
-            if len(users_list) == 4 and "features" in user_gauss_file:
-                os.chdir(subf)
-                os.remove(user_gauss_file)
-                continue
             # print(user_gauss_file)
             # if user_gauss_file[0:findNth(user_gauss_file, "_",2)] in required_userlist:
             #     print("sdfds",user_gauss_file[0:findNth(user_gauss_file, "_",2)])
@@ -64,13 +58,14 @@ def server_consolidate(subfolders, target_outerfolder):
             with open(fea_dirs+"/"+user_gauss_file) as json_file:
                 data_dict = json.load(json_file)
                 pk = list(data_dict.keys())[0]
+                print("pk",pk[pk.rfind("_")+1:len(pk)])
                 consolidated_params[pk] = data_dict[pk]
-        output_specified_dir = target_outerfolder+str(featureID)+"/"
-        if os.path.isdir(output_specified_dir) == False:
-            os.mkdir(output_specified_dir)
-        w_consolidated_gauss_params_json = output_specified_dir+str(featureID)+".json"
-        print(w_consolidated_gauss_params_json)
-        write_dict_to_json(consolidated_params, w_consolidated_gauss_params_json)
+    output_specified_dir = target_outerfolder+str(featureID)+"/"
+    if os.path.isdir(output_specified_dir) == False:
+        os.mkdir(output_specified_dir)
+    w_consolidated_gauss_params_json = output_specified_dir+str(featureID)+".json"
+    # print(w_consolidated_gauss_params_json)
+    write_dict_to_json(consolidated_params, w_consolidated_gauss_params_json)
 
 
 
@@ -80,7 +75,7 @@ def unit_gauss(users_list):
     directory = individual_gauss[0]
     subfolders = [x[0] for x in os.walk(directory)]
     print(subfolders)
-    print(len(subfolders))
+    print('len',len(subfolders))
     target_outerfolder = "/home/xphuang/entropy/user_gauss_params/data/united_gauss/"
     # for featureID in range(4096):
     server_consolidate(subfolders, target_outerfolder)
