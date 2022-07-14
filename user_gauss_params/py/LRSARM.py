@@ -136,7 +136,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         #  perform calculation
         f.close()
         MSE_list, ySp, xSp = [], [], []
-        counter_initial = 4 
+        counter_initial = 5 
         n_samples = len(data)
         for index in range(counter_initial):
             if n_samples < index+1:
@@ -183,29 +183,15 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
             ySp.append(MSE)
             xSp.append(index)
             MSE_list.append(MSE)
-        incre_index = counter_initial
-
-        while(True):
+      
+        # print("num_with_weights", num_with_weights)
+        minList = []
+        maxList = []
+        
+        executeOnce = True
+        while(executeOnce):
+            executeOnce = False
             min_index = 0
-            if n_samples < incre_index+1:
-                dimension_min_with_params.append(
-                    {"gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
-                break
-            gmm = mixture.GaussianMixture(
-                n_components=incre_index+1, covariance_type="diag", max_iter=100).fit(X)
-            list_params = zerolistmaker((incre_index+1)*3)
-            simulated_y_sum = 0
-            for sub_index in range(incre_index+1):
-                list_params[sub_index*3] = gmm.means_[sub_index][0]
-                list_params[sub_index*3+1] = gmm.covariances_[sub_index][0]
-                list_params[sub_index*3+2] = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[
-                                                                          sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
-                # print("simulated_height_normal_dist",list_params[sub_index*3+2]*gmm.weights_[sub_index])
-                simulated_y_sum += list_params[sub_index *
-                                               3+2]*gmm.weights_[sub_index]
-            # print("TRUEsimulated_y_sum", simulated_y_sum)
-            params = tuple(list_params)
-            num_with_params[incre_index] = list_params
             # print(str(index+1),params,len(params))
             # Calculate the MSE for each Gauss
             ys_for_sim = []  # different from assign the value
@@ -216,11 +202,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 ys_for_sim.append(y_for_sim)
             MSE = calculate_MSE(X[:, 1].tolist(), ys_for_sim)
             MSE_list.append(MSE)
-
-            # print(MSE_list)
-            # print("-----------------------------")
             ySp.append(MSE)
-            # print("MSE", MSE)
             xSp.append(incre_index)
 
             y_firsts = obtain_first_second(
@@ -245,11 +227,6 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 # print("y_firsts", y_firsts)
                 break
             incre_index += 1
-      
-        # print("num_with_weights", num_with_weights)
-        minList = []
-        maxList = []
-        print(min_index)
         print(num_with_weights)
         if min_index in num_with_weights:
             dimension_min_with_params["weights"] = num_with_weights[min_index]
@@ -259,13 +236,6 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
             dimension_min_with_params["weights"] = num_with_params[len(num_with_weights)-1]
             dimension_min_with_params["gauss"] = num_with_params[len(num_with_weights)-1]
             minList, maxList = calculate_max_min(num_with_params[len(num_with_weights)-1])
-  
-        # else:
-        #     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        #     print(num_with_weights)
-        #     return
-        #     dimension_min_with_params["weights"] = num_with_weights[len(num_with_weights)-1]
-        
 
         dimension_min_with_params["max"] = maxList
         dimension_min_with_params["min"] = minList
