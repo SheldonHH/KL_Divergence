@@ -1,4 +1,3 @@
-from tally import calculate_entropy_golang 
 import json
 import os
 import sys
@@ -38,7 +37,6 @@ def server_consolidate(subfolders, target_outerfolder):
     # fea_dirs = args[0]
     # print("subfolders",subfolders)
     feaCounter = 0
-    whole_p = {}
     for subf in subfolders:
         consolidated_params = {}
         print(feaCounter)
@@ -70,13 +68,15 @@ def server_consolidate(subfolders, target_outerfolder):
 
 
 
-def unit_gauss(users_list):
-    individual_gauss = ["/home/xphuang/entropy/user_gauss_params/data/users_individual_gauss"] # location where stores individual gauss
+def unit_gauss(users_list, gauss_folder_ID):
+    individual_gauss = ["/home/xphuang/entropy/user_gauss_params/data/users_individual_gauss/"+gauss_folder_ID+"/"] # location where stores individual gauss
     directory = individual_gauss[0]
     subfolders = [x[0] for x in os.walk(directory)]
     print(subfolders)
     print('len',len(subfolders))
-    target_outerfolder = "/home/xphuang/entropy/user_gauss_params/data/united_gauss/"
+    target_outerfolder = "/home/xphuang/entropy/user_gauss_params/data/united_gauss/"+gauss_folder_ID+"/"
+    if os.path.isdir(target_outerfolder) == False:
+        os.mkdir(target_outerfolder)
     # for featureID in range(4096):
     server_consolidate(subfolders, target_outerfolder)
 
