@@ -70,17 +70,19 @@ featureID = 0
 border_index_count = [0]*4096
 for values in dfTotalXI.iteritems():  # for each feature
     print(featureID)
+    v_feature_count = []
     xiLIST = (values[1].tolist()) # Thanks to Dennis 
     bMin = (xiLIST[0])
     bMax = (xiLIST[1])
     theRange = bMax - bMin
-    v_feature_count = []
+
     # 3.1 for each user in the user_dict
     for key,value in dict(sorted(user_dict.items())).items():
         v_count=[0,0,0,0,0,0,0,0,0,0]
         feat_col = value.iloc[:,[featureID]]
-        print("lennn",len(feat_col.values.tolist()))
-        # 3.1.1 for each value
+        # print("lennn",len(feat_col.values.tolist()))
+       
+        # 3.1.1 for each value in this feature column
         for qq in feat_col.values.tolist():
             # print("qq", qq[0])
             index = int(10*(qq[0]-(1e-6)-bMin)/theRange)
@@ -92,32 +94,29 @@ for values in dfTotalXI.iteritems():  # for each feature
                 print("theRange: ",theRange)
                 index=-1
             v_count[index]+=1
-        user_vSum_dict.update({key:user_vSum_dict[key]+1})
+            user_vSum_dict.update({key:user_vSum_dict[key]+1})
         # user_vCount_dict[key+"_"+str(featureID)]=v_count
         v_feature_count.append(v_count)
-        print(v_count)
-        x = np.array(v_feature_count)
-        x_normed = x / (x.max(axis=0) + 1e-6)
-        # print(x_normed)
-        
-        # np.savetxt(str(featureID)+"x_normed.csv", x_normed, delimiter=",")
-        summm = np.sum(x_normed, axis=1)
-        np.savetxt("/home/xphuang/entropy/user_gauss_params/data/combine/sums/" + str(featureID)+"_sum.csv", summm, delimiter=",")
-        print(summm)
-        # for itemsum in summm:
-        #     print(itemsum)
-        
-        for i in range(len(summm)):
-            ui_row[i] +=  summm[i]
-        # summm = np.sum(x_normed,axis=1).tolist()
-        # np.vstack(sum)  
+    x = np.array(v_feature_count)
+    x_normed = x / (x.max(axis=0) + 1e-6)
+    summm = np.sum(x_normed, axis=1)
+    np.savetxt("/home/xphuang/entropy/user_gauss_params/data/combine/sums/" + str(featureID)+"_sum.csv", summm, delimiter=",")
+    np.savetxt("/home/xphuang/entropy/user_gauss_params/data/combine/sums/" + str(featureID)+"_x_normed.csv", x_normed, delimiter=",")
+    np.savetxt("/home/xphuang/entropy/user_gauss_params/data/combine/sums/" + str(featureID)+"_x.csv", x, delimiter=",")
+    
+    for i in range(len(summm)):
+        ui_row[i] +=  summm[i] 
+
     featureID+=1
 
 result_list = []    
 print(ui_row)
+np.savetxt("/home/xphuang/entropy/user_gauss_params/data/combine/sums/ui_row.csv", ui_row, delimiter=",")
+    
 for item in ui_row:
     result_list.append(item/sum(ui_row))
-
+np.savetxt("/home/xphuang/entropy/user_gauss_params/data/combine/sums/result_list.csv", result_list, delimiter=",")
+    
 print(result_list)
 
 t1 = time.time()

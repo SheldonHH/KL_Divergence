@@ -3,6 +3,7 @@ import random
 import numpy as np
 from datetime import datetime
 import time
+import os
 from functools import reduce
 # generate random samples
 def findNth(a, b, n):
@@ -54,8 +55,7 @@ def g_to_e(gauss_folder_ID, inputUsersLen, samplePercent):
             d_uf_size = int(value["raw_data_size"])
             all_sam_points = []
             for i in range(len(d_maxs)):
-                print("int(d_uf_size*d_weights[i])*100", int(d_uf_size*d_weights[i]/samplePercent/100))
-                sam_point1 = [random.uniform(d_mins[i], d_maxs[i]) for x in range(int(d_uf_size*d_weights[i]/samplePercent/100))]
+                sam_point1 = [random.uniform(d_mins[i], d_maxs[i]) for x in range(int(d_uf_size*d_weights[i]*(samplePercent/100)))]
                 all_sam_points+=sam_point1
             for pointNum in all_sam_points:
                 index = int(10*(pointNum-bMin)/theRange)
@@ -80,6 +80,11 @@ def g_to_e(gauss_folder_ID, inputUsersLen, samplePercent):
     for item in ui_row:
         result_list.append(item/sum(ui_row))
     print(result_list)
+    benchmark_subFolder = true_datapath+"benchmark/"
+    if os.path.isdir(benchmark_subFolder) == False:
+        os.makedirs(benchmark_subFolder, exist_ok=True)
     str_date_time = datetime.fromtimestamp(time.time()).strftime("%m%d, %H:%M:%S")
-    with open(true_datapath+gauss_folder_ID+"_gauss_percentage"".json", "w") as outfile:
+    with open(benchmark_subFolder+gauss_folder_ID+"_ui_row"+str_date_time+".json", "w") as outfile:
+        json.dump(ui_row, outfile)
+    with open(benchmark_subFolder+gauss_folder_ID+"_gauss_percentage"+str_date_time+".json", "w") as outfile:
         json.dump(result_list, outfile)
