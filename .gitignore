@@ -10,3 +10,4 @@ user_gauss_params/data/*.csv
 user_gauss_params/data/q/* 
 user_gauss_params/data/gpp/* 
 user_gauss_params/py/*.csv 
+user_gauss_params/data/united_gauss/*

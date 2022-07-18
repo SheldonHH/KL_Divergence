@@ -287,6 +287,7 @@ def main():
     Dir = "/home/xphuang/entropy/user_gauss_params/data/"
     Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
     gauss_folder_ID = "one_gauss"
+    sample_percent = 20
     # for uname in Inputdicts.keys():
     #     f_to_g(Dir, uname, 1, gauss_folder_ID)
 
@@ -295,12 +296,12 @@ def main():
 
 
     t0 = time.time()
-    # unit_gauss(Inputdicts.keys(),gauss_folder_ID)
+    unit_gauss(Inputdicts.keys(),gauss_folder_ID)
     t1 = time.time()
     print("gauss united process time:",t1-t0)
 
     t0 = time.time()
-    g_to_e(gauss_folder_ID, len(Inputdicts.keys()))
+    g_to_e(gauss_folder_ID, len(Inputdicts.keys()), sample_percent)
     t1 = time.time()
     print("g to e process time:",t1-t0)
 
