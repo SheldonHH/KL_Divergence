@@ -44,7 +44,6 @@ def server_consolidate(selected_users_set, gFea_subFolders, target_outerfolder):
                 with open(the_fea_dir+"/"+user_gauss_file) as json_file:
                     data_dict = json.load(json_file)
                     pk = list(data_dict.keys())[0]
-                    # print("pk",pk[pk.rfind("_")+1:len(pk)])
                     consolidated_params[pk] = data_dict[pk]
         output_specified_dir = target_outerfolder+str(featureID)+"/"
         if os.path.isdir(output_specified_dir) == False:
@@ -53,8 +52,6 @@ def server_consolidate(selected_users_set, gFea_subFolders, target_outerfolder):
         # Consolidated Gauss Result for the featureID filtered by selected user set
         w_consolidated_gauss_params_json = output_specified_dir+str(featureID)+".json"
         write_dict_to_json(consolidated_params, w_consolidated_gauss_params_json)
-
-
 
 
 def unite_gauss(selected_users_set, gauss_folder_ID):

@@ -168,16 +168,6 @@ def main():
     t1 = time.time()
     print("3. g to e process time:",t1-t0)
 
-    # raw_csv_path1 = psedo_user_dir
-    # username = raw_csv_path1[raw_csv_path1.rindex(
-    #     '/')+1: raw_csv_path1.rindex('.')]
-    # # i_and_freq(Dir, psedo_user_dir, username)
-    # f_to_g(Dir, psedo_user_dir, username)
-    # inputfile = Dir + 'combine/combined_features.csv'
-    # df = pd.read_csv(inputfile, header=None).T
-    # for index, row in df.iterrows():
-    #     countFreq(raw_csv_argv, row)
-
 
 if __name__ == "__main__":
     main()
