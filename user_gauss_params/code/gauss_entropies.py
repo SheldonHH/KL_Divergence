@@ -1,46 +1,23 @@
-from this import d
-import pandas as pd
 import numpy as np
 import glob
 import os
 import csv
-import re
-import natsort
-import pandas as pd
-import sys
 # import freq_to_gauss
 import numpy as np
-from tally import csv_to_jpeg
 # from sklearn.mixture import GaussianMixture
 # https://stackoverflow.com/a/35992526/5772735
-from curses import raw
-from ntpath import join
-from re import S
 import os
 from pylab import *
 from functools import reduce
-from scipy import linalg
-from scipy.optimize import curve_fit
-from scipy.stats import entropy
 from scipy.stats import norm
 from sklearn import mixture
 import pandas as pd
+import time
 import json
-from PIL import Image
-import random
-import decimal
-from scipy.interpolate import UnivariateSpline
-import itertools
 import csv
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-from numpy import genfromtxt
-import shutil
-from expects import (
-    be_true,
-    equal,
-    expect,
-)
+from MQ4C import *
+from g_to_e import *
+f
 
 # Creating a Function.
 
@@ -107,7 +84,7 @@ def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
 
-def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, username):
+def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, username, call_sign_folder):
     freq_dir = true_datapath+"/q/"+username+"/"
     uname = username
     # directory = os.path.join(freq_dir)
@@ -129,14 +106,9 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 row_list.append(float(item))
             final_list.append(row_list)
         X = np.array(final_list)
-        # print("X[:,1]",X[:,1])
-        # print("X[:,0]",X[:,0])
-        # print("X",X)
-        # break
-        #  perform calculation
         f.close()
         MSE_list, ySp, xSp = [], [], []
-        counter_initial = 10
+        counter_initial = 1 
         n_samples = len(data)
         for index in range(counter_initial):
             if n_samples < index+1:
@@ -237,9 +209,9 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                                         "_"+col_counter] = dimension_min_with_params
 # path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     # os.remove(freq_dir+username+"_freq.csv")
-    counterFolder = true_datapath+"users_individual_gauss/tengauss/"+ col_counter+"/"
+    counterFolder = true_datapath+"users_individual_gauss/"+call_sign_folder+"/"+ col_counter+"/"
     if os.path.isdir(counterFolder) == False:
-        os.mkdir(counterFolder)
+        os.makedirs(counterFolder, exist_ok=True)
         for f in glob.glob(counterFolder+"*.csv"):
             os.remove(f)
     with open(counterFolder + uname+"_"+col_counter+"_gauss.json", "w") as outfile:
@@ -269,7 +241,7 @@ def raw_data_size(username):
     return len(numpy_array)
 
 
-def f_to_g(Dir, username):
+def f_to_g(Dir, username, counter_initial, call_sign_folder):
     rds = raw_data_size(username)
     this_user_dir = Dir+"users_individual_gauss/"+username+"/"
     if os.path.isdir(this_user_dir) == False:
@@ -278,18 +250,34 @@ def f_to_g(Dir, username):
         print(feat_counter)
         inputfile = Dir+"q/"+username+"/"+username+"_"+str(feat_counter)+"_q.csv"
         freq_to_gauss(Dir, inputfile, str(
-            feat_counter), str(rds), username)
+            feat_counter), str(rds), username, call_sign_folder)
+            
 
 def main():
+    # 1. generate Gauss for all users
     t0 = time.time()
-    username = "user_1"
     Dir = "/home/xphuang/entropy/user_gauss_params/data/"
-     ####
-    # i_and_freq(Dir,psedo_user_dir,username) # calculate Frequency
-    # ####
-    f_to_g(Dir, username)
+    Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
+    
+    gauss_folder_ID = "one_gauss"
+    sample_percent = 20
+    # for uname in Inputdicts.keys():
+    #     f_to_g(Dir, uname, 1, gauss_folder_ID)
+
     t1 = time.time()
     print(t1-t0)
+
+    selected_users_set = set(Inputdicts.keys())
+    # 2. Consolidate Gauss for SELECTED users
+    t0 = time.time()
+    unite_gauss(selected_users_set, gauss_folder_ID)
+    t1 = time.time()
+    print("Consolidate Gauss for selected users takes process time:",t1-t0)
+
+    # t0 = time.time()
+    # g_to_e(gauss_folder_ID, len(Inputdicts.keys()), sample_percent)
+    # t1 = time.time()
+    # print("g to e process time:",t1-t0)
 
     # raw_csv_path1 = psedo_user_dir
     # username = raw_csv_path1[raw_csv_path1.rindex(

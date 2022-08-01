@@ -1,48 +1,22 @@
-from this import d
-import pandas as pd
 import numpy as np
 import glob
 import os
 import csv
-import re
-import natsort
 import pandas as pd
-import sys
 # import freq_to_gauss
 import numpy as np
 from M_United import *
 from W_g_to_e import *
-from tally import csv_to_jpeg
 # from sklearn.mixture import GaussianMixture
 # https://stackoverflow.com/a/35992526/5772735
-from curses import raw
-from ntpath import join
-from re import S
 import os
 from pylab import *
 from functools import reduce
-from scipy import linalg
-from scipy.optimize import curve_fit
-from scipy.stats import entropy
 from scipy.stats import norm
 from sklearn import mixture
 import pandas as pd
 import json
-from PIL import Image
-import random
-import decimal
-from scipy.interpolate import UnivariateSpline
-import itertools
 import csv
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-from numpy import genfromtxt
-import shutil
-from expects import (
-    be_true,
-    equal,
-    expect,
-)
 
 # Creating a Function.
 
@@ -185,8 +159,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
             ySp.append(MSE)
             xSp.append(index)
             MSE_list.append(MSE)
-      
-        # print("num_with_weights", num_with_weights)
+
         minList = []
         maxList = []
         incre_index = counter_initial
@@ -222,19 +195,6 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
         dimension_min_with_params["max"] = maxList
         dimension_min_with_params["min"] = minList
         dimension_min_with_params["raw_data_size"] = raw_data_size
-        # print("type(X[:,0])", type(X[:, 0]))
-        # plt.clf()
-        # sorted_X = np.sort(X, axis=0)
-        # plt.plot(sorted_X[:,0].tolist(), sorted_X[:,1].tolist(), 'b+:', label='data')
-        # plt.plot(sorted_X[:,0].tolist(), multi_bimodal(
-        #     sorted_X[:,0].tolist(), gmm.weights_, *tuple(num_with_params[min_index])), 'ro:', label='fit')
-        # plt.legend()
-        # plt.title("Dimension distribution for "+file)
-        # plt.xlabel('Data')
-        # plt.ylabel('Frequency')
-        # fig = plt.gcf()
-        # plt.show()
-        # fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
         all_files_dimension_with_params[username +
                                         "_"+col_counter] = dimension_min_with_params
 # path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
@@ -288,8 +248,8 @@ def main():
     Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
     gauss_folder_ID = "one_gauss"
     sample_percent = 20
-    # for uname in Inputdicts.keys():
-    #     f_to_g(Dir, uname, 1, gauss_folder_ID)
+    for uname in Inputdicts.keys():
+        f_to_g(Dir, uname, 1, gauss_folder_ID)
 
     t1 = time.time()
     print(t1-t0)
@@ -305,15 +265,7 @@ def main():
     t1 = time.time()
     print("g to e process time:",t1-t0)
 
-    # raw_csv_path1 = psedo_user_dir
-    # username = raw_csv_path1[raw_csv_path1.rindex(
-    #     '/')+1: raw_csv_path1.rindex('.')]
-    # # i_and_freq(Dir, psedo_user_dir, username)
-    # f_to_g(Dir, psedo_user_dir, username)
-    # inputfile = Dir + 'combine/combined_features.csv'
-    # df = pd.read_csv(inputfile, header=None).T
-    # for index, row in df.iterrows():
-    #     countFreq(raw_csv_argv, row)
+  
 
 
 if __name__ == "__main__":
