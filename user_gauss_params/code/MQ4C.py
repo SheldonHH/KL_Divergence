@@ -20,7 +20,6 @@ def json_under_this_dir(dir_in_str):
             continue
         else:
             continue
-    # print("usergauss_list",usergauss_list)
     return usergauss_list
 
 def findNth(a, b, n):
