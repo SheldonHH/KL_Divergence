@@ -16,21 +16,21 @@ def g_to_e(gauss_folder_ID, inputUsersLen, samplePercent):
         print(ifeaID)
         Total_minList=[]
         Total_maxList=[]
-        # calculate the bMin, bMax
+        
+        # 1. calculate bMin, bMax
         feaID = str(ifeaID)
         r_united_params_json = true_datapath + \
                 "united_gauss/"+gauss_folder_ID+"/"+feaID+"/"+feaID+".json"
         f = open(r_united_params_json)
         data = json.load(f)
-        # print(data)
         ui_row = []
 
-        # Gauss Number check
-        if (len(data.keys()) !=inputUsersLen):
+        # 2. Gauss Number check
+        if (len(data.keys()) != inputUsersLen):
             print("!!!!",data.keys())
             break
         
-        # obtain max, min, order doesn't matter
+        # 3. obtain max, min, order doesn't matter
         for key,value in data.items():
             ui_row.append(0)
             d_mins = value["min"]
@@ -63,23 +63,23 @@ def g_to_e(gauss_folder_ID, inputUsersLen, samplePercent):
             v_feature_count.append(v_count)
             # print(v_count)
             x = np.array(v_feature_count)
-            np.savetxt(true_datapath + \
-                "united_gauss/"+gauss_folder_ID+"/"+feaID+"/"+ukey+"x_"+gauss_folder_ID+".csv", x, delimiter=",")
             x_normed = x / (x.max(axis=0) + 1e-6)
             summm = np.sum(x_normed, axis=1)
-            np.savetxt(true_datapath + \
-                "united_gauss/"+gauss_folder_ID+"/"+feaID+"/"+ukey+"x_norm_"+gauss_folder_ID+".csv", x_normed, delimiter=",")
-            with open(true_datapath+ \
-                "united_gauss/"+gauss_folder_ID+"/"+feaID+"/"+ukey+"_sum.csv", "w") as outfile:
-                json.dump(ui_row, outfile)
+            # np.savetxt(true_datapath + \
+            #     "united_gauss/"+gauss_folder_ID+"/"+feaID+"/"+ukey+"x_"+gauss_folder_ID+".csv", x, delimiter=",")
+            # np.savetxt(true_datapath + \
+            #     "united_gauss/"+gauss_folder_ID+"/"+feaID+"/"+ukey+"x_norm_"+gauss_folder_ID+".csv", x_normed, delimiter=",")
+            # with open(true_datapath+ \
+            #     "united_gauss/"+gauss_folder_ID+"/"+feaID+"/"+ukey+"_sum.csv", "w") as outfile:
+            #     json.dump(ui_row, outfile)
             for i in range(len(summm)):
                 ui_row[i] += summm[i]
 
-    result_list = []    
+    gauss_result_list = []    
     print(ui_row)
     for item in ui_row:
-        result_list.append(item/sum(ui_row))
-    print(result_list)
+        gauss_result_list.append(item/sum(ui_row))
+    print(gauss_result_list)
     benchmark_subFolder = true_datapath+"benchmark/"
     if os.path.isdir(benchmark_subFolder) == False:
         os.makedirs(benchmark_subFolder, exist_ok=True)
@@ -87,4 +87,4 @@ def g_to_e(gauss_folder_ID, inputUsersLen, samplePercent):
     with open(benchmark_subFolder+gauss_folder_ID+"_ui_row"+str_date_time+".json", "w") as outfile:
         json.dump(ui_row, outfile)
     with open(benchmark_subFolder+gauss_folder_ID+"_gauss_percentage"+str_date_time+".json", "w") as outfile:
-        json.dump(result_list, outfile)
+        json.dump(gauss_result_list, outfile)

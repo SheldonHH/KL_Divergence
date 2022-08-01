@@ -102,7 +102,7 @@ def benchmark(dicts, location_of_combined_file, combined_dir):
         x = np.array(v_feature_count)
         x_normed = x / (x.max(axis=0) + 1e-6)
         norm_summm = np.sum(x_normed, axis=1)
-        np.savetxt(combined_dir+"/sums/" + str(featureID)+"_sum.csv", norm_summm, delimiter=",")
+        # np.savetxt(combined_dir+"/sums/" + str(featureID)+"_sum.csv", norm_summm, delimiter=",")
         # np.savetxt(combined_dir+"/sums/" + str(featureID)+"_x_normed.csv", x_normed, delimiter=",")
         # np.savetxt(combined_dir+"/sums/" + str(featureID)+"_x.csv", x, delimiter=",")
         

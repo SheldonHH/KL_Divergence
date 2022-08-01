@@ -11,7 +11,6 @@ from pylab import *
 from functools import reduce
 from scipy.stats import norm
 from sklearn import mixture
-import pandas as pd
 import time
 import json
 import csv
@@ -49,8 +48,8 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
     freq_dir = true_datapath+"/q/"+username+"/"
     uname = username
     os.chdir(freq_dir)
-    num_with_params = {}  # (num_of_gauss, [params])
-    num_with_weights = {}
+    # num_with_params = {}  # (num_of_gauss, [params])
+    # num_with_weights = {}
     all_files_dimension_with_params = {}
     file = inputfile
     dimension_min_with_params = {}
@@ -66,35 +65,34 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
             final_list.append(row_list)
         X = np.array(final_list)
         f.close()   
+
+
         gmm = mixture.GaussianMixture(
             n_components=1, covariance_type="diag", max_iter=500000).fit(X)
         list_params = zerolistmaker((1)*3)
         wmch = [[], [], [], []]  # weight, means, covariances, height
-        for sub_index in range(1):
-            wmch[0].append(gmm.weights_[sub_index])
-            wmch[1].append(gmm.means_[sub_index][0])
-            wmch[2].append(gmm.covariances_[sub_index][0])
-            simulated_height = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[
-                                                            sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
-            wmch[3].append(simulated_height)
+
+        wmch[0].append(gmm.weights_[0])
+        wmch[1].append(gmm.means_[0][0])
+        wmch[2].append(gmm.covariances_[0][0])
+        simulated_height = simulated_height_normal_dist(gmm.means_[0][0], gmm.means_[0][0], math.sqrt(gmm.covariances_[0][0])) * gmm.weights_[0]
+        wmch[3].append(simulated_height)
         wmch = np.array(list(map(list, zip(*wmch))))
-        wmch = wmch[wmch[:, 0].argsort(
-            kind='mergesort')]  # sort by year
-        # print("sgggg",sg)
-        for sub_index in range(1):
-            # print(wmch[sub_index])
-            list_params[sub_index*3] = wmch[sub_index][1]
-            list_params[sub_index*3+1] = wmch[sub_index][2]
-            list_params[sub_index*3+2] = wmch[sub_index][3]
-        num_with_params[0] = list_params
-        num_with_weights[0] = [i[0] for i in wmch]
+        # wmch = wmch[wmch[:, 0].argsort(kind='mergesort')]  
+
+        list_params[0*3] = wmch[0][1]
+        list_params[0*3+1] = wmch[0][2]
+        list_params[0*3+2] = wmch[0][3]
+        # num_with_params[0] = list_params
+        # num_with_weights[0] = [i[0] for i in wmch]
 
         minList = []
         maxList = []
         
-        dimension_min_with_params["weights"] = num_with_weights[0]
-        dimension_min_with_params["gauss"] = num_with_params[0]
-        minList, maxList = calculate_max_min(num_with_params[0])
+        # dimension_min_with_params["weights"] = num_with_weights[0]
+        dimension_min_with_params["weights"] = 1
+        dimension_min_with_params["gauss"] = list_params
+        minList, maxList = calculate_max_min(list_params)
 
         dimension_min_with_params["max"] = maxList
         dimension_min_with_params["min"] = minList
@@ -119,7 +117,6 @@ def calculate_max_min(gaussList):
         mean = gaussList[sub_index*3] 
         sigma = gaussList[sub_index*3+1]
         ci = norm.interval(0.99, loc=mean, scale=sigma)
-        print("ci")
         minList.append(ci[0])
         maxList.append(ci[1])
     return minList, maxList
@@ -131,13 +128,13 @@ def raw_data_size(username):
     return len(numpy_array)
 
 
-def f_to_g(Dir, username, counter_initial, call_sign_folder):
+def f_to_g(Dir, username, call_sign_folder):
     rds = raw_data_size(username)
     this_user_dir = Dir+"users_individual_gauss/"+username+"/"
     if os.path.isdir(this_user_dir) == False:
         os.mkdir(this_user_dir)  # make dir for that user
     for feat_counter in range(4096):
-        print(feat_counter)
+        print(username, "'s featureCounter", feat_counter)
         inputfile = Dir+"q/"+username+"/"+username+"_"+str(feat_counter)+"_q.csv"
         freq_to_gauss(Dir, inputfile, str(
             feat_counter), str(rds), username, call_sign_folder)
@@ -153,16 +150,17 @@ def main():
     t0 = time.time()
     gauss_folder_ID = "one_gauss"
     for uname in Inputdicts.keys():
-        f_to_g(Dir, uname, 1, gauss_folder_ID)
+        f_to_g(Dir, uname, gauss_folder_ID)
     t1 = time.time()
     print("1. generate Gauss for all users: ",t1-t0)
-
  
+
     # 2. Consolidate Gauss for SELECTED users
     t0 = time.time()
     unite_gauss(selected_users_set, gauss_folder_ID)
     t1 = time.time()
     print("2. Consolidate Gauss for selected users takes process time: ",t1-t0)
+
 
     # 3. Generate Entropy from Gauss
     t0 = time.time()

@@ -2,11 +2,18 @@
 
 # User Gauss and Benchmark Entropy
 
-## User Gauss and Entropy Percentage Calculation
+<!-- ## User Gauss and Entropy Percentage Calculation -->
+
+## 1. User Gauss Benchmark Calculation
 
 ```python3
 cd user_gauss_params/code/
 python3 benchmark_entropies.py
 ```
 
-result in
+## 2. Entropy Percentage Calculation
+
+```python3
+cd user_gauss_params/code/
+python3 gauss_entropies.py
+```
