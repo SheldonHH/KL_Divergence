@@ -43,7 +43,7 @@ def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
 
-# simplied
+# simplied freq to gauss
 def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, username, call_sign_folder):
     freq_dir = true_datapath+"/q/"+username+"/"
     uname = username
