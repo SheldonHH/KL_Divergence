@@ -17,51 +17,11 @@ import json
 import csv
 from MQ4C import *
 from g_to_e import *
-f
+import math
 
 # Creating a Function.
-
-
 def simulated_height_normal_dist(x, mean, sd):
-    # prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
-    # return prob_density
-    # print(norm.cdf(x, mean, sd))
     return norm.cdf(x, mean, sd)
-
-
-def calculate_MSE(z_list, ys_for_sim):
-    y = z_list
-    y_bar = ys_for_sim
-    # print("z_list", z_list)
-    # print("y_bar", y_bar)
-    summation = 0  # variable to store the summation of differences
-    n = len(y)  # finding total number of items in list
-    for i in range(0, n):  # looping through each element of the list
-        # finding the difference between observed and predicted value
-        difference = y[i] - y_bar[i]
-        squared_difference = difference**2  # taking square of the differene
-        # taking a sum of all the differences
-        summation = summation + squared_difference
-    MSE = summation/n  # dividing summation by total values to obtain average
-    # print("The Mean Square Error is: ", MSE)
-    return MSE
-
-
-def obtain_first_second(x, y, strtype):
-    dy = np.diff(x, 1)
-    dx = np.diff(y, 1)
-    yfirst = dy/dx
-    xfirst = 0.5*(x[:-1]+x[1:])
-    dyfirst = np.diff(yfirst, 1)
-    dxfirst = np.diff(xfirst, 1)
-
-    if(strtype == "second"):
-        ysecond = dyfirst/dxfirst
-        # xsecond=0.5*(xfirst[:-1]+xfirst[1:])
-        return ysecond
-    else:
-        return yfirst
-
 
 def gauss(x, mu, sigma, A):
     return A*exp(-(x-mu)**2/2/sigma**2)
@@ -84,15 +44,14 @@ def findNth(a, b, n):
     return reduce(lambda x, y: -1 if y > x + 1 else a.find(b, x + 1), range(n), -1)
 
 
+# simplied
 def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, username, call_sign_folder):
     freq_dir = true_datapath+"/q/"+username+"/"
     uname = username
-    # directory = os.path.join(freq_dir)
     os.chdir(freq_dir)
     num_with_params = {}  # (num_of_gauss, [params])
     num_with_weights = {}
     all_files_dimension_with_params = {}
-    # for root,dirs,files in os.walk(directory):
     file = inputfile
     dimension_min_with_params = {}
     if file.endswith(".csv"):
@@ -106,109 +65,42 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
                 row_list.append(float(item))
             final_list.append(row_list)
         X = np.array(final_list)
-        f.close()
-        MSE_list, ySp, xSp = [], [], []
-        counter_initial = 1 
-        n_samples = len(data)
-        for index in range(counter_initial):
-            if n_samples < index+1:
-                dimension_min_with_params.append(
-                    {"gauss": num_with_params[min_index], "max": max(X[:, 0]), "min": min(X[:, 0])})
-                break
-            gmm = mixture.GaussianMixture(
-                n_components=index+1, covariance_type="diag", max_iter=500000).fit(X)
-            list_params = zerolistmaker((index+1)*3)
-            simulated_y_sum = 0
-            sort_mch = [[], [], [], []]  # means_cov_height
-            for sub_index in range(index+1):
-                sort_mch[0].append(gmm.weights_[sub_index])
-                sort_mch[1].append(gmm.means_[sub_index][0])
-                sort_mch[2].append(gmm.covariances_[sub_index][0])
-                simulated_height = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[
-                                                                sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
-                sort_mch[3].append(simulated_height)
-                simulated_y_sum += simulated_height
-            # print(index,"simulated_y_sum",simulated_y_sum)
-            sort_mch = np.array(list(map(list, zip(*sort_mch))))
-            # print(sort_mch)
-            # sg = sorted(sort_mch, key=lambda a_entry: sort_mch[0])
-            sort_mch = sort_mch[sort_mch[:, 0].argsort(
-                kind='mergesort')]  # sort by year
-            # print("sgggg",sg)
-            for sub_index in range(index+1):
-                # print(sort_mch[sub_index])
-                list_params[sub_index*3] = sort_mch[sub_index][1]
-                list_params[sub_index*3+1] = sort_mch[sub_index][2]
-                list_params[sub_index*3+2] = sort_mch[sub_index][3]
-            params = tuple(list_params)
-            num_with_params[index] = list_params
-            num_with_weights[index] = [i[0] for i in sort_mch]
-            # print("[i[0] for i in sort_mch]",[i[0] for i in sort_mch])
-            # Calculate the MSE for each Gauss
-            ys_for_sim = []  # different from assign the value
-            for g in range(X[:, 0].size):
-                x_for_sim = X[g][0]
-                y_for_sim = multi_bimodal(
-                    x_for_sim, gmm.weights_, *params)
-                ys_for_sim.append(y_for_sim)
-            MSE = calculate_MSE(X[:, 1].tolist(), ys_for_sim)
-            ySp.append(MSE)
-            xSp.append(index)
-            MSE_list.append(MSE)
-      
-        # print("num_with_weights", num_with_weights)
+        f.close()   
+        gmm = mixture.GaussianMixture(
+            n_components=1, covariance_type="diag", max_iter=500000).fit(X)
+        list_params = zerolistmaker((1)*3)
+        wmch = [[], [], [], []]  # weight, means, covariances, height
+        for sub_index in range(1):
+            wmch[0].append(gmm.weights_[sub_index])
+            wmch[1].append(gmm.means_[sub_index][0])
+            wmch[2].append(gmm.covariances_[sub_index][0])
+            simulated_height = simulated_height_normal_dist(gmm.means_[sub_index][0], gmm.means_[
+                                                            sub_index][0], math.sqrt(gmm.covariances_[sub_index][0]))*gmm.weights_[sub_index]
+            wmch[3].append(simulated_height)
+        wmch = np.array(list(map(list, zip(*wmch))))
+        wmch = wmch[wmch[:, 0].argsort(
+            kind='mergesort')]  # sort by year
+        # print("sgggg",sg)
+        for sub_index in range(1):
+            # print(wmch[sub_index])
+            list_params[sub_index*3] = wmch[sub_index][1]
+            list_params[sub_index*3+1] = wmch[sub_index][2]
+            list_params[sub_index*3+2] = wmch[sub_index][3]
+        num_with_params[0] = list_params
+        num_with_weights[0] = [i[0] for i in wmch]
+
         minList = []
         maxList = []
-        incre_index = counter_initial
-        executeOnce = True
-        while(executeOnce):
-            executeOnce = False
-            min_index = 0
-            # print(str(index+1),params,len(params))
-            # Calculate the MSE for each Gauss
-            ys_for_sim = []  # different from assign the value
-            for g in range(X[:, 0].size):
-                x_for_sim = X[g][0]
-                y_for_sim = multi_bimodal(
-                    x_for_sim, gmm.weights_, *params)
-                ys_for_sim.append(y_for_sim)
-            MSE = calculate_MSE(X[:, 1].tolist(), ys_for_sim)
-            MSE_list.append(MSE)
-            ySp.append(MSE)
-            xSp.append(incre_index)
-            print("incre_index", incre_index)
-            min_index = ySp.index(min(ySp))
-
-        print("num_with_weights",num_with_weights)
-        if min_index in num_with_weights:
-            dimension_min_with_params["weights"] = num_with_weights[min_index]
-            dimension_min_with_params["gauss"] = num_with_params[min_index]
-            minList, maxList = calculate_max_min(num_with_params[min_index])
-        else:    
-            dimension_min_with_params["weights"] = num_with_params[len(num_with_weights)-1]
-            dimension_min_with_params["gauss"] = num_with_params[len(num_with_weights)-1]
-            minList, maxList = calculate_max_min(num_with_params[len(num_with_weights)-1])
+        
+        dimension_min_with_params["weights"] = num_with_weights[0]
+        dimension_min_with_params["gauss"] = num_with_params[0]
+        minList, maxList = calculate_max_min(num_with_params[0])
 
         dimension_min_with_params["max"] = maxList
         dimension_min_with_params["min"] = minList
         dimension_min_with_params["raw_data_size"] = raw_data_size
-        # print("type(X[:,0])", type(X[:, 0]))
-        # plt.clf()
-        # sorted_X = np.sort(X, axis=0)
-        # plt.plot(sorted_X[:,0].tolist(), sorted_X[:,1].tolist(), 'b+:', label='data')
-        # plt.plot(sorted_X[:,0].tolist(), multi_bimodal(
-        #     sorted_X[:,0].tolist(), gmm.weights_, *tuple(num_with_params[min_index])), 'ro:', label='fit')
-        # plt.legend()
-        # plt.title("Dimension distribution for "+file)
-        # plt.xlabel('Data')
-        # plt.ylabel('Frequency')
-        # fig = plt.gcf()
-        # plt.show()
-        # fig.savefig(file[0:findNth(file,"_",2)]+'.pdf')
         all_files_dimension_with_params[username +
                                         "_"+col_counter] = dimension_min_with_params
-# path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
-    # os.remove(freq_dir+username+"_freq.csv")
     counterFolder = true_datapath+"users_individual_gauss/"+call_sign_folder+"/"+ col_counter+"/"
     if os.path.isdir(counterFolder) == False:
         os.makedirs(counterFolder, exist_ok=True)
@@ -216,9 +108,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
             os.remove(f)
     with open(counterFolder + uname+"_"+col_counter+"_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params, outfile)
-    # shutil.copyfile( uname+"_features_gauss_"+col_counter+".json", dir_str +
-    #                 "users_individual_gauss/"+ uname+"_features_gauss_"+col_counter+".json")
-    # os.remove(freq_dir+ uname+"_features_gauss".json")
+
 
 
 # calculate max and min
@@ -254,30 +144,31 @@ def f_to_g(Dir, username, counter_initial, call_sign_folder):
             
 
 def main():
+    Dir = "/home/xphuang/entropy/user_gauss_params/data/"
+    sample_percent = 20
+    Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
+    selected_users_set = set(Inputdicts.keys())
+
     # 1. generate Gauss for all users
     t0 = time.time()
-    Dir = "/home/xphuang/entropy/user_gauss_params/data/"
-    Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
-    
     gauss_folder_ID = "one_gauss"
-    sample_percent = 20
-    # for uname in Inputdicts.keys():
-    #     f_to_g(Dir, uname, 1, gauss_folder_ID)
-
+    for uname in Inputdicts.keys():
+        f_to_g(Dir, uname, 1, gauss_folder_ID)
     t1 = time.time()
-    print(t1-t0)
+    print("1. generate Gauss for all users: ",t1-t0)
 
-    selected_users_set = set(Inputdicts.keys())
+ 
     # 2. Consolidate Gauss for SELECTED users
     t0 = time.time()
     unite_gauss(selected_users_set, gauss_folder_ID)
     t1 = time.time()
-    print("Consolidate Gauss for selected users takes process time:",t1-t0)
+    print("2. Consolidate Gauss for selected users takes process time: ",t1-t0)
 
-    # t0 = time.time()
-    # g_to_e(gauss_folder_ID, len(Inputdicts.keys()), sample_percent)
-    # t1 = time.time()
-    # print("g to e process time:",t1-t0)
+    # 3. Generate Entropy from Gauss
+    t0 = time.time()
+    g_to_e(gauss_folder_ID, len(Inputdicts.keys()), sample_percent)
+    t1 = time.time()
+    print("3. g to e process time:",t1-t0)
 
     # raw_csv_path1 = psedo_user_dir
     # username = raw_csv_path1[raw_csv_path1.rindex(

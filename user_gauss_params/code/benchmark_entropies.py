@@ -9,6 +9,8 @@
 import numpy as np
 import pandas as pd
 import time
+import os
+import shutil
 # import random
 # dicts = {"user_1": [0, 30], "user_2": [3, 60], "user_3": [70, 140]}
 # df = pd.read_csv(
@@ -101,8 +103,8 @@ def benchmark(dicts, location_of_combined_file, combined_dir):
         x_normed = x / (x.max(axis=0) + 1e-6)
         norm_summm = np.sum(x_normed, axis=1)
         np.savetxt(combined_dir+"/sums/" + str(featureID)+"_sum.csv", norm_summm, delimiter=",")
-        np.savetxt(combined_dir+"/sums/" + str(featureID)+"_x_normed.csv", x_normed, delimiter=",")
-        np.savetxt(combined_dir+"/sums/" + str(featureID)+"_x.csv", x, delimiter=",")
+        # np.savetxt(combined_dir+"/sums/" + str(featureID)+"_x_normed.csv", x_normed, delimiter=",")
+        # np.savetxt(combined_dir+"/sums/" + str(featureID)+"_x.csv", x, delimiter=",")
         
         # keep tally for user [i] under each feature (outer loop)
         for i in range(len(norm_summm)):
@@ -128,8 +130,23 @@ def main():
     dicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
     combined_file_name =  "user_2_comnbined.csv"
     combined_dir = "/home/xphuang/entropy/user_gauss_params/data/combine/"
+    t0 = time.time()
+    removeAllFiles(combined_dir+"sums/")
+    removeAllFiles(combined_dir+"results/")
+    t1 = time.time()
+    print("Removed All Files sum Folders: ", t1-t0)
     benchmark(dicts, combined_dir+combined_file_name, combined_dir)
 
+def removeAllFiles(folder):
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 if __name__ == "__main__":
     main()
