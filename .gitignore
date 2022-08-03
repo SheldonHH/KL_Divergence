@@ -14,3 +14,4 @@ user_gauss_params/data/q_freq
 user_gauss_params/data/gpp
 user_gauss_params/data/united_gauss/*
 user_gauss_params/py/*.csv 
+user_gauss_params/data/individual_features/*
