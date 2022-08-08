@@ -15,7 +15,7 @@ def main():
     col_counter = 0
     for col in df.columns:
         print("col_counter:",col_counter)
-        df[col].to_csv(f'/home/xphuang/entropy/user_gauss_params/data/individual_features/feature_{col_counter}.csv', index=False, header=False)
+        df[col].transpose().to_csv(f'/home/xphuang/entropy/user_gauss_params/data/individual_features/T/feature_{col_counter}.csv', index=False, header=False)
         col_counter+=1
 
     t1 = time.time()
