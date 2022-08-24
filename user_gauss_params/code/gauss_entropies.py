@@ -138,13 +138,50 @@ def f_to_g(Dir, username, call_sign_folder):
         inputfile = Dir+"q/"+username+"/"+username+"_"+str(feat_counter)+"_q.csv"
         freq_to_gauss(Dir, inputfile, str(
             feat_counter), str(rds), username, call_sign_folder)
-            
+
+
+def create_q(Inputdicts):
+    t0 = time.time()
+    df = pd.read_csv("/home/xphuang/entropy/user_gauss_params/data/combine/user_2_comnbined.csv", delimiter=" ")
+    t1 = time.time()
+    print("readcsv time:",t1-t0)
+    
+    t0 = time.time()
+    for userkey, value in Inputdicts.items():
+        each_fea = []
+        uq_path = "/home/xphuang/entropy/user_gauss_params/data/q/"+userkey+"/"
+        if os.path.isdir(uq_path) == False:
+            os.mkdir(uq_path)
+        for idx in range(4096): 
+            print(userkey,":",idx)
+            datauser=df.iloc[value[0]:value[1],idx]
+            # datauser.to_csv("/home/xphuang/entropy/user_gauss_params/data/combine/"+userkey+"_combine.csv", header=False,index=False)
+            # LDL = datauser.to_numpy()
+            # print(LDL)
+            # print("datauser", len(LDL))
+            vcd4=(datauser.value_counts(normalize=True))
+            vcd4.to_csv(uq_path+userkey+"_"+str(idx)+"_q.csv", header=False)
+            each_fea.append(vcd4)
+    t1 = time.time()
+    print("create_q duration:",t1-t0)
+
+    # t0 = time.time()
+    # key = "user_98"
+    # df_col = pd.concat(each_fea)
+    # df_col.to_csv("/home/xphuang/KL_Divergence/user_gauss_params/data/combine/" +
+    #                 key+"_freq.csv", header=False, index=False)
+    # # print(datauser)
+    # t1 = time.time()
+    # print("iloc time:",t1-t0)
 
 def main():
     Dir = "/home/xphuang/entropy/user_gauss_params/data/"
     sample_percent = 20
     Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
     selected_users_set = set(Inputdicts.keys())
+
+    create_q(Inputdicts)
+
 
     # 1. generate Gauss for all users
     t0 = time.time()
