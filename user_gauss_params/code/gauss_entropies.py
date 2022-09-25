@@ -106,6 +106,7 @@ def freq_to_gauss(true_datapath,  inputfile,  col_counter, raw_data_size, userna
             os.remove(f)
     with open(counterFolder + uname+"_"+col_counter+"_gauss.json", "w") as outfile:
         json.dump(all_files_dimension_with_params, outfile)
+    print("Finish writing: "+uname+"_"+col_counter+"_gauss.json")
 
 
 
@@ -180,6 +181,7 @@ def main():
     Inputdicts = {"user_1": [1, 10000], "user_2": [10000, 20000], "user_3": [20000, 30000], "user_4": [30000,40000], "user_5": [40000,50000], "user_6": [50000,60000]}
     selected_users_set = set(Inputdicts.keys())
 
+    # 
     create_q(Inputdicts)
 
 
