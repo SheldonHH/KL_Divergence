@@ -2,12 +2,8 @@
 .idea	
 !.gitignore
 user_gauss_params/data/combine/*
-**/*0_onerow*
-**/*0_nf*
 *.csv
 user_gauss_params/data/*.csv 
 user_gauss_params/data/q/* 
-user_gauss_params/data/q_freq
-user_gauss_params/data/gpp
 user_gauss_params/data/united_gauss/*
 user_gauss_params/py/*.csv 
