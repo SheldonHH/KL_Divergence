@@ -9,10 +9,7 @@ import csv
 import time
 import natsort
 
-# from tally import features_extractor
- 
-
-
+# Step 1: Generate image from raw data
 def step_1_raw_to_img(rawdata_arr, true_datapath, rawdata_tag, index_of_image):
     raw_csv_argv = [true_datapath+rawdata_tag+".csv"]
     new_img_path = true_datapath+"image/"+rawdata_tag+"/"
@@ -22,7 +19,7 @@ def step_1_raw_to_img(rawdata_arr, true_datapath, rawdata_tag, index_of_image):
     csv_to_jpeg.csv_to_jpeg(rawdata_arr, raw_csv_argv, index_of_image, rawdata_tag)
 
 
-# from data row to feature_based csv file
+# Step 3: from data row to feature_based .csv file to obtain 4096 files
 def step_3_transpose_csv(true_datapath):
     input_file_list = glob.glob(true_datapath + "features/preprocess/*.csv")
     counter = 0
@@ -32,6 +29,7 @@ def step_3_transpose_csv(true_datapath):
         csv.writer(open(outputfile, "wt")).writerows(a)
         counter += 1
 
+# Step 4: combine 4096 feature files into 1 
 def step_4_combine_feature_files(transposed_inputs_dir, target_fullPath):
     extension = 'csv'
     transposed_inputs_list = glob.glob(transposed_inputs_dir+'*.{}'.format(extension))

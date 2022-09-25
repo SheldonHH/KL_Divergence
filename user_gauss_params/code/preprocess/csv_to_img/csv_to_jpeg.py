@@ -1,7 +1,5 @@
-from numpy import genfromtxt
+
 import numpy as np
-from PIL import Image
-import sys
 import imageio
 import os
 
@@ -16,7 +14,6 @@ def csv_to_jpeg(numpy_array, raw_csv_argv, index_of_image, preprocess_alias):
     # user_1_data
     raw_csv_path1 = args[0]
     my_data = numpy_array
-    # my_data = genfromtxt(raw_csv_path1, delimiter=',', skip_header=1)
     path = raw_csv_path1[0:raw_csv_path1.rindex('/')+1]
     preprocess_alias = raw_csv_path1[raw_csv_path1.rindex(
         '/')+1: raw_csv_path1.rindex('.')]

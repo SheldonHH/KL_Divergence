@@ -186,7 +186,3 @@ def ga_entropy(Inputdicts):
     g_to_e(gauss_folder_ID, len(Inputdicts.keys()), sample_percent)
     t1 = time.time()
     print("3. gaussian to entropy takes time:",t1-t0)
-
-
-if __name__ == "__main__":
-    main()
