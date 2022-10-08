@@ -24,5 +24,3 @@ user_gauss_params/code/benchmark_entropies.py
 gauss_entropies.py
 ```
 
-
-##
